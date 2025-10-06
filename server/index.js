@@ -24,5 +24,5 @@ app.get('/health', (req, res) => {
 // === Server Initialization ===
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  console.log(`Server running on http://localhost:${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
