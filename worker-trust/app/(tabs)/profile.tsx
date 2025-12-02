@@ -12,7 +12,7 @@ export default function ProfileScreen() {
         const data = await getUserData("test-user-001"); // Replace with actual UID
         setUser(data);
       } catch (err) {
-        console.error(err);
+        console.log("Error:", err);
       }
       setLoading(false);
     }
@@ -20,14 +20,14 @@ export default function ProfileScreen() {
   }, []);
 
   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-
+  console.log("User Data:", user);
   return (
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 22, fontWeight: "bold" }}>{user.full_name}</Text>
       <Text>Email:{user.email}</Text>
       <Text>Phone:{user.phone}</Text>
       <Text>Role:{user.role}</Text>
-      <Text>Language Preference:{user.user_settings.language_pref}</Text>
+      <Text>Language Preference:{user.language_pref ?? "N/A"}</Text>
     </View>
   );
 }
