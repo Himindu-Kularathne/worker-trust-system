@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { login } from "../src/lib/supabase/auth";
+import { router } from "expo-router";
 
-export default function LoginScreen({ navigation }: any) {
+export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function LoginScreen({ navigation }: any) {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      navigation.replace("Home"); // Navigate to Home on successful login
+      router.replace("/");
     }
 
     setLoading(false);
@@ -51,7 +52,7 @@ export default function LoginScreen({ navigation }: any) {
         <Text style={styles.btnText}>{loading ? "Logging in..." : "Login"}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+      <TouchableOpacity onPress={() => router.push("/signup")}>
         <Text style={styles.switchText}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
