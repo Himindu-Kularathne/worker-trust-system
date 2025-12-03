@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { signUpWorker, signUpCustomer } from "../src/lib/supabase/auth";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { signUpWorker, signUpCustomer } from "../../src/lib/supabase/auth";
 
 export default function SignupScreen({ navigation }: any) {
   const [email, setEmail] = useState("");
@@ -25,7 +31,7 @@ export default function SignupScreen({ navigation }: any) {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      navigation.replace("Home"); // Navigate to Home on successful signup
+      navigation.replace("Home");
     }
 
     setLoading(false);
@@ -73,8 +79,14 @@ export default function SignupScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.btn} onPress={handleSignup} disabled={loading}>
-        <Text style={styles.btnText}>{loading ? "Signing up..." : "Create Account"}</Text>
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={handleSignup}
+        disabled={loading}
+      >
+        <Text style={styles.btnText}>
+          {loading ? "Signing up..." : "Create Account"}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>

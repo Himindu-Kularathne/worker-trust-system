@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { login } from "../src/lib/supabase/auth";
+import { login } from "../../src/lib/supabase/auth";
 import { router } from "expo-router";
 
 export default function LoginScreen() {
@@ -24,7 +24,8 @@ export default function LoginScreen() {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      router.replace("/profile");
+      console.log(data);
+      router.replace("/(tabs)");
     }
 
     setLoading(false);
@@ -64,7 +65,7 @@ export default function LoginScreen() {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/signup")}>
+      <TouchableOpacity onPress={() => router.push("/auth/signup")}>
         <Text style={styles.switchText}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
