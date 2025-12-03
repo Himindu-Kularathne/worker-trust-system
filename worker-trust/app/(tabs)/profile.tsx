@@ -9,7 +9,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await getUserData("test-user-001"); // Replace with actual UID
+        const data = await getUserData("test-user-001");
         setUser(data);
       } catch (err) {
         console.log("Error:", err);

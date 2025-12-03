@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { login } from "../src/lib/supabase/auth";
 import { router } from "expo-router";
 
@@ -18,7 +24,7 @@ export default function LoginScreen() {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      router.replace("/");
+      router.replace("/profile");
     }
 
     setLoading(false);
@@ -48,8 +54,14 @@ export default function LoginScreen() {
         value={password}
       />
 
-      <TouchableOpacity style={styles.btn} onPress={handleLogin} disabled={loading}>
-        <Text style={styles.btnText}>{loading ? "Logging in..." : "Login"}</Text>
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={styles.btnText}>
+          {loading ? "Logging in..." : "Login"}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/signup")}>
