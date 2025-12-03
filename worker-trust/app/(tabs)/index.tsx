@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-
+import { Redirect } from "expo-router";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 
