@@ -7,12 +7,12 @@ export default function HomeTab() {
       <Text style={styles.title}>Worker Trust System</Text>
       <Text style={styles.subtitle}>What would you like to do today?</Text>
 
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(tabs)/findWorker")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/findWorker")}>
         <Text style={styles.cardTitle}>Find a Worker</Text>
         <Text style={styles.cardText}>Search nearby professionals</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(tabs)/offerService")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/offerService")}>
         <Text style={styles.cardTitle}>Offer a Service</Text>
         <Text style={styles.cardText}>Create or manage your services</Text>
       </TouchableOpacity>
