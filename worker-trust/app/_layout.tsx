@@ -8,6 +8,7 @@ import "react-native-reanimated";
 import "react-native-url-polyfill/auto";
 
 import { useColorScheme } from "@/components/useColorScheme";
+import { useAuthListener } from "@/src/lib/supabase/auth";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -42,6 +43,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  useAuthListener();
   const colorScheme = useColorScheme();
 
   return (
