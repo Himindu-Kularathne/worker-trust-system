@@ -2,13 +2,27 @@ import React, { createContext, useContext } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
 import { LightAppTheme, DarkAppTheme, AppTheme } from "./themes";
 
-const AppThemeContext = createContext<AppTheme | undefined>(undefined);
+type ThemePreference = "system" | "light" | "dark";
+
+type AppThemeContextType = {
+  theme: AppTheme;
+  preference: ThemePreference;
+  toggleTheme: () => void;
+};
+
+const AppThemeContext = createContext<AppThemeContextType | undefined>(undefined);
 
 export function AppThemeProvider({ children }: { children: React.ReactNode }) {
-  const scheme = useColorScheme();
-  const theme = scheme === "dark" ? DarkAppTheme : LightAppTheme;
+  const systemScheme = useColorScheme();
+  const [preference, setPreference] = React.useState<ThemePreference>("system");
+  const resolvedMode = preference === "system" ? systemScheme : preference;
+  const theme = resolvedMode === "dark" ? DarkAppTheme : LightAppTheme;
 
-  return <AppThemeContext.Provider value={theme}>{children}</AppThemeContext.Provider>;
+  const toggleTheme = () => {
+    setPreference((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
+  return <AppThemeContext.Provider value={{ theme, preference, toggleTheme }}>{children}</AppThemeContext.Provider>;
 }
 
 export function useAppTheme() {
