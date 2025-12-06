@@ -1,6 +1,7 @@
 import React, { use, useEffect, useState } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { getUserData } from "@/src/lib/supabase_func";
+import { supabase } from "@/src/lib/supabaseClient";
 
 export default function ProfileScreen() {
   const [user, setUser] = useState<any>(null);
@@ -9,7 +10,10 @@ export default function ProfileScreen() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await getUserData("test-user-001"); // Replace with actual UID
+        const { data: authData } = await supabase.auth.getUser();
+        const userId = authData?.user?.id;
+        if (!userId) throw new Error("No logged-in user.");
+        const data = await getUserData(userId); // Fetch user data
         setUser(data);
       } catch (err) {
         console.log("Error:", err);
