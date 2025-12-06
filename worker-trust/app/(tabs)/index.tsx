@@ -5,6 +5,7 @@ import { Text, View } from "@/components/Themed";
 import i18n from "@/src/i18n";
 import { useState } from "react";
 import LanguageButton from "../langButton";
+import { useLanguage } from "@/src/i18n/languageContext";
 
 export const changeLanguage = (lang: "en" | "si" | "ta") => {
   i18n.locale = lang;
@@ -13,11 +14,8 @@ export const changeLanguage = (lang: "en" | "si" | "ta") => {
 console.log("Current Language:", i18n.locale);
 
 export default function TabOneScreen() {
-  const [, forceUpdate] = useState(0);
-  const changeLanguage = (lang: "en" | "si" | "ta") => {
-    i18n.locale = lang;
-    forceUpdate((v) => v + 1); // ✅ force rerender
-  };
+  const { lang } = useLanguage();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Worker Trust System</Text>
