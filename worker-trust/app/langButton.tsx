@@ -12,14 +12,10 @@ export default function LanguageButton() {
     setLang(lang);
     setOpen(false);
   };
-  const onPress = () => {
-    const nextIndex = (LANGS.indexOf(lang) + 1) % LANGS.length;
-    setLang(LANGS[nextIndex]);
-  };
 
   return (
     <>
-      <Pressable onPress={onPress} style={styles.button}>
+      <Pressable onPress={() => setOpen(true)}>
         <Image source={require("@/assets/images/lang.png")} style={styles.image} />
       </Pressable>
       <Modal transparent animationType="fade" visible={open}>
