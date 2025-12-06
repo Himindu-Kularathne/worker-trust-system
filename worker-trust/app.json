@@ -3,6 +3,7 @@
     "name": "worker-trust",
     "slug": "worker-trust",
     "version": "1.0.0",
+    "owner": "worker-trust",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "workertrust",

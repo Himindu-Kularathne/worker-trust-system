@@ -77,7 +77,7 @@ export default function SignupScreen({ navigation }: any) {
         <Text style={styles.btnText}>{loading ? "Signing up..." : "Create Account"}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+      <TouchableOpacity onPress={() => navigation.navigate("login")}>
         <Text style={styles.switchText}>Already have an account? Login</Text>
       </TouchableOpacity>
     </View>

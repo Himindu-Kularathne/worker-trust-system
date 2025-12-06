@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import * as AuthSession from "expo-auth-session"; // remove all imports when necessary
 import { router } from "expo-router";
+import { Platform } from "react-native";
 
 export async function signUpWorker(email: string, password: string) {
   return await supabase.auth.signUp({
@@ -35,14 +36,17 @@ export async function logout() {
 }
 
 export async function signInWithGoogle() {
-  const redirectUrl = AuthSession.makeRedirectUri({
+  const redirectUri = AuthSession.makeRedirectUri({
     scheme: "workertrust",
+    path: "/auth/callback",
   });
+  console.log("Redirect URI:", redirectUri);
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: redirectUrl,
+      redirectTo: redirectUri,
+      queryParams: { prompt: "select_account" },
     },
   });
 
