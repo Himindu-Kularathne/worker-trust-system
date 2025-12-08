@@ -38,28 +38,6 @@ export default function TabLayout() {
         }}
       />
 
-      {/* REVIEWS */}
-      <Tabs.Screen
-        name="reviews"
-        options={{
-          title: "Reviews",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubbles-outline" size={size} color={color} />
-          ),
-        }}
-      />
-
-      {/* LOCATION */}
-      <Tabs.Screen
-        name="location"
-        options={{
-          title: "Location",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="location-outline" size={size} color={color} />
-          ),
-        }}
-      />
-
       {/* PROFILE */}
       <Tabs.Screen
         name="profile"
