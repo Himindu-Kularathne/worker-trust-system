@@ -27,11 +27,11 @@ export default function ProfileScreen() {
   console.log("User Data:", user);
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 22, fontWeight: "bold" }}>{user.full_name}</Text>
-      <Text>Email:{user.email}</Text>
-      <Text>Phone:{user.phone}</Text>
-      <Text>Role:{user.role}</Text>
-      <Text>Language Preference:{user.language_pref ?? "N/A"}</Text>
+      <Text style={{ fontSize: 22, fontWeight: "bold" }}>{user?.full_name}</Text>
+      <Text>Email:{user?.email}</Text>
+      <Text>Phone:{user?.phone}</Text>
+      <Text>Role:{user?.role}</Text>
+      <Text>Language Preference:{user?.language_pref ?? "N/A"}</Text>
     </View>
   );
 }
