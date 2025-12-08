@@ -17,7 +17,7 @@ export default function HomeTab() {
         <Text style={styles.cardText}>Create or manage your services</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card} onPress={() => router.push("/(tabs)/profile")}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push("/(tabs)/(worker)/profile")}>
         <Text style={styles.cardTitle}>My Profile</Text>
         <Text style={styles.cardText}>View or update your details</Text>
       </TouchableOpacity>
