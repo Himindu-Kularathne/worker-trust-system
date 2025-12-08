@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
-import { LightAppTheme, DarkAppTheme, AppTheme } from "./themes";
+import { LightAppTheme, DarkAppTheme, AppTheme } from "../theme/themes";
 
 type ThemePreference = "system" | "light" | "dark";
 

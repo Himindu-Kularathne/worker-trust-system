@@ -4,10 +4,10 @@ import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import i18n from "@/src/i18n";
 import { useState } from "react";
-import LanguageButton from "../langButton";
+import LanguageButton from "../../ui-components/langButton";
 import { useLanguage } from "@/src/i18n/languageContext";
-import ThemeToggle from "../themeToggle";
-import { useAppTheme } from "@/src/theme/AppThemeContext";
+import ThemeToggle from "../../ui-components/themeToggle";
+import { useAppTheme } from "@/src/context/AppThemeContext";
 
 export const changeLanguage = (lang: "en" | "si" | "ta") => {
   i18n.locale = lang;
