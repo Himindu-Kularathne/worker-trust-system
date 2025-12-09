@@ -1,7 +1,6 @@
-// src/sections/profile/AvailabilitySection.tsx
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import AvailabilityToggleRow from "@/components/profile/AvailabilityToggleRow";
+import AvailabilityToggleRow from "@/src/components/workerProfile/AvailabilityToggleRow";
 
 const AvailabilitySection: React.FC = () => {
   const [isAvailable, setIsAvailable] = useState(true);
