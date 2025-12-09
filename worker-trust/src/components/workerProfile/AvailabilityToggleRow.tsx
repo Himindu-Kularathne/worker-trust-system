@@ -1,4 +1,3 @@
-// src/components/profile/AvailabilityToggleRow.tsx
 import React from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
 

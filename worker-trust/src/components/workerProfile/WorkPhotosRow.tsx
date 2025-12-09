@@ -1,4 +1,3 @@
-// src/components/profile/WorkPhotosRow.tsx
 import React from "react";
 import {
   View,

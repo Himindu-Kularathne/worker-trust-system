@@ -1,4 +1,3 @@
-// src/components/settings/SettingsToggleRow.tsx
 import React from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";

@@ -1,4 +1,3 @@
-// src/sections/settings/SettingsHeaderSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import SettingsHeader, {

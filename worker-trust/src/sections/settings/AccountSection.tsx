@@ -1,4 +1,3 @@
-// src/sections/settings/AccountSection.tsx
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import SettingsCard from "@/src/components/settings/SettingsCard";

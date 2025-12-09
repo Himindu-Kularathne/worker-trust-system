@@ -1,4 +1,3 @@
-// src/components/settings/SettingsHeader.tsx
 import React from "react";
 import {
   View,

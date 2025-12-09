@@ -1,4 +1,3 @@
-// src/sections/settings/LogoutSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import LogoutButton from "@/src/components/settings/LogoutButton";

@@ -1,4 +1,3 @@
-// src/sections/settings/HelpSupportSection.tsx
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import SettingsCard from "@/src/components/settings/SettingsCard";

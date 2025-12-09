@@ -1,4 +1,3 @@
-// src/views/WorkerSettingsView.tsx
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
