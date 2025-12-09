@@ -2,11 +2,11 @@
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
-import SettingsHeaderSection from "@/sections/settings/SettingsHeaderSection";
-import PreferencesSection from "@/sections/settings/PreferencesSection";
-import AccountSection from "@/sections/settings/AccountSection";
-import HelpSupportSection from "@/sections/settings/HelpSupportSection";
-import LogoutSection from "@/sections/settings/LogoutSection";
+import SettingsHeaderSection from "@/src/sections/settings/SettingsHeaderSection";
+import PreferencesSection from "@/src/sections/settings/PreferencesSection";
+import AccountSection from "@/src/sections/settings/AccountSection";
+import HelpSupportSection from "@/src/sections/settings/HelpSupport";
+import LogoutSection from "@/src/sections/settings/LogoutSection";
 
 const AVATAR_URI =
   "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg";
