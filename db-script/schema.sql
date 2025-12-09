@@ -18,16 +18,16 @@ DROP TABLE IF EXISTS app_users;
 -- This replaces the old "users" table.
 -- Google / Firebase UID is the unique identifier.
 -- No passwords are stored locally.
-CREATE TABLE app_users (
-    google_uid VARCHAR(128) PRIMARY KEY,
-    role ENUM('worker', 'customer') NOT NULL,
-    full_name VARCHAR(150),
-    email VARCHAR(150) UNIQUE,
-    phone VARCHAR(20),
-    language_pref ENUM('en','si','ta') DEFAULT 'en',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+create table public.app_users (
+  id uuid primary key default gen_random_uuid(),
+  google_uid varchar(128) not null unique,
+  full_name varchar(150),
+  email varchar(150) unique,
+  language_pref varchar(5) default 'en',
+  created_at timestamp default now(),
+  updated_at timestamp default now()
 );
+
 
 -- =====================================
 -- WORKER PROFILES
@@ -105,6 +105,53 @@ CREATE TABLE notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES app_users(google_uid) ON DELETE CASCADE
 );
+
+-- =====================================
+-- WORKERS
+-- Stores worker details and status
+-- =====================================
+
+create table public.workers (
+  id uuid primary key default gen_random_uuid(),
+
+  google_uid varchar(128) not null unique,
+  full_name varchar(150) not null,
+  phone varchar(20) not null,
+  email varchar(150),
+
+  address text not null,
+  category varchar(100) not null,
+
+  rating_avg numeric(3,2) default 0,
+  rating_count int default 0,
+
+  created_at timestamp default now()
+);
+
+
+-- =====================================
+-- WORKER REGISTRATION REQUESTS
+-- Stores requests from users to become workers
+-- =====================================
+
+create table public.worker_registration_requests (
+  id uuid primary key default gen_random_uuid(),
+
+  full_name varchar(150) not null,
+  phone varchar(20) not null,
+  email varchar(150),
+  address text not null,
+  category varchar(100) not null,
+
+  status varchar(20) not null default 'pending'
+    check (status in ('pending', 'approved', 'rejected')),
+
+  created_at timestamp default now(),
+  reviewed_at timestamp
+);
+
+
+
 
 -- ======================================================
 -- END OF SCHEMA
