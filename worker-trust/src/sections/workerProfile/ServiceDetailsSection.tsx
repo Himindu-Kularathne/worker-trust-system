@@ -1,8 +1,7 @@
-// src/sections/profile/ServiceDetailsSection.tsx
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import InfoCard from "@/components/profile/InfoCard";
-import InfoRow from "@/components/profile/InfoRow";
+import InfoCard from "@/src/components/workerProfile/InfoCard";
+import InfoRow from "@/src/components/workerProfile/InfoRow";
 
 export type ServiceDetailsSectionProps = {
   titleRole: string;

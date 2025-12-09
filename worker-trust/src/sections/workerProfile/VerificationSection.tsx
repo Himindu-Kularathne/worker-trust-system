@@ -1,9 +1,8 @@
-// src/sections/profile/VerificationStatusSection.tsx
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import InfoCard from "@/components/profile/InfoCard";
-import VerificationChip from "@/components/profile/VerificationChip";
-import PrimaryButton from "@/components/profile/PrimaryButton";
+import InfoCard from "@/src/components/workerProfile/InfoCard";
+import VerificationChip from "@/src/components/workerProfile/VerificationChip";
+import PrimaryButton from "@/src/components/workerProfile/PrimaryButton";
 
 const VerificationStatusSection: React.FC = () => {
   return (

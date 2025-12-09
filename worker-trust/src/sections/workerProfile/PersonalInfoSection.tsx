@@ -1,4 +1,3 @@
-// src/sections/profile/PersonalInfoSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import InfoCard from "@/src/components/workerProfile/InfoCard";

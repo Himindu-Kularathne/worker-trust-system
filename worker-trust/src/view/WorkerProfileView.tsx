@@ -1,13 +1,13 @@
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
-import ProfileHeaderSection from "@/sections/profile/ProfileHeaderSection";
-import PersonalInfoSection from "@/sections/profile/PersonalInfoSection";
-import ServiceDetailsSection from "@/sections/profile/ServiceDetailsSection";
-import WorkPhotosSection from "@/sections/profile/WorkPhotosSection";
-import VerificationStatusSection from "@/sections/profile/VerificationStatusSection";
-import AvailabilitySection from "@/sections/profile/AvailabilitySection";
-import ProfileActionsSection from "@/sections/profile/ProfileActionsSection";
+import ProfileHeaderSection from "@/src/sections/workerProfile/ProfileHeaderSection";
+import PersonalInfoSection from "@/src/sections/workerProfile/PersonalInfoSection";
+import ServiceDetailsSection from "@/src/sections/workerProfile/ServiceDetailsSection";
+import WorkPhotosSection from "@/src/sections/workerProfile/WorkPhotosSection";
+import VerificationStatusSection from "@/src/sections/workerProfile/VerificationSection";
+import AvailabilitySection from "@/src/sections/workerProfile/AvailabilitySection";
+import ProfileActionsSection from "@/src/sections/workerProfile/ProfileActionSection";
 
 const AVATAR_URI =
   "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg";

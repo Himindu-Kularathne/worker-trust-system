@@ -1,8 +1,7 @@
-// src/sections/profile/ProfileActionsSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import PrimaryButton from "@/components/profile/PrimaryButton";
-import DangerButton from "@/components/profile/DangerButton";
+import PrimaryButton from "@/src/components/workerProfile/PrimaryButton";
+import DangerButton from "@/src/components/workerProfile/DangerButton";
 
 const ProfileActionsSection: React.FC = () => {
   return (

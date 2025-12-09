@@ -1,10 +1,9 @@
-// src/sections/profile/WorkPhotosSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import InfoCard from "@/components/profile/InfoCard";
+import InfoCard from "@/src/components/workerProfile/InfoCard";
 import WorkPhotosRow, {
   WorkPhotosRowProps,
-} from "@/components/profile/WorkPhotosRow";
+} from "@/src/components/workerProfile/WorkPhotosRow";
 
 const WorkPhotosSection: React.FC<WorkPhotosRowProps> = (props) => {
   return (

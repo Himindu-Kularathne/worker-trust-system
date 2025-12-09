@@ -1,9 +1,8 @@
-// src/sections/profile/ProfileHeaderSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import ProfileHeader, {
   ProfileHeaderProps,
-} from "@/components/profile/ProfileHeader";
+} from "@/src/components/workerProfile/ProfileHeader";
 
 const ProfileHeaderSection: React.FC<ProfileHeaderProps> = (props) => {
   return (
