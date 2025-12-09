@@ -1,9 +1,6 @@
-import { Text, View } from "react-native";
+import React from "react";
+import WorkerSettingsView from "@/src/view/WorkerSettingsView";
 
-export default function ProfileScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>Settings Screen - Under Construction</Text>
-        </View>
-    );
+export default function SettingsScreen() {
+  return <WorkerSettingsView />;
 }
