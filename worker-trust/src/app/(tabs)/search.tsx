@@ -1,6 +1,6 @@
-// import React from "react";
-// import SearchWorkersView from "@/views/SearchWorkersView";
+import React from "react";
+import SearchWorkersView from "@/src/view/SearchWorkersView";
 
-// export default function SearchScreen() {
-//   return <SearchWorkersView />;
-// }
+export default function SearchScreen() {
+  return <SearchWorkersView />;
+}
