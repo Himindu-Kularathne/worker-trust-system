@@ -1,6 +1,6 @@
-import React from "react";
-import { Text } from "react-native";
+// import React from "react";
+// import SearchWorkersView from "@/views/SearchWorkersView";
 
-export default function SearchScreen() {
-  return <Text>Search section - Under Construction</Text>;
-}
+// export default function SearchScreen() {
+//   return <SearchWorkersView />;
+// }
