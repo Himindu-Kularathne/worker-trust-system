@@ -1,8 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import ProfileHeader, {
-  ProfileHeaderProps,
-} from "@/src/components/workerProfile/ProfileHeader";
+import ProfileHeader, { ProfileHeaderProps } from "../../components/workerProfile/ProfileHeader";
 
 const ProfileHeaderSection: React.FC<ProfileHeaderProps> = (props) => {
   return (
