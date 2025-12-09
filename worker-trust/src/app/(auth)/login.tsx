@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { login, signInWithGoogle } from "../src/lib/supabase/auth";
+import { login, signInWithGoogle } from "../../lib/supabase/auth";
 import { router } from "expo-router";
 
 export default function LoginScreen() {

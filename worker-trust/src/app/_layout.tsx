@@ -10,7 +10,7 @@ import "react-native-url-polyfill/auto";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useAuthListener } from "@/src/lib/supabase/auth";
 import { LanguageProvider } from "@/src/i18n/languageContext";
-import { AppThemeProvider } from "@/src/theme/AppThemeContext";
+import { AppThemeProvider } from "@/src/context/AppThemeContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -22,7 +22,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
 
