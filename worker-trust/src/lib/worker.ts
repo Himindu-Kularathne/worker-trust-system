@@ -8,5 +8,6 @@ export async function getWorkerProfile(workerId: string) {
     .single();
 
   if (error) throw error;
+  console.log("Worker Profile Data:", data);
   return data;
 }

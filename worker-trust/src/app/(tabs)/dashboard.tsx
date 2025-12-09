@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
 
-export default function Dashboard({ workerId }: { workerId: string }) {
+export default function Dashboard() {
   const [trustScore, setTrustScore] = useState<number | null>(null);
   const [reviewCount, setReviewCount] = useState<number>(0);
 
@@ -12,6 +12,7 @@ export default function Dashboard({ workerId }: { workerId: string }) {
     loadData();
   }, []);
 
+  const workerId = "test-user-001"; // Replace with actual worker ID
   async function loadData() {
     const data = await getWorkerProfile(workerId);
     setTrustScore(data.trust_score);
