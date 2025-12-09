@@ -1,8 +1,8 @@
 // src/sections/profile/PersonalInfoSection.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import InfoCard from "@/components/profile/InfoCard";
-import InfoRow from "@/components/profile/InfoRow";
+import InfoCard from "@/src/components/workerProfile/InfoCard";
+import InfoRow from "@/src/components/workerProfile/InfoRow";
 
 export type PersonalInfoSectionProps = {
   name: string;
