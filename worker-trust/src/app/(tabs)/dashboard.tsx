@@ -63,21 +63,41 @@ export default function Dashboard() {
     }
 
     try {
-      const { error } = await supabase.from("worker_registration_requests").insert([
-        {
-          full_name: form.full_name,
-          phone: form.phone,
-          email: form.email || null,
-          address: form.address,
-          category: form.category,
-        },
-      ]);
+      const { data, error } = await supabase
+        .from("worker_registration_requests")
+        .insert([
+          {
+            full_name: form.full_name,
+            phone: form.phone,
+            email: form.email || null,
+            address: form.address,
+            category: form.category,
+          },
+        ])
+        .select()
+        .single();
 
       if (error) {
         console.error(error);
         Alert.alert("Submission failed", error.message);
         return;
       }
+
+      await fetch("https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/resend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          full_name: data.full_name,
+          phone: data.phone,
+          email: data.email,
+          address: data.address,
+          category: data.category,
+        }),
+      });
+
       Alert.alert("Request Submitted", "An admin will review your registration shortly.");
 
       setForm({

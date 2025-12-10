@@ -5,7 +5,15 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
-const handler = async (_request: Request): Promise<Response> => {
+Deno.serve(async (req: Request) => {
+  console.log("📩 Webhook received");
+
+  const payload = await req.json();
+  console.log("Payload:", payload);
+
+  const worker = payload.record;
+  console.log("Worker record:", worker);
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -15,22 +23,26 @@ const handler = async (_request: Request): Promise<Response> => {
     body: JSON.stringify({
       from: "onboarding@resend.dev",
       to: "minethweerasinghe@gmail.com",
-      subject: "hello world",
-      html: "<strong>it works!</strong>",
+      subject: "New Worker Registration Request",
+      html: `
+        <h2>New Worker Request</h2>
+        <p><b>Name:</b> ${worker.full_name}</p>
+        <p><b>Phone:</b> ${worker.phone}</p>
+        <p><b>Email:</b> ${worker.email ?? "Not provided"}</p>
+        <p><b>Address:</b> ${worker.address}</p>
+        <p><b>Category:</b> ${worker.category}</p>
+      `,
     }),
   });
-
   const data = await res.json();
-
+  console.log("Resend response:", data);
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
       "Content-Type": "application/json",
     },
   });
-};
-
-Deno.serve(handler);
+});
 
 /* To invoke locally:
 
