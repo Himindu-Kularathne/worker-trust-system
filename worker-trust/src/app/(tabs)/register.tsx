@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, Alert, TextInput, ScrollView, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
@@ -8,11 +9,30 @@ import { loadCategories, loadSubcategories } from "@/src/lib/categories";
 export default function Dashboard() {
   const [trustScore, setTrustScore] = useState<number | null>(null);
   const [reviewCount, setReviewCount] = useState<number>(0);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [subcategories, setSubcategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Initial load
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const categories = await loadCategories();
+      setCategories(categories);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCategory) return;
+
+    (async () => {
+      const subs = await loadSubcategories(selectedCategory);
+      setSubcategories(subs);
+    })();
+  }, [selectedCategory]);
 
   const workerId = "test-user-001"; // Replace with actual worker ID
   async function loadData() {
@@ -50,7 +70,9 @@ export default function Dashboard() {
     phone: "",
     email: "",
     address: "",
-    category: "",
+    // category: "",
+    category_id: "",
+    // subcategory_id: "",
   });
 
   const handleChange = (key: string, value: string) => {
@@ -58,7 +80,7 @@ export default function Dashboard() {
   };
 
   const submitRequest = async () => {
-    if (!form.full_name || !form.phone || !form.address || !form.category) {
+    if (!form.full_name || !form.phone || !form.address || !form.category_id) {
       Alert.alert("Missing fields", "Please fill all required fields");
       return;
     }
@@ -72,7 +94,7 @@ export default function Dashboard() {
             phone: form.phone,
             email: form.email || null,
             address: form.address,
-            category: form.category,
+            category: form.category_id,
           },
         ])
         .select()
@@ -106,7 +128,7 @@ export default function Dashboard() {
         phone: "",
         email: "",
         address: "",
-        category: "",
+        category_id: "",
       });
     } catch (err: any) {
       Alert.alert("Error", err.message ?? "Something went wrong");
@@ -142,9 +164,21 @@ export default function Dashboard() {
       <Input label="Address" value={form.address} onChangeText={(v) => handleChange("address", v)} />
       <Input
         label="Category (e.g. Plumber, Electrician)"
-        value={form.category}
+        value={form.category_id}
         onChangeText={(v) => handleChange("category", v)}
       />
+      <Picker
+        selectedValue={form.category_id}
+        onValueChange={(value) => {
+          setForm({ ...form, category_id: value });
+        }}
+      >
+        <Picker.Item label="Select Category" value="" />
+
+        {categories.map((cat) => (
+          <Picker.Item key={cat.id} label={cat.name} value={cat.id} />
+        ))}
+      </Picker>
 
       <Pressable style={styles.button} onPress={submitRequest}>
         <Text style={styles.buttonText}>Submit Registration</Text>
