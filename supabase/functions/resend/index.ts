@@ -1,13 +1,9 @@
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
+import { workerRequestTemplate } from "./emailTemplate.ts";
 
-// Setup type definitions for built-in Supabase Runtime APIs
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 Deno.serve(async (req: Request) => {
   console.log("📩 Webhook received");
-
   const payload = await req.json();
   console.log("Payload:", payload);
 
@@ -24,14 +20,7 @@ Deno.serve(async (req: Request) => {
       from: "onboarding@resend.dev",
       to: "minethweerasinghe@gmail.com",
       subject: "New Worker Registration Request",
-      html: `
-        <h2>New Worker Request</h2>
-        <p><b>Name:</b> ${worker.full_name}</p>
-        <p><b>Phone:</b> ${worker.phone}</p>
-        <p><b>Email:</b> ${worker.email ?? "Not provided"}</p>
-        <p><b>Address:</b> ${worker.address}</p>
-        <p><b>Category:</b> ${worker.category}</p>
-      `,
+      html: workerRequestTemplate(worker),
     }),
   });
   const data = await res.json();
