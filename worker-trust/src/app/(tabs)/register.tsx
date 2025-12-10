@@ -21,6 +21,7 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       const categories = await loadCategories();
+      console.log("Loaded categories:", categories);
       setCategories(categories);
     })();
   }, []);
