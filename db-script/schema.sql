@@ -150,6 +150,29 @@ create table public.worker_registration_requests (
   reviewed_at timestamp
 );
 
+-- =====================================
+-- WORKER CATEGORIES
+-- Predefined categories (eg-: Electrician) for workers
+-- =====================================
+
+create table worker_categories (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique
+);
+
+-- =====================================
+-- WORKER SUBCATEGORIES
+-- Subcategories linked to main categories(Eg-: Wiring under Electrician)
+-- =====================================
+
+create table worker_subcategories (
+  id uuid primary key default gen_random_uuid(),
+  category_id uuid references worker_categories(id) on delete cascade,
+  name text not null,
+  unique(category_id, name)
+);
+
+
 
 
 

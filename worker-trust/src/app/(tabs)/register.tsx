@@ -3,6 +3,7 @@ import { View, Text, Pressable, Alert, TextInput, ScrollView, StyleSheet } from 
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
+import { loadCategories, loadSubcategories } from "@/src/lib/categories";
 
 export default function Dashboard() {
   const [trustScore, setTrustScore] = useState<number | null>(null);
@@ -117,13 +118,13 @@ export default function Dashboard() {
       <Text style={{ fontSize: 28, fontWeight: "bold" }}>Trust Score: {trustScore ?? "--"} / 100</Text>
 
       <Text style={{ fontSize: 18, marginTop: 8 }}>Reviews: {reviewCount}</Text>
-      <Text>Want to work with us?</Text>
-
       <Pressable onPress={() => router.push("/")}>
         <Text>Register as Worker</Text>
       </Pressable>
 
-      <Text style={styles.title}>Worker Registration</Text>
+      <Text style={styles.title}>Register as a worker</Text>
+      <Text>Want to work with us?Fill the form below.</Text>
+      <Text>You will receive a notification once your request has been accepted.</Text>
 
       <Input label="Full Name" value={form.full_name} onChangeText={(v) => handleChange("full_name", v)} />
       <Input
