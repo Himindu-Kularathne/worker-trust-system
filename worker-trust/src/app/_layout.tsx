@@ -53,7 +53,7 @@ function RootLayoutNav() {
       <AppThemeProvider>
         <LanguageProvider>
           <Stack>
-            <Stack.Screen name="login" options={{ headerShown: false }} />
+            {/* <Stack.Screen name="login" options={{ headerShown: false }} /> Removed login screen */}
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: "modal" }} />
             <Stack.Screen name="signup" options={{ headerShown: false }} />
