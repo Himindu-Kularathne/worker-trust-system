@@ -21,7 +21,7 @@ export async function getAllWorkers() {
   return data;
 }
 
-
+// get all workers with filters
 export async function getAllWorkersWithFilters(filters: {
   category?: string;
   province?: string;
