@@ -1,14 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useAuth } from "@/src/hooks/UserContextHook";
+import { t } from "@/src/i18n/t";
 
 const HomeHeaderSection: React.FC = () => {
   const { user } = useAuth();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting}>Hi {user?.name ?? "there"} 👋</Text>
-      <Text style={styles.subtitle}>Find trusted workers near you</Text>
+      <Text style={styles.greeting}>
+        {t("home.greeting", { name: user?.firstName || t("user") })}
+      </Text>
+      <Text style={styles.subtitle}>{t("home.subHeading")}</Text>
     </View>
   );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { t } from "@/src/i18n/t";
 
 import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 
@@ -37,7 +38,7 @@ const ServiceCategoryTile: React.FC<Props> = ({
         size={28}
         color="#2563EB"
       />
-      <Text style={styles.text}>{title}</Text>
+      <Text style={styles.text}>{t(`categories.${title}`)}</Text>
     </TouchableOpacity>
   );
 };

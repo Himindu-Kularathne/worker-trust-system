@@ -1,5 +1,26 @@
 {
   "welcome": "Welcome",
   "login": "Login",
-  "logout": "Logout"
+  "logout": "Logout",
+  "user": "User",
+  "home": {
+    "greeting": "Hi {{name}} 👋",
+    "serviceCategories": "Service Categories",
+    "subHeading": "Find trusted workers near you"
+  },
+  "categories": {
+    "workers.found": "{{count}} workers found",
+    "gardner": "Gardener",
+    "plumber": "Plumber",
+    "electrician": "Electrician",
+    "cleaner": "Cleaner",
+    "painter": "Painter",
+    "mechanic": "Mechanic"
+  },
+  "tabs": {
+    "home": "Home",
+    "search": "Search",
+    "profile": "Profile",
+    "settings": "Settings"
+  }
 }

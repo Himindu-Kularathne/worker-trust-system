@@ -1,6 +1,6 @@
 import React from "react";
-import WorkerSettingsView from "@/src/view/WorkerSettingsView";
+import SettingsView from "@/src/view/SettingsView";
 
 export default function SettingsScreen() {
-  return <WorkerSettingsView />;
+  return <SettingsView />;
 }

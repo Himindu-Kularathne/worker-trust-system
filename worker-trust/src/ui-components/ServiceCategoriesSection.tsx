@@ -6,6 +6,7 @@ import ServiceCategoryTile from "@/src/ui-components/ServiceCategoryTile";
 
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { fetchCategories } from "@/src/store/thunks/categoriesThunk";
+import { t } from "@/src/i18n/t";
 
 const ServiceCategoriesSection: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ const ServiceCategoriesSection: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <SectionTitle title="Service Categories" />
+      <SectionTitle title={t("home.serviceCategories")} />
 
       {loading && <ActivityIndicator />}
 

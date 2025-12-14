@@ -1,5 +1,26 @@
 {
   "welcome": "සාදරයෙන් පිළිගනිමු",
   "login": "ඇතුල් වන්න",
-  "logout": "පිටවන්න"
+  "logout": "පිටවන්න",
+  "user": "පරිශීලක",
+  "home": {
+    "greeting": "හයි {{name}} 👋",
+    "serviceCategories": "සේවා වර්ග",
+    "subHeading": "ඔබට ආසන්නව විශ්වාසවන්ත සේවකයන් සොයන්න"
+  },
+  "categories": {
+    "workers.found": "{{count}} සේවකයන් සොයා ගන්නා ලදි",
+    "gardner": "වත්තකරු",
+    "plumber": "නලකාමර ශිල්පියා",
+    "electrician": "විදුලි ශිල්පියා",
+    "cleaner": "පිරිසිදුකාරයා",
+    "painter": "පෙරහන ශිල්පියා",
+    "mechanic": "මැකැනික්"
+  },
+  "tabs": {
+    "home": "මුල් පිටුව",
+    "search": "සෙවීම",
+    "profile": "පැතිකඩ",
+    "settings": "සැකසුම්"
+  }
 }

@@ -14,7 +14,7 @@ import "react-native-url-polyfill/auto";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { useAuthListener } from "@/src/lib/supabase/auth";
-import { LanguageProvider } from "@/src/i18n/languageContext";
+import { LanguageProvider } from "@/src/context/languageContext";
 import { AppThemeProvider } from "@/src/context/AppThemeContext";
 import { AuthProvider } from "../context/AuthContext";
 import { SearchFilterProvider } from "../context/SearchFilterContext";
