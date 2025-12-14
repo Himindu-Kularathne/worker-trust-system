@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 
 import HomeHeaderSection from "@/src/sections/home/HomeHeaderSection";
-import ServiceCategoriesSection from "@/src/sections/home/ServiceCategoriesSection";
+import ServiceCategoriesSection from "@/src/ui-components/ServiceCategoriesSection";
 
 const HomeView: React.FC = () => {
   return (

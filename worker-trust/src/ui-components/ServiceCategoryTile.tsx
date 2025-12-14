@@ -1,16 +1,32 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 interface Props {
   title: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: string;
+  categoryId: string;
 }
 
-const ServiceCategoryTile: React.FC<Props> = ({ title, icon }) => {
+const ServiceCategoryTile: React.FC<Props> = ({ title, icon, categoryId }) => {
+  const router = useRouter();
+
   return (
-    <TouchableOpacity style={styles.tile}>
-      <Ionicons name={icon} size={28} color="#2563EB" />
+    <TouchableOpacity
+      style={styles.tile}
+      onPress={() =>
+        router.push({
+          pathname: "/workers",
+          params: { category: categoryId },
+        })
+      }
+    >
+      <Ionicons
+        name={icon as keyof typeof Ionicons.glyphMap}
+        size={28}
+        color="#2563EB"
+      />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

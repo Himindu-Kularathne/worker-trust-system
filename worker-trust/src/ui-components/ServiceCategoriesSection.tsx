@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import SectionTitle from "@/src/components/home/SectionTitle";
-import ServiceCategoryTile from "@/src/components/home/ServiceCategoryTile";
+import ServiceCategoryTile from "@/src/ui-components/ServiceCategoryTile";
 import { SERVICE_CATEGORIES } from "@/src/constants/ServiceCategories";
 
 const ServiceCategoriesSection: React.FC = () => {
@@ -16,6 +16,7 @@ const ServiceCategoriesSection: React.FC = () => {
             key={category.id}
             title={category.title}
             icon={category.icon}
+            categoryId={category.id}
           />
         ))}
       </View>
