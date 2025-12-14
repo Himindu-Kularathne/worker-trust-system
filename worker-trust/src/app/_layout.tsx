@@ -16,6 +16,7 @@ import { useAuthListener } from "@/src/lib/supabase/auth";
 import { LanguageProvider } from "@/src/i18n/languageContext";
 import { AppThemeProvider } from "@/src/context/AppThemeContext";
 import { AuthProvider } from "../context/AuthContext";
+import { SearchFilterProvider } from "../context/SearchFilterContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,18 +56,23 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
-        <AppThemeProvider>
-          <LanguageProvider>
-            <Stack>
-              {/* <Stack.Screen name="login" options={{ headerShown: false }} /> Removed login screen */}
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-              <Stack.Screen name="signup" options={{ headerShown: false }} />
-            </Stack>
-          </LanguageProvider>
-        </AppThemeProvider>
-      </AuthProvider>
+      <SearchFilterProvider>
+        <AuthProvider>
+          <AppThemeProvider>
+            <LanguageProvider>
+              <Stack>
+                {/* <Stack.Screen name="login" options={{ headerShown: false }} /> Removed login screen */}
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: "modal" }}
+                />
+                <Stack.Screen name="signup" options={{ headerShown: false }} />
+              </Stack>
+            </LanguageProvider>
+          </AppThemeProvider>
+        </AuthProvider>
+      </SearchFilterProvider>
     </ThemeProvider>
   );
 }
