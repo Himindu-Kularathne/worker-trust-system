@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
 
+import WorkersHeaderSection from "@/src/sections/workers/WorkerHeaderSection";
 import WorkersListSection from "@/src/sections/workers/WorkersListSection";
-import WorkersHeaderSection from "../sections/workers/WorkerHeaderSection";
+import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 
 const WorkersListView: React.FC = () => {
-  const { category } = useLocalSearchParams<{ category: string }>();
+  const { state } = useSearchFilters();
+  const { category } = state;
 
   return (
     <SafeAreaView style={styles.container}>
       <WorkersHeaderSection category={category ?? ""} />
-      <WorkersListSection category={category ?? ""} />
+      <WorkersListSection />
     </SafeAreaView>
   );
 };

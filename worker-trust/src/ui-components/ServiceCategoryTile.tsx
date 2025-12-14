@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+
+import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 
 interface Props {
   title: string;
@@ -11,17 +13,21 @@ interface Props {
 
 const ServiceCategoryTile: React.FC<Props> = ({ title, icon, categoryId }) => {
   const router = useRouter();
+  const { setCategory, resetLocation } = useSearchFilters();
+
+  const handlePress = () => {
+    // Set selected category globally
+    setCategory(categoryId);
+
+    // Optional but recommended: reset previous location filters
+    resetLocation();
+
+    // Navigate to workers list
+    router.push("/workers");
+  };
 
   return (
-    <TouchableOpacity
-      style={styles.tile}
-      onPress={() =>
-        router.push({
-          pathname: "/workers",
-          params: { category: categoryId },
-        })
-      }
-    >
+    <TouchableOpacity style={styles.tile} onPress={handlePress}>
       <Ionicons
         name={icon as keyof typeof Ionicons.glyphMap}
         size={28}

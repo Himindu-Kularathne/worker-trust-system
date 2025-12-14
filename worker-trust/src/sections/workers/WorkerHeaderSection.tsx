@@ -1,54 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import LocationSelectorModal from "@/src/components/location/LocationSelectorModal";
+import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
+import { SRI_LANKA_PROVINCES } from "@/src/constants/sriLankaLocations";
 
 interface Props {
-  category: string;
-  locationLabel?: string;
-  onLocationChange?: (location: {
-    province?: string;
-    district?: string;
-    city?: string;
-  }) => void;
+  category?: string;
 }
 
-const WorkersHeaderSection: React.FC<Props> = ({
-  category,
-  locationLabel = "Select location",
-  onLocationChange,
-}) => {
+const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const { state, setProvince, setDistrict, setCity } = useSearchFilters();
+
+  /* ---------------- derive readable location label ---------------- */
+
+  const locationLabel = useMemo(() => {
+    if (state.city) {
+      for (const p of SRI_LANKA_PROVINCES) {
+        for (const d of p.districts) {
+          const c = d.cities.find((c) => c.id === state.city);
+          if (c) return c.name;
+        }
+      }
+    }
+
+    if (state.district) {
+      for (const p of SRI_LANKA_PROVINCES) {
+        const d = p.districts.find((d) => d.id === state.district);
+        if (d) return d.name;
+      }
+    }
+
+    if (state.province) {
+      const p = SRI_LANKA_PROVINCES.find((p) => p.id === state.province);
+      return p?.name;
+    }
+
+    return "All locations";
+  }, [state]);
 
   return (
     <>
-      <View style={styles.container}>
-        <View>
+      <View style={styles.headerCard}>
+        <View style={styles.textBlock}>
           <Text style={styles.title}>
-            {category.charAt(0).toUpperCase() + category.slice(1)}s
+            {category
+              ? `${category.charAt(0).toUpperCase() + category.slice(1)}s`
+              : "All Workers"}
           </Text>
-          <Text style={styles.subtitle}>
-            Trusted workers available near you
-          </Text>
+          <Text style={styles.subtitle}>Trusted professionals near you</Text>
         </View>
 
-        {/* Location Button */}
+        {/* Location Selector */}
         <TouchableOpacity
-          style={styles.locationButton}
+          style={styles.locationChip}
           onPress={() => setModalVisible(true)}
+          activeOpacity={0.8}
         >
-          <Ionicons name="location-outline" size={16} color="#2563EB" />
-          <Text style={styles.locationText}>{locationLabel}</Text>
+          <Ionicons name="location-outline" size={16} color="#1D4ED8" />
+          <Text style={styles.locationText} numberOfLines={1}>
+            {locationLabel}
+          </Text>
+          <Ionicons name="chevron-down" size={14} color="#1D4ED8" />
         </TouchableOpacity>
       </View>
 
-      {/* Location Modal */}
+      {/* Modal */}
       <LocationSelectorModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onApply={(location) => {
-          onLocationChange?.(location);
+        onApply={({ province, district, city }) => {
+          setProvince(province);
+          setDistrict(district);
+          setCity(city);
           setModalVisible(false);
         }}
       />
@@ -59,12 +85,19 @@ const WorkersHeaderSection: React.FC<Props> = ({
 export default WorkersHeaderSection;
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  headerCard: {
+    margin: 16,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  textBlock: {
+    marginBottom: 12,
   },
   title: {
     fontSize: 22,
@@ -76,18 +109,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#6B7280",
   },
-  locationButton: {
+  locationChip: {
     flexDirection: "row",
     alignItems: "center",
+    alignSelf: "flex-start",
     backgroundColor: "#EFF6FF",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
   },
   locationText: {
-    marginLeft: 4,
+    marginHorizontal: 6,
     fontSize: 13,
     fontWeight: "500",
-    color: "#2563EB",
+    color: "#1D4ED8",
+    maxWidth: 160,
   },
 });
