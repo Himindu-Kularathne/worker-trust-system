@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 
 import SectionTitle from "@/src/components/home/SectionTitle";
 import ServiceCategoryTile from "@/src/ui-components/ServiceCategoryTile";
-import { SERVICE_CATEGORIES } from "@/src/constants/ServiceCategories";
+import { SERVICE_CATEGORIES } from "../constants/ServiceCategories";
 
 const ServiceCategoriesSection: React.FC = () => {
   return (
