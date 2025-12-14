@@ -1,22 +1,35 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 
 import SectionTitle from "@/src/components/home/SectionTitle";
 import ServiceCategoryTile from "@/src/ui-components/ServiceCategoryTile";
-import { SERVICE_CATEGORIES } from "../constants/ServiceCategories";
+
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { fetchCategories } from "@/src/store/thunks/categoriesThunk";
 
 const ServiceCategoriesSection: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { items, loading, error } = useAppSelector((state) => state.categories);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
   return (
     <View style={styles.container}>
       <SectionTitle title="Service Categories" />
 
+      {loading && <ActivityIndicator />}
+
+      {error && <Text style={styles.error}>{error}</Text>}
+
       <View style={styles.grid}>
-        {SERVICE_CATEGORIES.map((category) => (
+        {items.map((category) => (
           <ServiceCategoryTile
             key={category.id}
             title={category.title}
             icon={category.icon}
-            categoryId={category.id}
+            categoryTitle={category.title}
           />
         ))}
       </View>
@@ -35,5 +48,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
+  },
+  error: {
+    color: "red",
+    marginVertical: 8,
   },
 });

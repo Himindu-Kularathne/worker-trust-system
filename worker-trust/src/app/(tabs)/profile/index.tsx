@@ -1,9 +1,15 @@
 import React from "react";
-import WorkerProfileView from "@/src/view/WorkerProfileView";
 import { useAuth } from "@/src/hooks/UserContextHook";
 import LoginView from "@/src/view/LoginView";
+import { View, Text } from "@/components/Themed";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
-  return user ? <WorkerProfileView /> : <LoginView />;
+  return user ? (
+    <View>
+      <Text>Welcome, {user.name}</Text>
+    </View>
+  ) : (
+    <LoginView />
+  );
 }

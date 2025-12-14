@@ -1,0 +1,1 @@
+export const baseApiUrl = "https://xuqsbheuxtthgyosmxrh.supabase.co/rest/v1";

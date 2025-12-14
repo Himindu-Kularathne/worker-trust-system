@@ -8,16 +8,20 @@ import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 interface Props {
   title: string;
   icon: string;
-  categoryId: string;
+  categoryTitle: string;
 }
 
-const ServiceCategoryTile: React.FC<Props> = ({ title, icon, categoryId }) => {
+const ServiceCategoryTile: React.FC<Props> = ({
+  title,
+  icon,
+  categoryTitle,
+}) => {
   const router = useRouter();
   const { setCategory, resetLocation } = useSearchFilters();
 
   const handlePress = () => {
     // Set selected category globally
-    setCategory(categoryId);
+    setCategory(categoryTitle);
 
     // Optional but recommended: reset previous location filters
     resetLocation();
