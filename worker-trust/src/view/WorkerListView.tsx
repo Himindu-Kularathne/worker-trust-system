@@ -8,10 +8,6 @@ import WorkersHeaderSection from "../sections/workers/WorkerHeaderSection";
 const WorkersListView: React.FC = () => {
   const { category } = useLocalSearchParams<{ category: string }>();
 
-  useEffect(() => {
-    console.log("Selected category:", category);
-  }, [category]);
-
   return (
     <SafeAreaView style={styles.container}>
       <WorkersHeaderSection category={category ?? ""} />
