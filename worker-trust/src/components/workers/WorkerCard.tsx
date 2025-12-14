@@ -2,14 +2,7 @@ import React, { use } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import TrustScoreBadge from "./TrustScoreBadge";
 import { useRouter } from "expo-router";
-
-interface Worker {
-  id: string;
-  name: string;
-  rating: number;
-  trustScore: number;
-  jobsCompleted: number;
-}
+import { Worker } from "@/src/types/worker";
 
 interface Props {
   worker: Worker;
@@ -25,7 +18,7 @@ const WorkerCard: React.FC<Props> = ({ worker }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={handledRoute}>
       <View style={styles.row}>
-        <Text style={styles.name}>{worker.name}</Text>
+        <Text style={styles.name}>{worker.full_name}</Text>
         <TrustScoreBadge score={worker.trustScore} />
       </View>
 

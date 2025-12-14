@@ -1,6 +1,6 @@
 export type Worker = {
   id: string;
-  name: string;
+  full_name: string;
   category: string;
   rating: number;
   trustScore: number;
@@ -11,3 +11,10 @@ export type Worker = {
   district: string;
   city: string;
 }
+
+export type SearchFilters = {
+  category?: string;
+  province?: string;
+  district?: string;
+  city?: string;
+};

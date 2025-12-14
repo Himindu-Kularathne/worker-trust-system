@@ -1,11 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
-
-export type SearchFilters = {
-  category?: string;
-  province?: string;
-  district?: string;
-  city?: string;
-};
+import { SearchFilters } from "../types/worker";
 
 type Action =
   | { type: "SET_CATEGORY"; payload?: string }
