@@ -19,7 +19,6 @@ const WorkerCard: React.FC<Props> = ({ worker }) => {
   const router = useRouter();
 
   const handledRoute = () => {
-    console.log("Navigating to worker detail:", worker.id);
     router.push(`/workers/${worker.id}`);
   };
 
