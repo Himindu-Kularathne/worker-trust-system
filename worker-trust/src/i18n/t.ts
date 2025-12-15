@@ -13,11 +13,14 @@ export type TranslationKey =
   | "logout"
   | "user"
   | "home.subHeading"
-  | `categories.${string}`
+  | `categories.${string}.singular`
+  | `categories.${string}.plural`
   | "tabs.home"
   | "tabs.search"
   | "tabs.profile"
-  | "tabs.settings";
+  | "tabs.settings"
+  | string; // for other dynamic keys
+
 
 export function t(
   key: TranslationKey,

@@ -38,7 +38,7 @@ const ServiceCategoryTile: React.FC<Props> = ({
         size={28}
         color="#2563EB"
       />
-      <Text style={styles.text}>{t(`categories.${title}`)}</Text>
+      <Text style={styles.text}>{t(`categories.${title}.singular`)}</Text>
     </TouchableOpacity>
   );
 };

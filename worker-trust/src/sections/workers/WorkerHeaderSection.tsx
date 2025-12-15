@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import LocationSelectorModal from "@/src/components/location/LocationSelectorModal";
 import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 import { SRI_LANKA_PROVINCES } from "@/src/constants/sriLankaLocations";
+import { t } from "@/src/i18n/t";
 
 interface Props {
   category?: string;
@@ -38,7 +39,7 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
       return p?.name;
     }
 
-    return "All locations";
+    return t("locations.anywhere");
   }, [state]);
 
   return (
@@ -46,11 +47,9 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
       <View style={styles.headerCard}>
         <View style={styles.textBlock}>
           <Text style={styles.title}>
-            {category
-              ? `${category.charAt(0).toUpperCase() + category.slice(1)}s`
-              : "All Workers"}
+            {category ? t(`categories.${category}.plural`) : "All Workers"}
           </Text>
-          <Text style={styles.subtitle}>Trusted professionals near you</Text>
+          <Text style={styles.subtitle}>{t("home.subHeading")}</Text>
         </View>
 
         {/* Location Selector */}

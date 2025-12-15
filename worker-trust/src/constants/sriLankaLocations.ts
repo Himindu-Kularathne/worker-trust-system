@@ -59,10 +59,10 @@ export const SRI_LANKA_PROVINCES: Province[] = [
         ],
       },
       {
-        id: "nuwara_eliya",
+        id: "nuwaraEliya",
         name: "Nuwara Eliya",
         cities: [
-          { id: "nuwara_eliya", name: "Nuwara Eliya" },
+          { id: "nuwaraEliya", name: "Nuwara Eliya" },
           { id: "hatton", name: "Hatton" },
         ],
       },
@@ -174,7 +174,7 @@ export const SRI_LANKA_PROVINCES: Province[] = [
   },
 
   {
-    id: "north_western",
+    id: "northWestern",
     name: "North Western Province",
     districts: [
       {
@@ -197,7 +197,7 @@ export const SRI_LANKA_PROVINCES: Province[] = [
   },
 
   {
-    id: "north_central",
+    id: "northCentral",
     name: "North Central Province",
     districts: [
       {

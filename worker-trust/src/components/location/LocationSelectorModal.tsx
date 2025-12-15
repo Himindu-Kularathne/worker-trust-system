@@ -8,23 +8,20 @@ import {
   ScrollView,
 } from "react-native";
 import { SRI_LANKA_PROVINCES } from "@/src/constants/sriLankaLocations";
+import { t } from "@/src/i18n/t";
 
 interface OptionProps {
   label: string;
   selected?: boolean;
+  level?: "province" | "district" | "city";
   onPress: () => void;
 }
 
-const Option = ({
+const Option: React.FC<OptionProps> = ({
   label,
   selected,
   level = "province",
   onPress,
-}: {
-  label: string;
-  selected?: boolean;
-  level?: "province" | "district" | "city";
-  onPress: () => void;
 }) => {
   return (
     <TouchableOpacity
@@ -75,7 +72,8 @@ const LocationSelectorModal: React.FC<Props> = ({
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <Text style={styles.title}>Select Location</Text>
+          {/* Title */}
+          <Text style={styles.title}>{t("locations.selectLocation")}</Text>
 
           <ScrollView>
             {SRI_LANKA_PROVINCES.map((p) => {
@@ -85,8 +83,9 @@ const LocationSelectorModal: React.FC<Props> = ({
                 <View key={p.id} style={styles.block}>
                   {/* Province */}
                   <Option
-                    label={p.name}
+                    label={t(`provinces.${p.id}`) ?? p.name}
                     selected={isProvinceSelected}
+                    level="province"
                     onPress={() => {
                       setProvince(p.id);
                       setDistrict(undefined);
@@ -94,7 +93,7 @@ const LocationSelectorModal: React.FC<Props> = ({
                     }}
                   />
 
-                  {/* Districts (shown immediately under province) */}
+                  {/* Districts */}
                   {isProvinceSelected &&
                     p.districts.map((d) => {
                       const isDistrictSelected = district === d.id;
@@ -102,21 +101,23 @@ const LocationSelectorModal: React.FC<Props> = ({
                       return (
                         <View key={d.id} style={styles.subBlock}>
                           <Option
-                            label={d.name}
+                            label={t(`districts.${d.id}`) ?? d.name}
                             selected={isDistrictSelected}
+                            level="district"
                             onPress={() => {
                               setDistrict(d.id);
                               setCity(undefined);
                             }}
                           />
 
-                          {/* Cities (shown immediately under district) */}
+                          {/* Cities */}
                           {isDistrictSelected &&
                             d.cities.map((c) => (
                               <View key={c.id} style={styles.subSubBlock}>
                                 <Option
-                                  label={c.name}
+                                  label={c.name} // cities not translated yet
                                   selected={city === c.id}
+                                  level="city"
                                   onPress={() => setCity(c.id)}
                                 />
                               </View>
@@ -132,14 +133,14 @@ const LocationSelectorModal: React.FC<Props> = ({
           {/* Actions */}
           <View style={styles.actions}>
             <TouchableOpacity onPress={onClose}>
-              <Text style={styles.cancel}>Cancel</Text>
+              <Text style={styles.cancel}>{t("common.cancel")}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.applyButton}
               onPress={() => onApply({ province, district, city })}
             >
-              <Text style={styles.applyText}>Apply</Text>
+              <Text style={styles.applyText}>{t("common.apply")}</Text>
             </TouchableOpacity>
           </View>
         </View>
