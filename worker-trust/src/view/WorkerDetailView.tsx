@@ -1,7 +1,7 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import WorkerProfileHeaderSection from "@/src/sections/workers/WorkerProfileHeaderSection";
 import WorkerInfoSection from "@/src/sections/workers/WorkerInfoSection";
 import WorkerActionsSection from "@/src/sections/workers/WorkerActionsSection";

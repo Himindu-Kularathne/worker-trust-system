@@ -1,6 +1,6 @@
 import React from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import WorkersHeaderSection from "@/src/sections/workers/WorkerHeaderSection";
 import WorkersListSection from "@/src/sections/workers/WorkersListSection";
 import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";

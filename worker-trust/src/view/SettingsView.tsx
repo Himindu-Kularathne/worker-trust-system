@@ -1,22 +1,17 @@
 import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
-
-import SettingsHeaderSection from "@/src/sections/settings/SettingsHeaderSection";
+import { ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import PreferencesSection from "@/src/sections/settings/PreferencesSection";
 import AccountSection from "@/src/sections/settings/AccountSection";
 import HelpSupportSection from "@/src/sections/settings/HelpSupport";
 import LogoutSection from "@/src/sections/settings/LogoutSection";
 
-const AVATAR_URI =
-  "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg";
+const AVATAR_URI = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg";
 
 const WorkerSettingsView: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <PreferencesSection />
         <AccountSection />
         <HelpSupportSection />

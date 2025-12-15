@@ -933,6 +933,7 @@ export function workerRequestTemplate(worker: any) {
                                                       </table>
                                                     </td>
                                                   </tr>
+
                                                   <tr>
                                                     <td align="center">
                                                       <table
@@ -1004,6 +1005,24 @@ export function workerRequestTemplate(worker: any) {
                                         </td>
                                       </tr>
                                     </table>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td align="center" style="padding: 30px">
+                                    <a
+                                      href="https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker?id=${worker.id}"
+                                      style="
+                                        background: #0a84ff;
+                                        color: #ffffff;
+                                        padding: 14px 24px;
+                                        border-radius: 6px;
+                                        font-weight: 600;
+                                        font-family: Poppins, Arial, sans-serif;
+                                        display: inline-block;
+                                      "
+                                    >
+                                      Approve Worker
+                                    </a>
                                   </td>
                                 </tr>
                                 <tr>
@@ -1294,5 +1313,6 @@ export function workerRequestTemplate(worker: any) {
     </div>
   </body>
 </html>
+
 `;
 }

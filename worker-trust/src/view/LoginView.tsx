@@ -1,22 +1,29 @@
-import React from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { Link } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Link, router } from "expo-router";
 import { useAuth } from "@/src/hooks/UserContextHook";
 
 const LoginView: React.FC = () => {
   const { login } = useAuth();
   const [name, setName] = React.useState("");
 
-  const handleLogin = () => {
-    if (name.trim()) {
-      login(name, "worker"); // default role
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    console.log("Login pressed", { phone, password });
+    setLoading(true);
+
+    const { error } = await login(phone, password);
+
+    setLoading(false);
+
+    if (error) {
+      Alert.alert("Login failed", error);
+    } else {
+      router.replace("/(tabs)");
     }
   };
 
@@ -26,24 +33,34 @@ const LoginView: React.FC = () => {
         <Text style={styles.title}>Welcome Back</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
 
-        <Text style={styles.label}>Name</Text>
+        {/* Phone */}
+        <Text style={styles.label}>Phone number</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your name"
+          placeholder="+94746789000"
           placeholderTextColor="#9CA3AF"
-          value={name}
-          onChangeText={setName}
+          keyboardType="phone-pad"
+          value={phone}
+          onChangeText={setPhone}
+        />
+
+        {/* Password */}
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your password"
+          placeholderTextColor="#9CA3AF"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
 
         <TouchableOpacity
-          style={[
-            styles.loginButton,
-            !name.trim() && styles.loginButtonDisabled,
-          ]}
+          style={[styles.loginButton, (!phone || !password || loading) && styles.loginButtonDisabled]}
           onPress={handleLogin}
-          disabled={!name.trim()}
+          disabled={!phone || !password || loading}
         >
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Text style={styles.loginButtonText}>{loading ? "Signing in..." : "Login"}</Text>
         </TouchableOpacity>
 
         {/* Register link */}
