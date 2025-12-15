@@ -1,0 +1,3 @@
+adb shell am start -W `
+  -a android.intent.action.VIEW `
+  -d "workertrust://set-password#access_token=test123&refresh_token=test456&type=invite"
