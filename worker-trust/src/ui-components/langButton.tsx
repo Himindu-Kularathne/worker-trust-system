@@ -1,5 +1,5 @@
 import { Image, Modal, Pressable, StyleSheet, View, Text } from "react-native";
-import { useLanguage } from "@/src/i18n/languageContext";
+import { useLanguage } from "@/src/context/languageContext";
 import { useState } from "react";
 
 const LANGS = ["en", "si", "ta"] as const;
@@ -16,7 +16,10 @@ export default function LanguageButton() {
   return (
     <>
       <Pressable onPress={() => setOpen(true)}>
-        <Image source={require("@/assets/images/lang.png")} style={styles.image} />
+        <Image
+          source={require("@/assets/images/lang.png")}
+          style={styles.image}
+        />
       </Pressable>
       <Modal transparent animationType="fade" visible={open}>
         <Pressable style={styles.overlay} onPress={() => setOpen(false)}>

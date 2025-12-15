@@ -2,9 +2,8 @@ import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 import SearchHeaderSection from "@/src/sections/search/SearchHeaderSection";
-import FilterSection from "@/src/sections/search/FilterSection";
-import ServicesSection from "@/src/sections/search/ServicesSection";
 import BottomCTASection from "@/src/sections/search/BottomCTASection";
+import ServiceCategoriesSection from "../ui-components/ServiceCategoriesSection";
 
 const SearchWorkersView: React.FC = () => {
   return (
@@ -14,8 +13,7 @@ const SearchWorkersView: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <SearchHeaderSection />
-        <FilterSection />
-        <ServicesSection />
+        <ServiceCategoriesSection />
         <View style={{ height: 12 }} />
         <BottomCTASection />
       </ScrollView>

@@ -1,5 +1,85 @@
 {
   "welcome": "සාදරයෙන් පිළිගනිමු",
   "login": "ඇතුල් වන්න",
-  "logout": "පිටවන්න"
+  "logout": "පිටවන්න",
+  "user": "පරිශීලක",
+  "home": {
+    "greeting": "හයි {{name}} 👋",
+    "serviceCategories": "සේවා වර්ග",
+    "subHeading": "ඔබට ආසන්නව විශ්වාසවන්ත සේවකයන් සොයන්න"
+  },
+  "categories": {
+    "workers.found": "{{count}} සේවකයන් සොයා ගන්නා ලදි",
+    "gardner": { "singular": "උයනකරු", "plural": "උයනකරුවන්" },
+    "plumber": { "singular": "නලකාමර ශිල්පියා", "plural": "නලකාමර ශිල්පීන්" },
+    "electrician": {
+      "singular": "විදුලි ශිල්පියා",
+      "plural": "විදුලි ශිල්පීන්"
+    },
+    "cleaner": { "singular": "පිරිසිදුකරු", "plural": "පිරිසිදුකරුවන්" },
+    "painter": { "singular": "වර්ණකරු", "plural": "වර්ණකරුවන්" },
+    "mechanic": { "singular": "මැකැනික්", "plural": "මැකැනික්ස්" }
+  },
+  "tabs": {
+    "home": "මුල් පිටුව",
+    "search": "සෙවීම",
+    "profile": "පැතිකඩ",
+    "settings": "සැකසුම්"
+  },
+  "locations": {
+    "anywhere": "ඕනෑම ස්ථානයක",
+    "selectLocation": "ස්ථානය තෝරන්න",
+    "currentLocation": "වත්මන් ස්ථානය",
+    "useCurrentLocation": "වත්මන් ස්ථානය භාවිතා කරන්න",
+    "changeLocation": "ස්ථානය වෙනස් කරන්න"
+  },
+  "provinces": {
+    "central": "මධ්‍යම",
+    "eastern": "නැගෙනහිර",
+    "northern": "උතුරු",
+    "southern": "දකුණු",
+    "western": "බටහිර",
+    "northWestern": "උතුරු බටහිර",
+    "northCentral": "උතුරු මධ්‍යම",
+    "uva": "ඌව",
+    "sabaragamuwa": "සබරගමුව"
+  },
+  "districts": {
+    "colombo": "කොළඹ",
+    "gampaha": "ගම්පහ",
+    "kalutara": "කළුතර",
+    "kandy": "කැන්ඩි",
+    "matale": "මතලේ",
+    "nuwaraEliya": "නුවර එළිය",
+    "galle": "ගාල්ල",
+    "matara": "මතර",
+    "hambantota": "හම්බන්තොට",
+    "jaffna": "යාපනය",
+    "mannar": "මන්නාරම",
+    "vavuniya": "වවුනියාව",
+    "mullaitivu": "මුලතිව්",
+    "trincomalee": "ත්‍රිකුණාමලය",
+    "batticaloa": "මඩකලපුව",
+    "ampara": "අම්පාර",
+    "anuradhapura": "අනුරාධපුරය",
+    "polonnaruwa": "පොළොන්නරුව",
+    "puttalam": "පුත්තලම",
+    "kurunegala": "කුරුණෑගල",
+    "gampalagama": "ගම්පලගම",
+    "wattala": "වත්තල",
+    "badulla": "බදුල්ල",
+    "monaragala": "මොණරාගල",
+    "ratnapura": "රත්නපුර",
+    "kegalle": "කෑගල්ල"
+  },
+  "common": {
+    "search": "සෙවීම",
+    "filter": "පෙරහන්",
+    "apply": "අයදුම් කරන්න",
+    "cancel": "අවලංගු කරන්න",
+    "select": "තෝරන්න",
+    "loading": "පූරණය වෙමින් පවතී...",
+    "noResults": "ප්‍රතිඵල නැත",
+    "tryDifferentFilters": "විවිධ පෙරහන් උත්සාහ කරන්න"
+  }
 }

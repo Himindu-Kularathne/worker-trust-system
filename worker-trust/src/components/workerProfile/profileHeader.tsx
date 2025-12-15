@@ -9,7 +9,12 @@ export type ProfileHeaderProps = {
   avatarUrl: string;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, role, statusLabel, avatarUrl }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  name,
+  role,
+  statusLabel,
+  avatarUrl,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.avatarWrapper}>
