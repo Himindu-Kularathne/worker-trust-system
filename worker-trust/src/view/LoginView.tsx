@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import { useAuth } from "@/src/hooks/UserContextHook";
 
@@ -12,6 +13,7 @@ const LoginView: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    console.log("Login pressed", { phone, password });
     setLoading(true);
 
     const { error } = await login(phone, password);
