@@ -27,10 +27,12 @@ Deno.serve(async (req) => {
 
   // 2. Create Auth user (no password)
   const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
-    email: request.email,
-    email_confirm: true,
+    phone: request.phone,
+    email: request.email ?? undefined,
+    phone_confirm: true,
   });
 
+  console.log("Auth user creation response:", authUser, authError);
   if (authError || !authUser.user) {
     console.error(authError);
     return new Response("Auth user creation failed", { status: 500 });
@@ -63,9 +65,8 @@ Deno.serve(async (req) => {
     .eq("id", requestId);
 
   // 5. Send password setup link
-  await supabase.auth.admin.generateLink({
-    type: "recovery",
-    email: request.email,
+  await supabase.auth.admin.inviteUserByEmail(request.email, {
+    redirectTo: "workertrust://set-password",
   });
 
   return new Response(
