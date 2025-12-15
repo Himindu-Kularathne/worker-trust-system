@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, TextInput, Button } from "react-native";
 import * as Linking from "expo-linking";
 import { supabase } from "../lib/supabaseClient";
+import { router } from "expo-router";
 
 export default function SetPassword() {
   const [password, setPassword] = useState("");
@@ -30,16 +31,22 @@ export default function SetPassword() {
     console.log("Final params:", params);
 
     // const { queryParams } = Linking.parse(url);
+    if (params.error) {
+      alert("This activation link is invalid or expired.");
+      return;
+    }
     console.log("Params:", params?.access_token);
-    if (params?.access_token) {
-      // later add && queryParams?.refresh_token
-      console.log("Tokens received, skipping session validation (DEV)");
-      // await supabase.auth.setSession({
-      //   access_token: String(queryParams.access_token),
-      //   refresh_token: String(queryParams.refresh_token),
-      // });
+    if (params.access_token && params.refresh_token) {
+      const { error } = await supabase.auth.setSession({
+        access_token: String(params.access_token),
+        refresh_token: String(params.refresh_token),
+      });
 
-      // 👇 TEMP: bypass Supabase validation
+      if (error) {
+        alert("Failed to authenticate. Please request a new link.");
+        return;
+      }
+
       setReady(true);
     }
   };
@@ -59,9 +66,21 @@ export default function SetPassword() {
   }, []);
 
   const onSetPassword = async () => {
-    const { error } = await supabase.auth.updateUser({
-      password,
-    });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      alert("Auth session missing. Please open the activation link again.");
+      return;
+    }
+
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters");
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       alert(error.message);
