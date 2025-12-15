@@ -1,5 +1,80 @@
 {
   "welcome": "Welcome",
   "login": "Login",
-  "logout": "Logout"
+  "logout": "Logout",
+  "user": "User",
+  "home": {
+    "greeting": "Hi {{name}} 👋",
+    "serviceCategories": "Service Categories",
+    "subHeading": "Find trusted workers near you"
+  },
+  "categories": {
+    "workers.found": "{{count}} workers found",
+    "gardner": { "singular": "Gardener", "plural": "Gardeners" },
+    "plumber": { "singular": "Plumber", "plural": "Plumbers" },
+    "electrician": { "singular": "Electrician", "plural": "Electricians" },
+    "cleaner": { "singular": "Cleaner", "plural": "Cleaners" },
+    "painter": { "singular": "Painter", "plural": "Painters" },
+    "mechanic": { "singular": "Mechanic", "plural": "Mechanics" }
+  },
+  "tabs": {
+    "home": "Home",
+    "search": "Search",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "locations": {
+    "anywhere": "Anywhere",
+    "selectLocation": "Select Location",
+    "currentLocation": "Current Location",
+    "useCurrentLocation": "Use Current Location",
+    "changeLocation": "Change Location"
+  },
+  "provinces": {
+    "central": "Central",
+    "eastern": "Eastern",
+    "northern": "Northern",
+    "southern": "Southern",
+    "western": "Western",
+    "northWestern": "North Western",
+    "northCentral": "North Central",
+    "uva": "Uva",
+    "sabaragamuwa": "Sabaragamuwa"
+  },
+  "districts": {
+    "colombo": "Colombo",
+    "gampaha": "Gampaha",
+    "kalutara": "Kalutara",
+    "kandy": "Kandy",
+    "matale": "Matale",
+    "nuwaraEliya": "Nuwara Eliya",
+    "galle": "Galle",
+    "matara": "Matara",
+    "hambantota": "Hambantota",
+    "jaffna": "Jaffna",
+    "mannar": "Mannar",
+    "vavuniya": "Vavuniya",
+    "mullaitivu": "Mullaitivu",
+    "trincomalee": "Trincomalee",
+    "batticaloa": "Batticaloa",
+    "ampara": "Ampara",
+    "anuradhapura": "Anuradhapura",
+    "polonnaruwa": "Polonnaruwa",
+    "puttalam": "Puttalam",
+    "kurunegala": "Kurunegala",
+    "badulla": "Badulla",
+    "monaragala": "Monaragala",
+    "ratnapura": "Ratnapura",
+    "kegalle": "Kegalle"
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "select": "Select",
+    "loading": "Loading...",
+    "noResults": "No workers found",
+    "tryDifferentFilters": "Try different filters"
+  }
 }

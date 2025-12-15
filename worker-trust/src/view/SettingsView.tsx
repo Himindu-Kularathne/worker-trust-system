@@ -17,12 +17,6 @@ const WorkerSettingsView: React.FC = () => {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <SettingsHeaderSection
-          name="John Smith"
-          role="Electrician"
-          avatarUrl={AVATAR_URI}
-        />
-
         <PreferencesSection />
         <AccountSection />
         <HelpSupportSection />

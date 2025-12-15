@@ -1,26 +1,30 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export type SettingsValueRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   value: string;
+  onPress?: () => void;
 };
 
 const SettingsValueRow: React.FC<SettingsValueRowProps> = ({
   icon,
   label,
   value,
+  onPress,
 }) => {
+  const Wrapper = onPress ? Pressable : View;
+
   return (
-    <View style={styles.row}>
+    <Wrapper onPress={onPress} style={styles.row}>
       <View style={styles.left}>
         <Ionicons name={icon} size={18} color="#6B7280" style={styles.icon} />
         <Text style={styles.label}>{label}</Text>
       </View>
       <Text style={styles.value}>{value}</Text>
-    </View>
+    </Wrapper>
   );
 };
 
@@ -30,7 +34,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
+    paddingVertical: 10,
     justifyContent: "space-between",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#E5E7EB",
