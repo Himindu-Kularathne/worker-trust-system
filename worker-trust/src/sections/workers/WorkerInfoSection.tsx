@@ -1,9 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SRI_LANKA_PROVINCES } from "@/src/constants/sriLankaLocations";
+import { Worker } from "@/src/types/worker";
 
 interface Props {
-  worker: any;
+  worker: Worker;
 }
 
 const WorkerInfoSection: React.FC<Props> = ({ worker }) => {
@@ -16,7 +17,7 @@ const WorkerInfoSection: React.FC<Props> = ({ worker }) => {
       <Text style={styles.sectionTitle}>Details</Text>
 
       <InfoRow label="Location" value={`${worker.city}, ${provinceName}`} />
-      <InfoRow label="Experience" value={`${worker.jobsCompleted} jobs`} />
+      <InfoRow label="Experience" value={`${worker.review_count} reviews`} />
       <InfoRow label="Category" value={worker.category} />
     </View>
   );

@@ -1,23 +1,24 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import TrustScoreBadge from "@/src/components/workers/TrustScoreBadge";
+import { Worker } from "@/src/types/worker";
 
 interface Props {
-  worker: any;
+  worker: Worker;
 }
 
 const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{worker.name}</Text>
+      <Text style={styles.name}>{worker.full_name}</Text>
 
       <View style={styles.row}>
         <Text style={styles.category}>{worker.category.toUpperCase()}</Text>
-        <TrustScoreBadge score={worker.trustScore} />
+        <TrustScoreBadge score={worker.trust_score} />
       </View>
 
       <Text style={styles.rating}>
-        ⭐ {worker.rating} · {worker.jobsCompleted} jobs completed
+        ⭐ {worker.rating} · {worker.review_count} reviews
       </Text>
     </View>
   );

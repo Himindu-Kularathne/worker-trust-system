@@ -1,10 +1,16 @@
 export type Worker = {
   id: string;
   full_name: string;
+  email: string;
+  phone: string;
+  address: string;
   category: string;
+
+  description: string;
+
   rating: number;
-  trustScore: number;
-  jobsCompleted: number;
+  trust_score: number;
+  review_count: number;
 
   // Location
   province: string;

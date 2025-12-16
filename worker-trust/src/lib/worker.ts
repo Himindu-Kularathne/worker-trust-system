@@ -12,7 +12,6 @@ export async function getWorkerProfile(workerId: string) {
   return data;
 }
 
-// get all workers
 export async function getAllWorkers() {
   const { data, error } = await supabase.from("workers").select("*");
 
@@ -21,7 +20,6 @@ export async function getAllWorkers() {
   return data;
 }
 
-// get all workers with filters
 export async function getAllWorkersWithFilters(filters: {
   category?: string;
   province?: string;
@@ -50,5 +48,17 @@ export async function getAllWorkersWithFilters(filters: {
   console.log("Filtered Workers Data:", data);
 
   if (error) throw error;
+  return data;
+}
+
+export async function getWorkerById(workerId: string) {
+  const { data, error } = await supabase
+    .from("workers")
+    .select("*")
+    .eq("id", workerId)
+    .single();
+
+  if (error) throw error;
+  console.log("Worker Data by ID:", data);
   return data;
 }
