@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 interface User {
+  id: string;
   name: string;
   phone: string;
 }
@@ -46,6 +47,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // ✅ set authenticated user
     setUser({
+      id: userId,
       name: worker.full_name,
       phone: worker.phone,
     });
