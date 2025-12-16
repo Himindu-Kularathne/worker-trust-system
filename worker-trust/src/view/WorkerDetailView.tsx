@@ -13,21 +13,26 @@ import WorkerProfileHeaderSection from "@/src/sections/workers/WorkerProfileHead
 import WorkerInfoSection from "@/src/sections/workers/WorkerInfoSection";
 import WorkerActionsSection from "@/src/sections/workers/WorkerActionsSection";
 
-import { fetchWorkerById } from "@/src/store/thunks/workersThunks";
+import {
+  fetchWorkerById,
+  fetchWorkerReviews,
+} from "@/src/store/thunks/workersThunks";
 import { clearSelectedWorker } from "@/src/store/slices/workerSlice";
 import type { RootState, AppDispatch } from "@/src/store";
+import WorkerReviewsSection from "../sections/workers/WorkerReviewsSection";
 
 const WorkerDetailView: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { selectedWorker, loading, error } = useSelector(
+  const { selectedWorker, selectedWorkerReviews, loading, error } = useSelector(
     (state: RootState) => state.workers
   );
 
   useEffect(() => {
     if (id) {
       dispatch(fetchWorkerById(id));
+      dispatch(fetchWorkerReviews(id));
     }
 
     return () => {
@@ -66,6 +71,10 @@ const WorkerDetailView: React.FC = () => {
         <WorkerProfileHeaderSection worker={selectedWorker} />
         <WorkerInfoSection worker={selectedWorker} />
         <WorkerActionsSection worker={selectedWorker} />
+        <WorkerReviewsSection
+          workerId={selectedWorker.id}
+          reviews={selectedWorkerReviews || []}
+        />
       </ScrollView>
     </SafeAreaView>
   );

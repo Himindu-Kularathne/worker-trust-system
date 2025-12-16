@@ -24,3 +24,11 @@ export type SearchFilters = {
   district?: string;
   city?: string;
 };
+
+export type WorkerReview = {
+  id: string;
+  worker_id: string;
+  rating: number;
+  review: string;
+  created_at: string;
+}
