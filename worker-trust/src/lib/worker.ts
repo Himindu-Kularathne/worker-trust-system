@@ -8,7 +8,6 @@ export async function getWorkerProfile(workerId: string) {
     .single();
 
   if (error) throw error;
-  console.log("Worker Profile Data:", data);
   return data;
 }
 
@@ -16,7 +15,6 @@ export async function getAllWorkers() {
   const { data, error } = await supabase.from("workers").select("*");
 
   if (error) throw error;
-  console.log("All Workers Data:", data);
   return data;
 }
 
@@ -59,7 +57,6 @@ export async function getWorkerById(workerId: string) {
     .single();
 
   if (error) throw error;
-  console.log("Worker Data by ID:", data);
   return data;
 }
 
@@ -70,6 +67,5 @@ export async function getWorkerReviews(workerId: string) {
     .eq("worker_id", workerId);
 
   if (error) throw error;
-  console.log("Worker Reviews Data:", data);
   return data;
 }
