@@ -62,3 +62,14 @@ export async function getWorkerById(workerId: string) {
   console.log("Worker Data by ID:", data);
   return data;
 }
+
+export async function getWorkerReviews(workerId: string) {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("worker_id", workerId);
+
+  if (error) throw error;
+  console.log("Worker Reviews Data:", data);
+  return data;
+}
