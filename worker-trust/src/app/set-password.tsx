@@ -93,7 +93,7 @@ export default function SetPassword() {
   }
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff", padding: 20 }}>
       <Text>Set your password</Text>
       <TextInput
         secureTextEntry

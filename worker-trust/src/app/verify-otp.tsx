@@ -6,15 +6,35 @@ import { useState } from "react";
 export default function VerifyOtp() {
   const { phone } = useLocalSearchParams<{ phone: string }>();
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const verify = async () => {
+    if (!phone) {
+      Alert.alert("Phone number missing");
+      return;
+    }
+    console.log("OTP entered:", otp);
+    const cleanOtp = otp.replace(/\D/g, "");
+
+    if (cleanOtp.length !== 6) {
+      Alert.alert("Enter the 6-digit OTP");
+      return;
+    }
+
+    if (!otp || otp.trim().length !== 6) {
+      Alert.alert("Enter the 6-digit OTP");
+      return;
+    }
+
+    setLoading(true);
     const { error } = await supabase.auth.verifyOtp({
       phone,
-      token: otp,
+      token: cleanOtp,
       type: "sms",
     });
 
     if (error) {
+      console.log("OTP verification error:", error);
       Alert.alert(error.message);
       return;
     }
