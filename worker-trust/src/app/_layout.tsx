@@ -15,6 +15,7 @@ import { AppThemeProvider } from "@/src/context/AppThemeContext";
 import { AuthProvider } from "../context/AuthContext";
 import { SearchFilterProvider } from "../context/SearchFilterContext";
 import { store } from "@/src/store";
+import SuccessOverlay from "../components/SuccessOverlay";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -64,6 +65,7 @@ function RootLayoutNav() {
                   <Stack.Screen name="modal" options={{ presentation: "modal" }} />
                   <Stack.Screen name="signup" options={{ headerShown: false }} />
                 </Stack>
+                <SuccessOverlay />
               </LanguageProvider>
             </AppThemeProvider>
           </AuthProvider>

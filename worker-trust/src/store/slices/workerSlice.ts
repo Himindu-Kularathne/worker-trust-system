@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchWorkerById, fetchWorkerReviews, fetchWorkers, submitWorkerReviews } from "../thunks/workersThunks";
+import {
+  fetchWorkerById,
+  fetchWorkerReviews,
+  fetchWorkers,
+  submitWorkerReviews,
+} from "../thunks/workersThunks";
 import { Worker, WorkerReview } from "@/src/types/worker";
 
 interface WorkersState {
@@ -7,13 +12,16 @@ interface WorkersState {
   selectedWorker: Worker | null;
   selectedWorkerReviews?: WorkerReview[];
   loading: boolean;
+  showSuccess: boolean;
   error?: string;
 }
 
 const initialState: WorkersState = {
   items: [],
   selectedWorker: null,
+  selectedWorkerReviews: [],
   loading: false,
+  showSuccess: false,
 };
 
 const workersSlice = createSlice({
@@ -22,6 +30,11 @@ const workersSlice = createSlice({
   reducers: {
     clearSelectedWorker(state) {
       state.selectedWorker = null;
+      state.selectedWorkerReviews = [];
+    },
+
+    clearReviewSuccess(state) {
+      state.showSuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -53,7 +66,7 @@ const workersSlice = createSlice({
         state.error = action.error.message;
       })
 
-      // fetch worker reviews 
+      // Fetch worker reviews
       .addCase(fetchWorkerReviews.pending, (state) => {
         state.loading = true;
       })
@@ -66,20 +79,24 @@ const workersSlice = createSlice({
         state.error = action.error.message;
       })
 
-      //submit worker reviews
+      // Submit worker review
       .addCase(submitWorkerReviews.pending, (state) => {
-       state.loading = true;
+        state.loading = true;
       })
-      .addCase(submitWorkerReviews.fulfilled, (state, action) => {
-       state.loading = false;
+      .addCase(submitWorkerReviews.fulfilled, (state) => {
+        state.loading = false;
+        state.showSuccess = true;
       })
       .addCase(submitWorkerReviews.rejected, (state, action) => {
-       state.loading = false;
-       state.error = action.error.message;
-      }); 
-      
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 
-export const { clearSelectedWorker } = workersSlice.actions;
+export const {
+  clearSelectedWorker,
+  clearReviewSuccess,
+} = workersSlice.actions;
+
 export default workersSlice.reducer;
