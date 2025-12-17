@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useTheme } from "@/src/hooks/useThemeHook";
+
 export type SettingsNavigationRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
@@ -13,13 +15,35 @@ const SettingsNavigationRow: React.FC<SettingsNavigationRowProps> = ({
   label,
   onPress,
 }) => {
+  const { theme } = useTheme();
+
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={[
+        styles.row,
+        { borderBottomColor: theme.border },
+      ]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
       <View style={styles.left}>
-        <Ionicons name={icon} size={18} color="#6B7280" style={styles.icon} />
-        <Text style={styles.label}>{label}</Text>
+        <Ionicons
+          name={icon}
+          size={18}
+          color={theme.textSecondary}
+          style={styles.icon}
+        />
+
+        <Text style={[styles.label, { color: theme.textPrimary }]}>
+          {label}
+        </Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
+
+      <Ionicons
+        name="chevron-forward"
+        size={18}
+        color={theme.textSecondary}
+      />
     </TouchableOpacity>
   );
 };
@@ -33,18 +57,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: "space-between",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E7EB",
   },
+
   left: {
     flexDirection: "row",
     alignItems: "center",
     flexShrink: 1,
   },
+
   icon: {
     marginRight: 10,
   },
+
   label: {
     fontSize: 14,
-    color: "#111827",
   },
 });
