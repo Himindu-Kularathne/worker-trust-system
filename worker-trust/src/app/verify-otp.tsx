@@ -20,7 +20,7 @@ export default function VerifyOtp() {
       Alert.alert("Enter the 6-digit OTP");
       return;
     }
-
+    console.log("Clean OTP:", cleanOtp);
     if (!otp || otp.trim().length !== 6) {
       Alert.alert("Enter the 6-digit OTP");
       return;
