@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { View, Text, TextInput, Button } from "react-native";
 import * as Linking from "expo-linking";
 import { supabase } from "../lib/supabaseClient";
-import { router } from "expo-router";
 
 export default function SetPassword() {
   const [password, setPassword] = useState("");

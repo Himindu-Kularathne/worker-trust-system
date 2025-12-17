@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { sendApprovalSms } from "./sendSms.ts";
 
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
@@ -65,9 +66,15 @@ Deno.serve(async (req) => {
     .eq("id", requestId);
 
   // 5. Send password setup link
-  await supabase.auth.admin.inviteUserByEmail(request.email, {
-    redirectTo: "workertrust://set-password",
-  });
+
+  if (request.email) {
+    await supabase.auth.admin.inviteUserByEmail(request.email, {
+      redirectTo: "workertrust://set-password",
+    });
+  } else {
+    // Phone-first user
+    await sendApprovalSms(request.phone, request.full_name);
+  }
 
   return new Response(
     `
