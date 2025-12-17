@@ -19,18 +19,12 @@ const WorkersListSection: React.FC = () => {
 
   const workers = useAppSelector((state) => state.workers.items);
   const loading = useAppSelector((state) => state.workers.loading);
-  const error = useAppSelector((state) => state.workers.error);
+  // const error = useAppSelector((state) => state.workers.error);
   const filters = useSearchFilters();
-
-  const state = useAppSelector((state) => state);
 
   useEffect(() => {
     dispatch(fetchWorkers(filters.state));
   }, [filters, dispatch]);
-
-  //   dispatch(fetchWorkers(filters.state));
-  //   console.log("Fetching workers with filters:", filters.state);
-  // }, [filters, dispatch]);
 
   if (loading) {
     console.log("Loading workers...");
@@ -41,14 +35,14 @@ const WorkersListSection: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyTitle}>Something went wrong</Text>
-        <Text style={styles.emptySubtitle}>{error}</Text>
-      </View>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <View style={styles.emptyContainer}>
+  //       <Text style={styles.emptyTitle}>Something went wrong</Text>
+  //       <Text style={styles.emptySubtitle}>{error}</Text>
+  //     </View>
+  //   );
+  // }
 
   if (!workers || workers.length === 0) {
     return (

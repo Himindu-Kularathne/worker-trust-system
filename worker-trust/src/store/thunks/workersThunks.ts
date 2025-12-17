@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getAllWorkersWithFilters, getWorkerById, getWorkerReviews } from '../../lib/worker';
 import { RootState } from '../index';
 import { SearchFilters } from '@/src/types/worker';
+import { submitReviews } from '@/src/lib/review';
 
 // fetch all workers with filters
 export const fetchWorkers = createAsyncThunk(
@@ -28,5 +29,13 @@ export const fetchWorkerReviews = createAsyncThunk(
   async (workerId: string) => {
     const response = await getWorkerReviews(workerId);
     return response;
+  }
+);
+
+export const submitWorkerReviews = createAsyncThunk<void, { workerId: string; email: string; review: string; rating: number }, { state: RootState }>(
+  'workers/submitReviews',
+  async ({ workerId, email, review, rating }, { getState }) => {
+   const response = submitReviews(workerId, email, review, rating);
+   return response;
   }
 );

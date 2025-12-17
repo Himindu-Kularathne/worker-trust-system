@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchWorkerById, fetchWorkerReviews, fetchWorkers } from "../thunks/workersThunks";
+import { fetchWorkerById, fetchWorkerReviews, fetchWorkers, submitWorkerReviews } from "../thunks/workersThunks";
 import { Worker, WorkerReview } from "@/src/types/worker";
 
 interface WorkersState {
@@ -64,7 +64,19 @@ const workersSlice = createSlice({
       .addCase(fetchWorkerReviews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      });
+      })
+
+      //submit worker reviews
+      .addCase(submitWorkerReviews.pending, (state) => {
+       state.loading = true;
+      })
+      .addCase(submitWorkerReviews.fulfilled, (state, action) => {
+       state.loading = false;
+      })
+      .addCase(submitWorkerReviews.rejected, (state, action) => {
+       state.loading = false;
+       state.error = action.error.message;
+      }); 
       
   },
 });

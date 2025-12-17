@@ -25,7 +25,7 @@ const WorkerDetailView: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { selectedWorker, selectedWorkerReviews, loading, error } = useSelector(
+  const { selectedWorker, selectedWorkerReviews, loading } = useSelector(
     (state: RootState) => state.workers
   );
 
@@ -45,14 +45,6 @@ const WorkerDetailView: React.FC = () => {
       <SafeAreaView style={styles.center}>
         <ActivityIndicator size="large" />
         <Text style={styles.loadingText}>Loading worker details...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView style={styles.center}>
-        <Text style={styles.errorText}>{error}</Text>
       </SafeAreaView>
     );
   }

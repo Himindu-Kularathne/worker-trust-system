@@ -1,3 +1,5 @@
+import { useAppDispatch } from "@/src/store/hooks";
+import { submitWorkerReviews } from "@/src/store/thunks/workersThunks";
 import React, { useState } from "react";
 import {
   Modal,
@@ -16,18 +18,21 @@ interface Props {
 
 const ReviewModal: React.FC<Props> = ({ visible, onClose, workerId }) => {
   const [email, setEmail] = useState("");
-  const [description, setDescription] = useState("");
+  const [review, setReview] = useState("");
   const [rating, setRating] = useState<number | null>(null);
+  const dispatch = useAppDispatch();
 
   const submitReview = async () => {
     if (!rating || !email) return;
 
     // TODO: send to backend / Supabase / Firebase
-    console.log({ workerId, email, description, rating });
+    // console.log({ workerId, email, description, rating });
+
+    await dispatch(submitWorkerReviews({ workerId, email, review, rating }));
 
     onClose();
     setEmail("");
-    setDescription("");
+    setReview("");
     setRating(null);
   };
 
@@ -46,8 +51,8 @@ const ReviewModal: React.FC<Props> = ({ visible, onClose, workerId }) => {
 
           <TextInput
             placeholder="Your review"
-            value={description}
-            onChangeText={setDescription}
+            value={review}
+            onChangeText={setReview}
             multiline
             style={[styles.input, styles.textArea]}
           />

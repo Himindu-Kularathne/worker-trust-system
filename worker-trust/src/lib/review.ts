@@ -1,31 +1,35 @@
-import { supabase } from "@/lib/supabase";
+import 'react-native-get-random-values';
+import { supabase } from "./supabaseClient";
 import { v4 as uuidv4 } from "uuid";
 
-const submitReview = async ({
-    worker_id,
-    email,
-    description,
-    rating,
-}: {
-    worker_id: string;
-    email: string;
-    description: string;
-    rating: number;
-}) => {
+export async function submitReviews(
+  worker_id: string,
+  email: string,
+  review: string,
+  rating: number
+) {
   const token = uuidv4();
+  console.log("Generated Token:", token);
+  console.log("Submitting review with details - Worker ID:", worker_id, "Email:", email, "Description:", review, "Rating:", rating);
 
-  await supabase.from("reviews").insert({
+  const { error } = await supabase.from("reviews").insert({
     worker_id,
     customer_email: email,
-    description,
+    review,
     rating,
     verification_token: token,
     status: false,
   });
 
-  await fetch("https://YOUR_PROJECT.functions.supabase.co/send-review-verification", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, token }),
-  });
-};
+  if (error) throw error;
+  const projectId = process.env.EXPO_PUBLIC_SUPABASE_PROJECT_ID;
+  console.log("Project ID for Function Call:", projectId);
+  await fetch(
+    `https://${projectId}.functions.supabase.co/send-review-verification`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, token }),
+    }
+  );
+}
