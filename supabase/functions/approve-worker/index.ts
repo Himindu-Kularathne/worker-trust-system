@@ -66,15 +66,15 @@ Deno.serve(async (req) => {
     .eq("id", requestId);
 
   // 5. Send password setup link
-
-  if (request.email) {
-    await supabase.auth.admin.inviteUserByEmail(request.email, {
-      redirectTo: "workertrust://set-password",
-    });
-  } else {
-    // Phone-first user
-    await sendApprovalSms(request.phone, request.full_name);
-  }
+  await sendApprovalSms(request.phone, request.full_name);
+  // if (request.email) {
+  //   await supabase.auth.admin.inviteUserByEmail(request.email, {
+  //     redirectTo: "workertrust://set-password",
+  //   });
+  // } else {
+  //   // Phone-first user
+  //   await sendApprovalSms(request.phone, request.full_name);
+  // }
 
   return new Response(
     `
