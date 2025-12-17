@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useTheme } from "@/src/hooks/useThemeHook";
+
 export type SettingsToggleRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
@@ -15,17 +17,30 @@ const SettingsToggleRow: React.FC<SettingsToggleRowProps> = ({
   value,
   onChange,
 }) => {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.row}>
       <View style={styles.left}>
-        <Ionicons name={icon} size={18} color="#6B7280" style={styles.icon} />
-        <Text style={styles.label}>{label}</Text>
+        <Ionicons
+          name={icon}
+          size={18}
+          color={theme.textSecondary}
+          style={styles.icon}
+        />
+        <Text style={[styles.label, { color: theme.textPrimary }]}>
+          {label}
+        </Text>
       </View>
+
       <Switch
         value={value}
         onValueChange={onChange}
-        trackColor={{ false: "#D1D5DB", true: "#2563EB" }}
-        thumbColor="#FFFFFF"
+        trackColor={{
+          false: theme.border,
+          true: theme.primary,
+        }}
+        thumbColor={theme.primaryText}
       />
     </View>
   );
@@ -40,15 +55,17 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     justifyContent: "space-between",
   },
+
   left: {
     flexDirection: "row",
     alignItems: "center",
   },
+
   icon: {
     marginRight: 10,
   },
+
   label: {
     fontSize: 14,
-    color: "#111827",
   },
 });

@@ -6,6 +6,7 @@ import SettingsValueRow from "@/src/components/settings/SettingsValueRow";
 import SettingsToggleRow from "@/src/components/settings/SettingsToggleRow";
 
 import { useLanguage, Lang } from "@/src/context/languageContext";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 const LANGUAGE_LABELS: Record<Lang, string> = {
   en: "English",
@@ -16,6 +17,7 @@ const LANGUAGE_LABELS: Record<Lang, string> = {
 const PreferencesSection: React.FC = () => {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const { lang, setLang } = useLanguage();
+  const { theme, preference, setThemePreference } = useTheme();
 
   const handleLanguageChange = () => {
     Alert.alert("Select Language", "", [
@@ -26,9 +28,18 @@ const PreferencesSection: React.FC = () => {
     ]);
   };
 
+  const themeLabel =
+    preference === "system"
+      ? "System Default"
+      : preference === "dark"
+      ? "Dark"
+      : "Light";
+
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.sectionTitle}>Preferences</Text>
+      <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>
+        Preferences
+      </Text>
 
       <SettingsCard>
         <SettingsValueRow
@@ -41,9 +52,14 @@ const PreferencesSection: React.FC = () => {
         <SettingsValueRow
           icon="sunny-outline"
           label="Theme Mode"
-          value="System Default"
+          value={themeLabel}
           onPress={() => {
-            // later: open theme selector
+            Alert.alert("Theme Mode", "", [
+              { text: "System", onPress: () => setThemePreference("system") },
+              { text: "Light", onPress: () => setThemePreference("light") },
+              { text: "Dark", onPress: () => setThemePreference("dark") },
+              { text: "Cancel", style: "cancel" },
+            ]);
           }}
         />
 
@@ -64,9 +80,9 @@ const styles = StyleSheet.create({
   wrapper: {
     gap: 8,
   },
+
   sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#111827",
   },
 });

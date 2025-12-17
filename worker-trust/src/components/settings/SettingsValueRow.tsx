@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useTheme } from "@/src/hooks/useThemeHook";
+
 export type SettingsValueRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
@@ -15,15 +17,32 @@ const SettingsValueRow: React.FC<SettingsValueRowProps> = ({
   value,
   onPress,
 }) => {
+  const { theme } = useTheme();
   const Wrapper = onPress ? Pressable : View;
 
   return (
-    <Wrapper onPress={onPress} style={styles.row}>
+    <Wrapper
+      onPress={onPress}
+      style={[
+        styles.row,
+        { borderBottomColor: theme.border },
+      ]}
+    >
       <View style={styles.left}>
-        <Ionicons name={icon} size={18} color="#6B7280" style={styles.icon} />
-        <Text style={styles.label}>{label}</Text>
+        <Ionicons
+          name={icon}
+          size={18}
+          color={theme.textSecondary}
+          style={styles.icon}
+        />
+        <Text style={[styles.label, { color: theme.textPrimary }]}>
+          {label}
+        </Text>
       </View>
-      <Text style={styles.value}>{value}</Text>
+
+      <Text style={[styles.value, { color: theme.primary }]}>
+        {value}
+      </Text>
     </Wrapper>
   );
 };
@@ -37,22 +56,24 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: "space-between",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E7EB",
   },
+
   left: {
     flexDirection: "row",
     alignItems: "center",
     flexShrink: 1,
   },
+
   icon: {
     marginRight: 10,
   },
+
   label: {
     fontSize: 14,
-    color: "#111827",
   },
+
   value: {
     fontSize: 13,
-    color: "#2563EB",
+    fontWeight: "500",
   },
 });

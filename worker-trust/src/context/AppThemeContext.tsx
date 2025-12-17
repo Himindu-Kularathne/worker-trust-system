@@ -1,34 +1,70 @@
-import React, { createContext, useContext } from "react";
-import { useColorScheme } from "@/components/useColorScheme";
-import { LightAppTheme, DarkAppTheme, AppTheme } from "../theme/themes";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Appearance } from "react-native";
 
-type ThemePreference = "system" | "light" | "dark";
+import { AppTheme, ThemeMode } from "../theme/colors";
+import { getTheme, getSystemThemeMode } from "../theme/themes";
 
-type AppThemeContextType = {
+export type ThemePreference = "system" | ThemeMode;
+
+export interface ThemeContextValue {
   theme: AppTheme;
-  preference: ThemePreference;
-  toggleTheme: () => void;
+  mode: ThemeMode;                 // actual applied mode
+  preference: ThemePreference;     // user choice
+  setThemePreference: (p: ThemePreference) => void;
+}
+
+export const ThemeContext = createContext<ThemeContextValue | undefined>(
+  undefined
+);
+
+export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [preference, setPreference] =
+    useState<ThemePreference>("system");
+
+  const [mode, setMode] = useState<ThemeMode>(
+    preference === "system" ? getSystemThemeMode() : preference
+  );
+
+  // react to system theme changes
+  useEffect(() => {
+    if (preference !== "system") return;
+
+    const sub = Appearance.addChangeListener(({ colorScheme }) => {
+      setMode(colorScheme === "dark" ? "dark" : "light");
+    });
+
+    return () => sub.remove();
+  }, [preference]);
+
+  // apply preference changes
+  useEffect(() => {
+    if (preference === "system") {
+      setMode(getSystemThemeMode());
+    } else {
+      setMode(preference);
+    }
+  }, [preference]);
+
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
+  return (
+    <ThemeContext.Provider
+      value={{
+        theme,
+        mode,
+        preference,
+        setThemePreference: setPreference,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
 };
-
-const AppThemeContext = createContext<AppThemeContextType | undefined>(undefined);
-
-export function AppThemeProvider({ children }: { children: React.ReactNode }) {
-  const systemScheme = useColorScheme();
-  const [preference, setPreference] = React.useState<ThemePreference>("system");
-  const resolvedMode = preference === "system" ? systemScheme : preference;
-  const theme = resolvedMode === "dark" ? DarkAppTheme : LightAppTheme;
-
-  const toggleTheme = () => {
-    setPreference((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
-  return <AppThemeContext.Provider value={{ theme, preference, toggleTheme }}>{children}</AppThemeContext.Provider>;
-}
-
-export function useAppTheme() {
-  const theme = useContext(AppThemeContext);
-  if (!theme) {
-    throw new Error("useAppTheme must be used inside AppThemeProvider");
-  }
-  return theme;
-}

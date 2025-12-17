@@ -1,12 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 import SettingsCard from "@/src/components/settings/SettingsCard";
 import SettingsNavigationRow from "@/src/components/settings/SettingsNavigationRow";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 const HelpSupportSection: React.FC = () => {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.sectionTitle}>Help & Support</Text>
+      <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>
+        Help & Support
+      </Text>
+
       <SettingsCard>
         <SettingsNavigationRow
           icon="document-text-outline"
@@ -39,9 +46,9 @@ const styles = StyleSheet.create({
   wrapper: {
     gap: 8,
   },
+
   sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#111827",
   },
 });
