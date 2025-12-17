@@ -2,9 +2,9 @@ import { supabase } from "./supabaseClient";
 
 export async function getWorkerProfile(workerId: string) {
   const { data, error } = await supabase
-    .from("worker_profiles")
+    .from("workers")
     .select("trust_score, review_count")
-    .eq("worker_id", workerId)
+    .eq("id", workerId)
     .single();
 
   if (error) throw error;
@@ -24,22 +24,22 @@ export async function getAllWorkersWithFilters(filters: {
   district?: string;
   city?: string;
 }) {
-  let query = supabase.from('workers').select('*');
+  let query = supabase.from("workers").select("*");
 
   if (filters.category) {
-    query = query.eq('category', filters.category);
+    query = query.eq("category", filters.category);
   }
 
   if (filters.province) {
-    query = query.eq('province', filters.province);
+    query = query.eq("province", filters.province);
   }
 
   if (filters.district) {
-    query = query.eq('district', filters.district);
+    query = query.eq("district", filters.district);
   }
 
   if (filters.city) {
-    query = query.eq('city', filters.city);
+    query = query.eq("city", filters.city);
   }
 
   const { data, error } = await query;

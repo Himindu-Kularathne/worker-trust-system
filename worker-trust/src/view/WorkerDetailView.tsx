@@ -1,17 +1,18 @@
 import React, { useEffect } from "react";
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   Text,
   ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import WorkerProfileHeaderSection from "@/src/sections/workers/WorkerProfileHeaderSection";
 import WorkerInfoSection from "@/src/sections/workers/WorkerInfoSection";
 import WorkerActionsSection from "@/src/sections/workers/WorkerActionsSection";
+import WorkerReviewsSection from "@/src/sections/workers/WorkerReviewsSection";
 
 import {
   fetchWorkerById,
@@ -19,7 +20,6 @@ import {
 } from "@/src/store/thunks/workersThunks";
 import { clearSelectedWorker } from "@/src/store/slices/workerSlice";
 import type { RootState, AppDispatch } from "@/src/store";
-import WorkerReviewsSection from "../sections/workers/WorkerReviewsSection";
 
 const WorkerDetailView: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();

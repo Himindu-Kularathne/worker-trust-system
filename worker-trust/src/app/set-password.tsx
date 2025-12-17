@@ -11,7 +11,7 @@ export default function SetPassword() {
   const handleUrl = async (url: string | null) => {
     if (!url) return;
 
-    //  Ignore Expo dev client bootstrap link
+    // Ignore Expo dev client bootstrap link
     if (url.includes("expo-development-client")) {
       console.log("Ignoring Expo dev client URL");
       return;
@@ -22,6 +22,7 @@ export default function SetPassword() {
     const parsed = Linking.parse(url);
     let params = parsed.queryParams ?? {};
 
+    // Handle hash params (Supabase sends tokens in #)
     if (url.includes("#")) {
       const hash = url.split("#")[1];
       const hashParams = Object.fromEntries(
@@ -30,11 +31,13 @@ export default function SetPassword() {
       params = { ...params, ...hashParams };
     }
 
+    console.log("Final params:", params);
+
     if (params.error) {
       alert("This activation link is invalid or expired.");
       return;
     }
-    console.log("Params:", params?.access_token);
+
     if (params.access_token && params.refresh_token) {
       const { error } = await supabase.auth.setSession({
         access_token: String(params.access_token),
@@ -85,6 +88,7 @@ export default function SetPassword() {
       alert(error.message);
     } else {
       alert("Password set successfully 🎉");
+      router.replace("/login");
     }
   };
 

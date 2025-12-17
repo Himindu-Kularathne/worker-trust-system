@@ -172,6 +172,29 @@ create table worker_subcategories (
   unique(category_id, name)
 );
 
+-- =====================================
+-- TRIGGERS
+-- Automatically handle worker profile creation on approval
+
+create or replace function handle_worker_approval()
+returns trigger
+language plpgsql
+as $$
+begin
+  -- Only run when status changes from pending → approved
+  if OLD.status = 'pending' and NEW.status = 'approved' then
+    
+    -- Insert worker into worker_profiles
+    insert into worker_profiles (worker_id, category)
+    values (NEW.id::text, NEW.category);
+    
+  end if;
+
+  return NEW;
+end;
+$$;
+
+
 
 
 
