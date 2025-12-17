@@ -17,7 +17,7 @@ const LANGUAGE_LABELS: Record<Lang, string> = {
 const PreferencesSection: React.FC = () => {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const { lang, setLang } = useLanguage();
-  const { theme , setThemePreference} = useTheme();
+  const { theme, preference, setThemePreference } = useTheme();
 
   const handleLanguageChange = () => {
     Alert.alert("Select Language", "", [
@@ -27,6 +27,13 @@ const PreferencesSection: React.FC = () => {
       { text: "Cancel", style: "cancel" },
     ]);
   };
+
+  const themeLabel =
+    preference === "system"
+      ? "System Default"
+      : preference === "dark"
+      ? "Dark"
+      : "Light";
 
   return (
     <View style={styles.wrapper}>
@@ -45,12 +52,12 @@ const PreferencesSection: React.FC = () => {
         <SettingsValueRow
           icon="sunny-outline"
           label="Theme Mode"
-          value={theme.mode === "dark" ? "Dark" : "Light"}
+          value={themeLabel}
           onPress={() => {
             Alert.alert("Theme Mode", "", [
-              { text: "Light", onPress: () => setThemePreference("light") },
-              { text: "Dark", onPress: () => setThemePreference("dark") }, 
               { text: "System", onPress: () => setThemePreference("system") },
+              { text: "Light", onPress: () => setThemePreference("light") },
+              { text: "Dark", onPress: () => setThemePreference("dark") },
               { text: "Cancel", style: "cancel" },
             ]);
           }}
@@ -73,9 +80,9 @@ const styles = StyleSheet.create({
   wrapper: {
     gap: 8,
   },
+
   sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#111827",
   },
 });
