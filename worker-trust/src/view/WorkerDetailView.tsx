@@ -4,8 +4,8 @@ import {
   ScrollView,
   Text,
   ActivityIndicator,
+  SafeAreaView
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,6 +20,7 @@ import {
 } from "@/src/store/thunks/workersThunks";
 import { clearSelectedWorker } from "@/src/store/slices/workerSlice";
 import type { RootState, AppDispatch } from "@/src/store";
+import { View } from "@/components/Themed";
 
 const WorkerDetailView: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -45,7 +46,7 @@ const WorkerDetailView: React.FC = () => {
       <SafeAreaView style={styles.center}>
         <ActivityIndicator size="large" />
         <Text style={styles.loadingText}>Loading worker details...</Text>
-      </SafeAreaView>
+      </  SafeAreaView>
     );
   }
 

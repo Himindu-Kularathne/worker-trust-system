@@ -19,35 +19,16 @@ const WorkersListSection: React.FC = () => {
 
   const workers = useAppSelector((state) => state.workers.items);
   const loading = useAppSelector((state) => state.workers.loading);
-  // const error = useAppSelector((state) => state.workers.error);
   const filters = useSearchFilters();
 
   useEffect(() => {
     dispatch(fetchWorkers(filters.state));
   }, [filters, dispatch]);
 
-  if (loading) {
-    console.log("Loading workers...");
+  if (!workers || workers.length === 0 ) {
     return (
       <View style={styles.emptyContainer}>
-        <LoadingView />
-      </View>
-    );
-  }
-
-  // if (error) {
-  //   return (
-  //     <View style={styles.emptyContainer}>
-  //       <Text style={styles.emptyTitle}>Something went wrong</Text>
-  //       <Text style={styles.emptySubtitle}>{error}</Text>
-  //     </View>
-  //   );
-  // }
-
-  if (!workers || workers.length === 0) {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyTitle}>No workers found</Text>
+        <Text style={styles.emptyTitle}>{loading ? "" : "No workers found"}</Text>
       </View>
     );
   }

@@ -1,16 +1,16 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View , SafeAreaView} from "react-native";
 import WorkersHeaderSection from "@/src/sections/workers/WorkerHeaderSection";
 import WorkersListSection from "@/src/sections/workers/WorkersListSection";
 import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
+
 
 const WorkersListView: React.FC = () => {
   const { state } = useSearchFilters();
   const { category } = state;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.containerW}>
       <WorkersHeaderSection category={category ?? ""} />
       <WorkersListSection />
     </SafeAreaView>
@@ -20,8 +20,7 @@ const WorkersListView: React.FC = () => {
 export default WorkersListView;
 
 const styles = StyleSheet.create({
-  container: {
+  containerW: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
   },
 });

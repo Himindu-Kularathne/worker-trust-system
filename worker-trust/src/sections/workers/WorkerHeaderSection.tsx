@@ -44,7 +44,7 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
 
   return (
     <>
-      <View style={styles.headerCard}>
+      <View style={styles.headerCardWorker}>
         <View style={styles.textBlock}>
           <Text style={styles.title}>
             {category ? t(`categories.${category}.plural`) : "All Workers"}
@@ -84,11 +84,11 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
 export default WorkersHeaderSection;
 
 const styles = StyleSheet.create({
-  headerCard: {
+  headerCardWorker: {
     margin: 16,
     padding: 16,
     borderRadius: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#ffffffff",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.08,

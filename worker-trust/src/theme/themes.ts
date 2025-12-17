@@ -1,22 +1,11 @@
-export type ThemeMode = "light" | "dark";
+import { Appearance } from "react-native";
+import { ThemeMode } from "./colors";
+import { LightAppTheme, DarkAppTheme } from "./colors";
 
-export interface AppTheme {
-  mode: ThemeMode;
-  background: string;
-  text: string;
-  card: string;
-}
-
-export const LightAppTheme: AppTheme = {
-  mode: "light",
-  background: "#d0d0c0",
-  text: "#242c40",
-  card: "#ffffff",
+export const getSystemThemeMode = (): ThemeMode => {
+  return Appearance.getColorScheme() === "dark" ? "dark" : "light";
 };
 
-export const DarkAppTheme: AppTheme = {
-  mode: "dark",
-  background: "#242c40",
-  text: "#d0d0c0",
-  card: "#121826",
+export const getTheme = (mode: ThemeMode) => {
+  return mode === "dark" ? DarkAppTheme : LightAppTheme;
 };
