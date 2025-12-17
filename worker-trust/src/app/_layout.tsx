@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { Provider } from "react-redux";
 import "react-native-reanimated";
 import "react-native-url-polyfill/auto";
-
 import { useColorScheme } from "@/components/useColorScheme";
 import { LanguageProvider } from "@/src/context/languageContext";
 import { AppThemeProvider } from "@/src/context/AppThemeContext";
