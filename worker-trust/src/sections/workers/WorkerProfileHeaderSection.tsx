@@ -1,13 +1,16 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import TrustScoreBadge from "@/src/components/workers/TrustScoreBadge";
 import { Worker } from "@/src/types/worker";
+import ReviewModal from "@/src/components/workers/WorkerReviewModal";
 
 interface Props {
   worker: Worker;
 }
 
 const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
+  const [reviewOpen, setReviewOpen] = useState(false);
+
   return (
     <View style={styles.card}>
       {/* Name */}
@@ -24,12 +27,23 @@ const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
         <TrustScoreBadge score={worker.trust_score} />
       </View>
 
-      {/* Rating */}
+      {/* Rating + Review button */}
       <View style={styles.ratingRow}>
         <Text style={styles.star}>★</Text>
         <Text style={styles.ratingText}>{worker.rating}</Text>
         <Text style={styles.reviewCount}>({worker.review_count} reviews)</Text>
+
+        <Pressable style={styles.reviewBtn} onPress={() => setReviewOpen(true)}>
+          <Text style={styles.reviewBtnText}>Write review</Text>
+        </Pressable>
       </View>
+
+      {/* Review modal */}
+      <ReviewModal
+        visible={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        workerId={worker.id}
+      />
     </View>
   );
 };
@@ -98,5 +112,18 @@ const styles = StyleSheet.create({
   reviewCount: {
     fontSize: 13,
     color: "#6B7280",
+  },
+  reviewBtn: {
+    marginLeft: "auto",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: "#2563EB",
+    borderRadius: 999,
+  },
+
+  reviewBtnText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });

@@ -26,8 +26,11 @@ const WorkersListSection: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchWorkers(filters.state));
-    console.log("Fetching workers with filters:", filters.state);
   }, [filters, dispatch]);
+
+  //   dispatch(fetchWorkers(filters.state));
+  //   console.log("Fetching workers with filters:", filters.state);
+  // }, [filters, dispatch]);
 
   if (loading) {
     console.log("Loading workers...");

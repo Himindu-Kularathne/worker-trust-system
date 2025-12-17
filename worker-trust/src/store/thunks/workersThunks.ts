@@ -3,9 +3,11 @@ import { getAllWorkersWithFilters, getWorkerById, getWorkerReviews } from '../..
 import { RootState } from '../index';
 import { SearchFilters } from '@/src/types/worker';
 
+// fetch all workers with filters
 export const fetchWorkers = createAsyncThunk(
   'workers/fetchWorkers',
   async (filters: SearchFilters) => {
+     await new Promise((resolve) => setTimeout(resolve, 2000));
     const response = await getAllWorkersWithFilters(filters);
     return response;
 }

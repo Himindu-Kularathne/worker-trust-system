@@ -1,13 +1,9 @@
 import React, { createContext, useState, ReactNode } from "react";
-
-interface User {
-  name: string;
-  role: "worker" | "customer";
-}
+import { Worker } from "../types/worker";
 
 interface AuthContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: Worker | null;
+  setUser: (user: Worker | null) => void;
   login: (name: string, role: "worker" | "customer") => void;
   logout: () => void;
 }
@@ -19,10 +15,10 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Worker | null>(null);
 
   const login = (name: string, role: "worker" | "customer") => {
-    setUser({ name, role });
+    // Mock login implementation
   };
 
   const logout = () => {
