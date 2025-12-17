@@ -18,7 +18,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const loadUser = async (userId: string) => {
     const { data: worker, error } = await supabase.from("workers").select("full_name, phone").eq("id", userId).single();
@@ -39,6 +39,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const restoreSession = async () => {
       const { data } = await supabase.auth.getSession();
+      console.log("Restoring session:", data);
       if (data.session?.user) {
         await loadUser(data.session.user.id);
       }
