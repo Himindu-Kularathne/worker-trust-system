@@ -9,7 +9,7 @@ const HomeHeaderSection: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>
-        {t("home.greeting", { name: user?.first_name || t("user") })}
+        {t("home.greeting", { name: user?.full_name || t("user") })}
       </Text>
       <Text style={styles.subtitle}>{t("home.subHeading")}</Text>
     </View>

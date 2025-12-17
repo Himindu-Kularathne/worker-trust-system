@@ -1,14 +1,10 @@
 import React, { createContext, useState, ReactNode } from "react";
 import { supabase } from "../lib/supabaseClient";
-
-interface User {
-  id: string;
-  name: string;
-  phone: string;
-}
+import { Worker } from "../types/worker";
 
 interface AuthContextType {
-  user: User | null;
+  user: Worker | null;
+  setUser: (user: Worker | null) => void;
   login: (phone: string, password: string) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
 }
@@ -16,9 +12,13 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Worker | null>(null);
 
-  const login = async (phone: string, password: string): Promise<{ error?: string }> => {
+  // ✅ REAL LOGIN (Supabase)
+  const login = async (
+    phone: string,
+    password: string
+  ): Promise<{ error?: string }> => {
     if (!phone.startsWith("+")) {
       return { error: "Phone number must include country code" };
     }
@@ -28,16 +28,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       password,
     });
 
-    if (error) {
-      return { error: error.message };
+    if (error || !data.user) {
+      return { error: error?.message || "Login failed" };
     }
 
     const userId = data.user.id;
 
-    // fetch worker profile
+    // ✅ Fetch worker profile
     const { data: worker, error: workerError } = await supabase
       .from("workers")
-      .select("full_name, phone")
+      .select("*")
       .eq("id", userId)
       .single();
 
@@ -45,13 +45,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return { error: "Worker profile not found" };
     }
 
-    // ✅ set authenticated user
-    setUser({
-      id: userId,
-      name: worker.full_name,
-      phone: worker.phone,
-    });
-
+    setUser(worker);
     return {};
   };
 
@@ -61,5 +55,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

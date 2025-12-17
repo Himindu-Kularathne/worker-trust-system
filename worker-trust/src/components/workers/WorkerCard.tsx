@@ -19,11 +19,11 @@ const WorkerCard: React.FC<Props> = ({ worker }) => {
     <TouchableOpacity style={styles.card} onPress={handledRoute}>
       <View style={styles.row}>
         <Text style={styles.name}>{worker.full_name}</Text>
-        <TrustScoreBadge score={worker.trustScore} />
+        <TrustScoreBadge score={worker.trust_score} />
       </View>
 
       <Text style={styles.meta}>
-        ⭐ {worker.rating} · {worker.jobsCompleted} jobs
+        ⭐ {worker.rating} · {worker.review_count} jobs
       </Text>
     </TouchableOpacity>
   );

@@ -1,25 +1,72 @@
-import React from "react";
-import { StyleSheet, ScrollView } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+
 import WorkerProfileHeaderSection from "@/src/sections/workers/WorkerProfileHeaderSection";
 import WorkerInfoSection from "@/src/sections/workers/WorkerInfoSection";
 import WorkerActionsSection from "@/src/sections/workers/WorkerActionsSection";
-import { MOCK_WORKERS } from "@/src/constants/mockWorkers";
+import WorkerReviewsSection from "@/src/sections/workers/WorkerReviewsSection";
+
+import {
+  fetchWorkerById,
+  fetchWorkerReviews,
+} from "@/src/store/thunks/workersThunks";
+import { clearSelectedWorker } from "@/src/store/slices/workerSlice";
+import type { RootState, AppDispatch } from "@/src/store";
 
 const WorkerDetailView: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const worker = MOCK_WORKERS.find((w) => w.id === id);
+  const { selectedWorker, selectedWorkerReviews, loading } = useSelector(
+    (state: RootState) => state.workers
+  );
 
-  if (!worker) return null;
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchWorkerById(id));
+      dispatch(fetchWorkerReviews(id));
+    }
+
+    return () => {
+      dispatch(clearSelectedWorker());
+    };
+  }, [id, dispatch]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <ActivityIndicator size="large" />
+        <Text style={styles.loadingText}>Loading worker details...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!selectedWorker) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <Text>No worker found.</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <WorkerProfileHeaderSection worker={worker} />
-        <WorkerInfoSection worker={worker} />
-        <WorkerActionsSection />
+        <WorkerProfileHeaderSection worker={selectedWorker} />
+        <WorkerInfoSection worker={selectedWorker} />
+        <WorkerActionsSection worker={selectedWorker} />
+        <WorkerReviewsSection
+          workerId={selectedWorker.id}
+          reviews={selectedWorkerReviews || []}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -31,5 +78,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F9FAFB",
+  },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingText: {
+    marginTop: 8,
+    color: "#6B7280",
+  },
+  errorText: {
+    color: "#DC2626",
+    fontSize: 16,
   },
 });
