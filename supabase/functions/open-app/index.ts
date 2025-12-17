@@ -3,5 +3,5 @@ export const config = {
 };
 
 Deno.serve((_req: Request) => {
-  return Response.redirect("workertrust://login?approved=true", 302);
+  return Response.redirect("exp://10.198.244.94:8081/--/login?approved=true", 302);
 });
