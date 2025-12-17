@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, use, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { Worker } from "../types/worker";
 
@@ -7,18 +7,69 @@ interface AuthContextType {
   setUser: (user: Worker | null) => void;
   login: (phone: string, password: string) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
+  loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<Worker | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const loadUser = async (userId: string) => {
+    const { data: worker, error } = await supabase.from("workers").select("*").eq("id", userId).single();
+
+    if (error || !worker) {
+      setUser(null);
+      return;
+    }
+
+    setUser({
+      id: userId,
+      full_name: worker.full_name,
+      phone: worker.phone,
+      email: worker.email,
+      address: worker.address,
+      category: worker.category,
+      description: worker.description,
+      rating: worker.rating,
+      trust_score: worker.trust_score,
+      review_count: worker.review_count,
+      province: worker.province,
+      district: worker.district,
+      city: worker.city,
+    });
+  };
+
+  // Restore session on mount
+  useEffect(() => {
+    const restoreSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      console.log("Restoring session:", data);
+      if (data.session?.user) {
+        await loadUser(data.session.user.id);
+      }
+
+      setLoading(false);
+    };
+    restoreSession();
+
+    // Listen to auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        await loadUser(session.user.id);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   // ✅ REAL LOGIN (Supabase)
-  const login = async (
-    phone: string,
-    password: string
-  ): Promise<{ error?: string }> => {
+  const login = async (phone: string, password: string): Promise<{ error?: string }> => {
     if (!phone.startsWith("+")) {
       return { error: "Phone number must include country code" };
     }
@@ -31,21 +82,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (error || !data.user) {
       return { error: error?.message || "Login failed" };
     }
-
-    const userId = data.user.id;
-
-    // ✅ Fetch worker profile
-    const { data: worker, error: workerError } = await supabase
-      .from("workers")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    if (workerError || !worker) {
-      return { error: "Worker profile not found" };
-    }
-
-    setUser(worker);
+    await loadUser(data.user.id);
     return {};
   };
 
@@ -55,9 +92,5 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, login, logout, loading, setUser }}>{children}</AuthContext.Provider>;
 };

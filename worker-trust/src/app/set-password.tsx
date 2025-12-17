@@ -25,9 +25,7 @@ export default function SetPassword() {
     // Handle hash params (Supabase sends tokens in #)
     if (url.includes("#")) {
       const hash = url.split("#")[1];
-      const hashParams = Object.fromEntries(
-        hash.split("&").map((p) => p.split("="))
-      );
+      const hashParams = Object.fromEntries(hash.split("&").map((p) => p.split("=")));
       params = { ...params, ...hashParams };
     }
 
@@ -97,7 +95,7 @@ export default function SetPassword() {
   }
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff", padding: 20 }}>
       <Text>Set your password</Text>
       <TextInput
         secureTextEntry

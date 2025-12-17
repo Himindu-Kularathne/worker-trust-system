@@ -8,7 +8,6 @@ import { Provider } from "react-redux";
 import "react-native-reanimated";
 import "react-native-url-polyfill/auto";
 import "react-native-get-random-values";
-
 import { useColorScheme } from "@/components/useColorScheme";
 import { LanguageProvider } from "@/src/context/languageContext";
 import { AppThemeProvider } from "@/src/context/AppThemeContext";

@@ -3,14 +3,30 @@ import { useAuth } from "@/src/hooks/UserContextHook";
 import LoginView from "@/src/view/LoginView";
 import { View, Text } from "@/components/Themed";
 import { getWorkerProfile } from "@/src/lib/worker";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import TrustScoreCard from "@/src/components/workerHome/TrustScoreCard";
+import LogoutButton from "@/src/components/settings/LogoutButton";
 
 export default function ProfileScreen() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [trustScore, setTrustScore] = React.useState<number>(0);
   const [reviewCount, setReviewCount] = React.useState<number>(0);
   const [loading, setLoading] = React.useState<boolean>(true);
+
+  const handleLogout = async () => {
+    Alert.alert("Log Out", "Are you sure you want to log out?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Log Out",
+        onPress: async () => {
+          await logout();
+        },
+      },
+    ]);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -45,6 +61,7 @@ export default function ProfileScreen() {
     <View>
       <Text>Welcome, {user.name}</Text>
       <TrustScoreCard score={trustScore} total={5} reviews={reviewCount} />
+      <LogoutButton onPress={handleLogout} />
     </View>
   ) : (
     <LoginView />
