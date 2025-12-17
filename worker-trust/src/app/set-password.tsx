@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, TextInput, Button } from "react-native";
 import * as Linking from "expo-linking";
 import { supabase } from "../lib/supabaseClient";
+import { router } from "expo-router";
 
 export default function SetPassword() {
   const [password, setPassword] = useState("");
@@ -24,9 +25,7 @@ export default function SetPassword() {
     // Handle hash params (Supabase sends tokens in #)
     if (url.includes("#")) {
       const hash = url.split("#")[1];
-      const hashParams = Object.fromEntries(
-        hash.split("&").map((p) => p.split("="))
-      );
+      const hashParams = Object.fromEntries(hash.split("&").map((p) => p.split("=")));
       params = { ...params, ...hashParams };
     }
 
