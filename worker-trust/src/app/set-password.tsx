@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
-import * as Linking from "expo-linking";
+import { View, Text, TextInput, Button, Alert } from "react-native";
 import { supabase } from "../lib/supabaseClient";
 import { router } from "expo-router";
 
@@ -8,84 +7,40 @@ export default function SetPassword() {
   const [password, setPassword] = useState("");
   const [ready, setReady] = useState(false);
 
-  const handleUrl = async (url: string | null) => {
-    if (!url) return;
+  // ✅ Just check session
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth event:", event);
 
-    // Ignore Expo dev client bootstrap link
-    if (url.includes("expo-development-client")) {
-      console.log("Ignoring Expo dev client URL");
-      return;
-    }
-
-    console.log("Deep link URL:", url);
-
-    const parsed = Linking.parse(url);
-    let params = parsed.queryParams ?? {};
-
-    // Handle hash params (Supabase sends tokens in #)
-    if (url.includes("#")) {
-      const hash = url.split("#")[1];
-      const hashParams = Object.fromEntries(hash.split("&").map((p) => p.split("=")));
-      params = { ...params, ...hashParams };
-    }
-
-    console.log("Final params:", params);
-
-    if (params.error) {
-      alert("This activation link is invalid or expired.");
-      return;
-    }
-
-    if (params.access_token && params.refresh_token) {
-      const { error } = await supabase.auth.setSession({
-        access_token: String(params.access_token),
-        refresh_token: String(params.refresh_token),
-      });
-
-      if (error) {
-        alert("Failed to authenticate. Please request a new link.");
-        return;
+      if (session) {
+        setReady(true);
+      } else {
+        Alert.alert("Session expired", "Please log in again.");
+        router.replace("/login");
       }
-
-      setReady(true);
-    }
-  };
-
-  // Cold start
-  useEffect(() => {
-    Linking.getInitialURL().then(handleUrl);
-  }, []);
-
-  // App already open / background
-  useEffect(() => {
-    const sub = Linking.addEventListener("url", ({ url }) => {
-      handleUrl(url);
     });
 
-    return () => sub.remove();
+    return () => subscription.unsubscribe();
   }, []);
 
   const onSetPassword = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      alert("Auth session missing. Please open the activation link again.");
-      return;
-    }
-
+    console.log("Setting password:", password);
     if (password.length < 8) {
-      alert("Password must be at least 8 characters");
+      Alert.alert("Password must be at least 8 characters");
       return;
     }
-
-    const { error } = await supabase.auth.updateUser({ password });
-
+    console.log("Updating password in Supabase...");
+    const { error } = await supabase.auth.updateUser({
+      password,
+      data: { password_set: true },
+    });
+    console.log("Password update result:", { error });
     if (error) {
-      alert(error.message);
+      Alert.alert(error.message);
     } else {
-      alert("Password set successfully 🎉");
+      Alert.alert("Password set successfully 🎉");
       router.replace("/login");
     }
   };
@@ -96,14 +51,21 @@ export default function SetPassword() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff", padding: 20 }}>
-      <Text>Set your password</Text>
+      <Text style={{ fontSize: 18, marginBottom: 10 }}>Set your password</Text>
+
       <TextInput
         secureTextEntry
         placeholder="New password"
         value={password}
         onChangeText={setPassword}
-        style={{ borderWidth: 1, padding: 10, marginVertical: 10 }}
+        style={{
+          borderWidth: 1,
+          padding: 10,
+          marginVertical: 10,
+          backgroundColor: "#fff",
+        }}
       />
+
       <Button title="Save password" onPress={onSetPassword} />
     </View>
   );
