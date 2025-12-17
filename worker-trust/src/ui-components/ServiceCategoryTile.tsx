@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { t } from "@/src/i18n/t";
 
 import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 interface Props {
   title: string;
@@ -19,26 +20,35 @@ const ServiceCategoryTile: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const { setCategory, resetLocation } = useSearchFilters();
+  const { theme } = useTheme();
 
   const handlePress = () => {
-    // Set selected category globally
     setCategory(categoryTitle);
-
-    // Optional but recommended: reset previous location filters
     resetLocation();
-
-    // Navigate to workers list
     router.push("/workers");
   };
 
   return (
-    <TouchableOpacity style={styles.tile} onPress={handlePress}>
+    <TouchableOpacity
+      style={[
+        styles.tile,
+        {
+          backgroundColor: theme.card,
+          shadowColor: theme.mode === "dark" ? "#000" : "#000",
+        },
+      ]}
+      activeOpacity={0.85}
+      onPress={handlePress}
+    >
       <Ionicons
         name={icon as keyof typeof Ionicons.glyphMap}
         size={28}
-        color="#2563EB"
+        color={theme.primary}
       />
-      <Text style={styles.text}>{t(`categories.${title}.singular`)}</Text>
+
+      <Text style={[styles.text, { color: theme.textPrimary }]}>
+        {t(`categories.${title}.singular`)}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -48,21 +58,20 @@ export default ServiceCategoryTile;
 const styles = StyleSheet.create({
   tile: {
     width: "48%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    paddingVertical: 20,
+    borderRadius: 14,
+    paddingVertical: 22,
     marginBottom: 16,
     alignItems: "center",
-    shadowColor: "#000",
+
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
     elevation: 4,
   },
+
   text: {
-    marginTop: 8,
+    marginTop: 10,
     fontSize: 14,
-    fontWeight: "500",
-    color: "#111827",
+    fontWeight: "600",
   },
 });
