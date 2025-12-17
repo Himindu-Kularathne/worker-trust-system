@@ -6,17 +6,16 @@ import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
 import { loadCategories, loadSubcategories } from "@/src/lib/categories";
 
+interface Category {
+  id: string;
+  title: string;
+  icon: string;
+}
+
 export default function Dashboard() {
-  const [trustScore, setTrustScore] = useState<number | null>(null);
-  const [reviewCount, setReviewCount] = useState<number>(0);
-  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Array<{ id: string; name: string }>>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  // Initial load
-  useEffect(() => {
-    loadData();
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -34,37 +33,6 @@ export default function Dashboard() {
       setSubcategories(subs);
     })();
   }, [selectedCategory]);
-
-  const workerId = "test-user-001"; // Replace with actual worker ID
-  async function loadData() {
-    const data = await getWorkerProfile(workerId);
-    setTrustScore(data.trust_score);
-    setReviewCount(data.review_count);
-  }
-
-  // Real-time updates
-  useEffect(() => {
-    const channel = supabase
-      .channel("worker-profile")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "worker_profiles",
-          filter: `worker_id=eq.${workerId}`,
-        },
-        (payload) => {
-          setTrustScore(payload.new.trust_score);
-          setReviewCount(payload.new.review_count);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [workerId]);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -138,9 +106,6 @@ export default function Dashboard() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={{ fontSize: 28, fontWeight: "bold" }}>Trust Score: {trustScore ?? "--"} / 100</Text>
-
-      <Text style={{ fontSize: 18, marginTop: 8 }}>Reviews: {reviewCount}</Text>
       <Pressable onPress={() => router.push("/")}>
         <Text>Register as Worker</Text>
       </Pressable>
@@ -177,7 +142,7 @@ export default function Dashboard() {
         <Picker.Item label="Select Category" value="" />
 
         {categories.map((cat) => (
-          <Picker.Item key={cat.id} label={cat.name} value={cat.id} />
+          <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
         ))}
       </Picker>
 
