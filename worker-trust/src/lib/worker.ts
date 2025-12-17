@@ -8,20 +8,16 @@ export async function getWorkerProfile(workerId: string) {
     .single();
 
   if (error) throw error;
-  console.log("Worker Profile Data:", data);
   return data;
 }
 
-// get all workers
 export async function getAllWorkers() {
   const { data, error } = await supabase.from("workers").select("*");
 
   if (error) throw error;
-  console.log("All Workers Data:", data);
   return data;
 }
 
-// get all workers with filters
 export async function getAllWorkersWithFilters(filters: {
   category?: string;
   province?: string;
@@ -48,6 +44,27 @@ export async function getAllWorkersWithFilters(filters: {
 
   const { data, error } = await query;
   console.log("Filtered Workers Data:", data);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getWorkerById(workerId: string) {
+  const { data, error } = await supabase
+    .from("workers")
+    .select("*")
+    .eq("id", workerId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getWorkerReviews(workerId: string) {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("worker_id", workerId);
 
   if (error) throw error;
   return data;

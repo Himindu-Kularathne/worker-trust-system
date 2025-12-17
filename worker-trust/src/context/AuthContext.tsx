@@ -1,14 +1,10 @@
 import React, { createContext, useState, ReactNode, use, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
-
-interface User {
-  id: string;
-  name: string;
-  phone: string;
-}
+import { Worker } from "../types/worker";
 
 interface AuthContextType {
-  user: User | null;
+  user: Worker | null;
+  setUser: (user: Worker | null) => void;
   login: (phone: string, password: string) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
   loading: boolean;
@@ -17,11 +13,11 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Worker | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const loadUser = async (userId: string) => {
-    const { data: worker, error } = await supabase.from("workers").select("full_name, phone").eq("id", userId).single();
+    const { data: worker, error } = await supabase.from("workers").select("*").eq("id", userId).single();
 
     if (error || !worker) {
       setUser(null);
@@ -30,8 +26,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     setUser({
       id: userId,
-      name: worker.full_name,
+      full_name: worker.full_name,
       phone: worker.phone,
+      email: worker.email,
+      address: worker.address,
+      category: worker.category,
+      description: worker.description,
+      rating: worker.rating,
+      trust_score: worker.trust_score,
+      review_count: worker.review_count,
+      province: worker.province,
+      district: worker.district,
+      city: worker.city,
     });
   };
 
@@ -62,6 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
   }, []);
 
+  // ✅ REAL LOGIN (Supabase)
   const login = async (phone: string, password: string): Promise<{ error?: string }> => {
     if (!phone.startsWith("+")) {
       return { error: "Phone number must include country code" };
@@ -72,8 +79,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       password,
     });
 
-    if (error) {
-      return { error: error.message };
+    if (error || !data.user) {
+      return { error: error?.message || "Login failed" };
     }
     await loadUser(data.user.id);
     return {};
@@ -85,5 +92,5 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
-  return <AuthContext.Provider value={{ user, login, logout, loading }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, login, logout, loading, setUser }}>{children}</AuthContext.Provider>;
 };
