@@ -17,7 +17,7 @@ const LoginView: React.FC = () => {
     setLoading(true);
 
     const { error } = await login(phone, password);
-
+    console.log("Login result:", { error });
     setLoading(false);
 
     if (error) {
