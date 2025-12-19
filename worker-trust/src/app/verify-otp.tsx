@@ -22,6 +22,7 @@ export default function VerifyOtp() {
     }
     console.log("Clean OTP:", cleanOtp);
     if (!otp || otp.trim().length !== 6) {
+      console.log("OTP verification failed: invalid OTP");
       Alert.alert("Enter the 6-digit OTP");
       return;
     }
@@ -38,15 +39,9 @@ export default function VerifyOtp() {
       Alert.alert(error.message);
       return;
     }
+    console.log("I AM HERE");
 
-    // Session is NOW created
-    const { data } = await supabase.auth.getUser();
-
-    if (!data.user?.user_metadata?.password_set) {
-      router.replace("/set-password");
-    } else {
-      router.replace("/(tabs)");
-    }
+    router.replace("/set-password");
   };
 
   return (
