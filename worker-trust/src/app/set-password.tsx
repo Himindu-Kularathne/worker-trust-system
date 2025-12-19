@@ -7,22 +7,16 @@ export default function SetPassword() {
   const [password, setPassword] = useState("");
   const [ready, setReady] = useState(false);
 
-  // ✅ Just check session
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth event:", event);
-
-      if (session) {
-        setReady(true);
-      } else {
-        Alert.alert("Session expired", "Please log in again.");
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (error || !data.user) {
+        console.log("SetPassword blocked: no user");
         router.replace("/login");
+        return;
       }
-    });
 
-    return () => subscription.unsubscribe();
+      setReady(true);
+    });
   }, []);
 
   const onSetPassword = async () => {
