@@ -1,9 +1,9 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import TrustScoreBadge from "@/src/components/workers/TrustScoreBadge";
 import { Worker } from "@/src/types/worker";
 import ReviewModal from "@/src/components/workers/WorkerReviewModal";
-import { ThemeContext } from "@react-navigation/native";
+import { ThemeContext } from "@/src/context/AppThemeContext";
 
 interface Props {
   worker: Worker;
@@ -12,16 +12,48 @@ interface Props {
 const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
   const [reviewOpen, setReviewOpen] = useState(false);
 
-  const theme = useContext(ThemeContext);
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const themeContext = useContext(ThemeContext);
+  if (!themeContext) {
+    throw new Error(
+      "WorkerProfileHeaderSection must be used within AppThemeProvider"
+    );
+  }
+
+  const { theme } = themeContext;
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.name}>{worker.full_name}</Text>
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.card,
+          borderColor: theme.border,
+          borderWidth: theme.mode === "dark" ? 0 : 1,
+        },
+      ]}
+    >
+      {/* Name */}
+      <Text style={[styles.name, { color: theme.textPrimary }]}>
+        {worker.full_name}
+      </Text>
 
+      {/* Category + Trust */}
       <View style={styles.row}>
-        <View style={styles.categoryPill}>
-          <Text style={styles.categoryText}>
+        <View
+          style={[
+            styles.categoryPill,
+            {
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.categoryText,
+              { color: theme.textPrimary },
+            ]}
+          >
             {worker.category.toUpperCase()}
           </Text>
         </View>
@@ -29,21 +61,42 @@ const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
         <TrustScoreBadge score={worker.trust_score} />
       </View>
 
+      {/* Rating + Review button */}
       <View style={styles.ratingRow}>
-        <Text style={styles.star}>★</Text>
-        <Text style={styles.ratingText}>{worker.rating}</Text>
-        <Text style={styles.reviewCount}>
+        <Text style={[styles.star, { color: theme.primary }]}>★</Text>
+
+        <Text style={[styles.ratingText, { color: theme.textPrimary }]}>
+          {worker.rating}
+        </Text>
+
+        <Text
+          style={[
+            styles.reviewCount,
+            { color: theme.textSecondary },
+          ]}
+        >
           ({worker.review_count} reviews)
         </Text>
 
         <Pressable
-          style={styles.reviewBtn}
+          style={[
+            styles.reviewBtn,
+            { backgroundColor: theme.primary },
+          ]}
           onPress={() => setReviewOpen(true)}
         >
-          <Text style={styles.reviewBtnText}>Write review</Text>
+          <Text
+            style={[
+              styles.reviewBtnText,
+              { color: theme.primaryText },
+            ]}
+          >
+            Write review
+          </Text>
         </Pressable>
       </View>
 
+      {/* Review modal */}
       <ReviewModal
         visible={reviewOpen}
         onClose={() => setReviewOpen(false)}
@@ -55,82 +108,71 @@ const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
 
 export default WorkerProfileHeaderSection;
 
-const createStyles = (theme: any) =>
-  StyleSheet.create({
-    card: {
-      margin: 16,
-      padding: 20,
-      backgroundColor: theme.colors.card,
-      borderRadius: 18,
-      shadowColor: "#000",
-      shadowOpacity: 0.08,
-      shadowRadius: 12,
-      elevation: 6,
-    },
+/* ------------ base styles (theme-independent) ------------ */
 
-    name: {
-      fontSize: 22,
-      fontWeight: "700",
-      color: theme.colors.textPrimary,
-      marginBottom: 10,
-    },
+const styles = StyleSheet.create({
+  card: {
+    margin: 16,
+    padding: 20,
+    borderRadius: 18,
+  },
 
-    row: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 8,
-    },
+  name: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 10,
+  },
 
-    categoryPill: {
-      backgroundColor: theme.colors.primarySoft,
-      paddingHorizontal: 12,
-      paddingVertical: 4,
-      borderRadius: 999,
-    },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
 
-    categoryText: {
-      fontSize: 12,
-      fontWeight: "600",
-      color: theme.colors.primary,
-      letterSpacing: 0.5,
-    },
+  categoryPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
 
-    ratingRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 6,
-    },
+  categoryText: {
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
 
-    star: {
-      color: theme.colors.warning,
-      fontSize: 16,
-      marginRight: 4,
-    },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 6,
+  },
 
-    ratingText: {
-      fontSize: 14,
-      fontWeight: "600",
-      color: theme.colors.textPrimary,
-      marginRight: 6,
-    },
+  star: {
+    fontSize: 16,
+    marginRight: 4,
+  },
 
-    reviewCount: {
-      fontSize: 13,
-      color: theme.colors.textSecondary,
-    },
+  ratingText: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginRight: 6,
+  },
 
-    reviewBtn: {
-      marginLeft: "auto",
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      backgroundColor: theme.colors.primary,
-      borderRadius: 999,
-    },
+  reviewCount: {
+    fontSize: 13,
+  },
 
-    reviewBtnText: {
-      color: theme.colors.onPrimary,
-      fontSize: 12,
-      fontWeight: "600",
-    },
-  });
+  reviewBtn: {
+    marginLeft: "auto",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+
+  reviewBtnText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+});
