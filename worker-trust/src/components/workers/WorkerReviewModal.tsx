@@ -171,8 +171,6 @@ const ReviewModal: React.FC<Props> = ({ visible, onClose, workerId }) => {
 
 export default ReviewModal;
 
-/* ------------ base styles (theme-independent) ------------ */
-
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,

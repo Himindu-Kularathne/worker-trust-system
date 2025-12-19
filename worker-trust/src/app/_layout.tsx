@@ -16,6 +16,7 @@ import { SearchFilterProvider } from "../context/SearchFilterContext";
 import { store } from "@/src/store";
 import SuccessOverlay from "../components/SuccessOverlay";
 import LoadingOverlay from "../components/LoadingAnnimation";
+import { LocationProvider } from "../context/LocationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,10 +58,10 @@ function RootLayoutNav() {
       <SearchFilterProvider>
         <Provider store={store}>
           <AuthProvider>
+            <LocationProvider>
             <AppThemeProvider>
               <LanguageProvider>
                 <Stack>
-                  {/* <Stack.Screen name="login" options={{ headerShown: false }} /> Removed login screen */}
                   <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                   <Stack.Screen name="modal" options={{ presentation: "modal" }} />
                   <Stack.Screen name="signup" options={{ headerShown: false }} />
@@ -69,6 +70,7 @@ function RootLayoutNav() {
                 <SuccessOverlay />
               </LanguageProvider>
             </AppThemeProvider>
+            </LocationProvider>
           </AuthProvider>
         </Provider>
       </SearchFilterProvider>

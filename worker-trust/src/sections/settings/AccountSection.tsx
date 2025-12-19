@@ -5,9 +5,11 @@ import SettingsCard from "@/src/components/settings/SettingsCard";
 import SettingsValueRow from "@/src/components/settings/SettingsValueRow";
 import SettingsToggleRow from "@/src/components/settings/SettingsToggleRow";
 import { useTheme } from "@/src/hooks/useThemeHook";
+import { useLocationContext } from "@/src/hooks/LocationContextHook";
 
 const AccountSection: React.FC = () => {
-  const [locationOn, setLocationOn] = useState(true);
+  const { locationOn, setLocationOn } = useLocationContext();
+
   const { theme } = useTheme();
 
   return (
@@ -34,7 +36,7 @@ const AccountSection: React.FC = () => {
           label="Location Sharing"
           value={locationOn}
           onChange={setLocationOn}
-        />
+        />;
       </SettingsCard>
     </View>
   );
