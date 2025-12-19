@@ -16,7 +16,6 @@ import { SearchFilterProvider } from "../context/SearchFilterContext";
 import { store } from "@/src/store";
 import SuccessOverlay from "../components/SuccessOverlay";
 import LoadingOverlay from "../components/LoadingAnnimation";
-import { LocationProvider } from "../context/LocationContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -58,7 +57,6 @@ function RootLayoutNav() {
       <SearchFilterProvider>
         <Provider store={store}>
           <AuthProvider>
-            <LocationProvider>
             <AppThemeProvider>
               <LanguageProvider>
                 <Stack>
@@ -70,7 +68,6 @@ function RootLayoutNav() {
                 <SuccessOverlay />
               </LanguageProvider>
             </AppThemeProvider>
-            </LocationProvider>
           </AuthProvider>
         </Provider>
       </SearchFilterProvider>
