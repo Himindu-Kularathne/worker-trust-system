@@ -73,19 +73,25 @@ export default function Dashboard() {
   const uploadImage = async () => {
     if (!image) return null;
 
-    const fileExt = image.uri.split(".").pop();
+    const fileExt = image.uri.split(".").pop() ?? "jpg";
     const fileName = `worker-${Date.now()}.${fileExt}`;
+    const filePath = fileName;
 
-    const response = await fetch(image.uri);
-    const blob = await response.blob();
+    const formData = new FormData();
 
-    const { error } = await supabase.storage.from("worker-images").upload(fileName, blob, {
+    formData.append("file", {
+      uri: image.uri,
+      name: fileName,
+      type: image.mimeType,
+    } as any);
+
+    const { error } = await supabase.storage.from("worker-images").upload(filePath, formData, {
       contentType: image.mimeType,
     });
 
     if (error) throw error;
 
-    const { data } = supabase.storage.from("worker-images").getPublicUrl(fileName);
+    const { data } = supabase.storage.from("worker-images").getPublicUrl(filePath);
 
     return data.publicUrl;
   };
@@ -171,7 +177,7 @@ export default function Dashboard() {
       />
       <Input label="Address" value={form.address} onChangeText={(v) => handleChange("address", v)} />
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Category</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Category</Text>
 
         <View
           style={[
@@ -182,8 +188,12 @@ export default function Dashboard() {
             },
           ]}
         >
-          <Picker selectedValue={form.category_id} onValueChange={(value) => setForm({ ...form, category_id: value })}>
-            <Picker.Item label="Select Category" value="" />
+          <Picker
+            style={{ color: theme.textPrimary }}
+            selectedValue={form.category_id}
+            onValueChange={(value) => setForm({ ...form, category_id: value })}
+          >
+            <Picker.Item color={theme.muted} label="Select Category" value="" />
             {categories.map((cat) => (
               <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
             ))}
