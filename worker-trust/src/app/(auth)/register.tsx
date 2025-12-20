@@ -5,6 +5,7 @@ import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
 import { loadCategories, loadSubcategories } from "@/src/lib/categories";
+import * as ImagePicker from "expo-image-picker";
 
 export const options = {
   title: "Register as Worker",
@@ -20,6 +21,36 @@ export default function Dashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Array<{ id: string; name: string }>>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [image, setImage] = useState<{
+    uri: string;
+    mimeType: string;
+  } | null>(null);
+
+  const pickImage = async () => {
+    const [image, setImage] = useState<{
+      uri: string;
+      mimeType: string;
+    } | null>(null);
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission required", "Please allow gallery access");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      setImage({
+        uri: result.assets[0].uri,
+        mimeType: result.assets[0].mimeType || "image/jpeg",
+      });
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -52,6 +83,26 @@ export default function Dashboard() {
     setForm({ ...form, [key]: value });
   };
 
+  const uploadImage = async () => {
+    if (!image) return null;
+
+    const fileExt = image.uri.split(".").pop();
+    const fileName = `worker-${Date.now()}.${fileExt}`;
+
+    const response = await fetch(image.uri);
+    const blob = await response.blob();
+
+    const { error } = await supabase.storage.from("worker-images").upload(fileName, blob, {
+      contentType: image.mimeType,
+    });
+
+    if (error) throw error;
+
+    const { data } = supabase.storage.from("worker-images").getPublicUrl(fileName);
+
+    return data.publicUrl;
+  };
+
   const submitRequest = async () => {
     if (!form.full_name || !form.phone || !form.address || !form.category_id) {
       Alert.alert("Missing fields", "Please fill all required fields");
@@ -59,6 +110,7 @@ export default function Dashboard() {
     }
 
     try {
+      const imageUrl = await uploadImage();
       const { data, error } = await supabase
         .from("worker_registration_requests")
         .insert([
@@ -68,6 +120,7 @@ export default function Dashboard() {
             email: form.email || null,
             address: form.address,
             category: form.category_id,
+            image_url: imageUrl || null,
           },
         ])
         .select()
@@ -140,6 +193,19 @@ export default function Dashboard() {
           </Picker>
         </View>
       </View>
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Work Photo / ID Image</Text>
+
+        <Pressable style={styles.imagePicker} onPress={pickImage}>
+          {image ? (
+            <Text style={{ color: "#0A84FF" }}>Change Image</Text>
+          ) : (
+            <Text style={{ color: "#666" }}>Pick an image</Text>
+          )}
+        </Pressable>
+
+        {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
+      </View>
 
       <Pressable style={styles.button} onPress={submitRequest}>
         <Text style={styles.buttonText}>Submit Registration</Text>
@@ -207,5 +273,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "#fff",
+  },
+  imagePicker: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 14,
+    alignItems: "center",
+    backgroundColor: "#fafafa",
+  },
+  imagePreviewText: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#22C55E",
   },
 });
