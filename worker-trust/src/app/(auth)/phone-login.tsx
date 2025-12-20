@@ -2,8 +2,10 @@ import { View, Text, TextInput, Pressable, StyleSheet, Alert } from "react-nativ
 import { useState } from "react";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router, useLocalSearchParams } from "expo-router";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 export default function PhoneLogin() {
+  const { theme } = useTheme();
   const { approved } = useLocalSearchParams<{ approved?: string }>();
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,26 +38,53 @@ export default function PhoneLogin() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {approved && (
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>✅ Your account has been approved. Please log in.</Text>
+        <View
+          style={[
+            styles.banner,
+            {
+              backgroundColor: theme.success + "22",
+              borderColor: theme.success,
+            },
+          ]}
+        >
+          <Text style={[styles.bannerText, { color: theme.success }]}>
+            ✅ Your account has been approved. Please log in.
+          </Text>
         </View>
       )}
 
-      <Text style={styles.title}>Welcome back</Text>
-      <Text style={styles.subtitle}>Enter your phone number to continue</Text>
+      <Text style={[styles.title, { color: theme.textPrimary }]}>Welcome back</Text>
+      <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Enter your phone number to continue</Text>
 
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            backgroundColor: theme.surface,
+            borderColor: theme.border,
+            color: theme.textPrimary,
+          },
+        ]}
         placeholder="+94 77XXXXXXX"
+        placeholderTextColor={theme.muted}
         keyboardType="phone-pad"
         value={phone}
         onChangeText={setPhone}
       />
 
-      <Pressable style={styles.button} onPress={sendOtp} disabled={loading}>
-        <Text style={styles.buttonText}>{loading ? "Sending..." : "Send OTP"}</Text>
+      <Pressable
+        style={[
+          styles.button,
+          {
+            backgroundColor: loading ? theme.muted : theme.primary,
+          },
+        ]}
+        onPress={sendOtp}
+        disabled={loading}
+      >
+        <Text style={[styles.buttonText, { color: theme.primaryText }]}>{loading ? "Sending..." : "Send OTP"}</Text>
       </Pressable>
     </View>
   );
