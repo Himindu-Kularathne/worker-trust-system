@@ -17,7 +17,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState<boolean>(true);
 
   const loadUser = async (userId: string) => {
-    const { data: worker, error } = await supabase.from("workers").select("*").eq("id", userId).single();
+    const { data: worker, error } = await supabase
+      .from("workers")
+      .select(
+        `
+    id,
+    full_name,
+    phone,
+    email,
+    address,
+    description,
+    rating,
+    trust_score,
+    review_count,
+    province,
+    district,
+    city,
+    category,
+    categories (
+      title
+    )
+  `
+      )
+      .eq("id", userId)
+      .single();
 
     if (error || !worker) {
       setUser(null);
@@ -30,7 +53,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       phone: worker.phone,
       email: worker.email,
       address: worker.address,
-      category: worker.category,
+      category: worker.categories?.[0]?.title ?? null,
       description: worker.description,
       rating: worker.rating,
       trust_score: worker.trust_score,
