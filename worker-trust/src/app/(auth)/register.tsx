@@ -4,7 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
-import { loadCategories, loadSubcategories } from "@/src/lib/categories";
+import { loadCategories } from "@/src/lib/categories";
 import * as ImagePicker from "expo-image-picker";
 
 export const options = {
@@ -19,18 +19,12 @@ interface Category {
 
 export default function Dashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Array<{ id: string; name: string }>>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [image, setImage] = useState<{
     uri: string;
     mimeType: string;
   } | null>(null);
 
   const pickImage = async () => {
-    const [image, setImage] = useState<{
-      uri: string;
-      mimeType: string;
-    } | null>(null);
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert("Permission required", "Please allow gallery access");
@@ -59,15 +53,6 @@ export default function Dashboard() {
       setCategories(categories);
     })();
   }, []);
-
-  useEffect(() => {
-    if (!selectedCategory) return;
-
-    (async () => {
-      const subs = await loadSubcategories(selectedCategory);
-      setSubcategories(subs);
-    })();
-  }, [selectedCategory]);
 
   const [form, setForm] = useState({
     full_name: "",
