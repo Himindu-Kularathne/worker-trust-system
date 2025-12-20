@@ -6,6 +6,10 @@ import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
 import { loadCategories, loadSubcategories } from "@/src/lib/categories";
 
+export const options = {
+  title: "Register as Worker",
+};
+
 interface Category {
   id: string;
   title: string;
@@ -106,13 +110,9 @@ export default function Dashboard() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Pressable onPress={() => router.push("/")}>
-        <Text>Register as Worker</Text>
-      </Pressable>
-
       <Text style={styles.title}>Register as a worker</Text>
       <Text>Want to work with us?Fill the form below.</Text>
-      <Text>You will receive a notification once your request has been accepted.</Text>
+      <Text>You will receive a sms with the sign up link once your request has been approved.</Text>
 
       <Input label="Full Name" value={form.full_name} onChangeText={(v) => handleChange("full_name", v)} />
       <Input
@@ -128,23 +128,18 @@ export default function Dashboard() {
         onChangeText={(v) => handleChange("email", v)}
       />
       <Input label="Address" value={form.address} onChangeText={(v) => handleChange("address", v)} />
-      <Input
-        label="Category (e.g. Plumber, Electrician)"
-        value={form.category_id}
-        onChangeText={(v) => handleChange("category", v)}
-      />
-      <Picker
-        selectedValue={form.category_id}
-        onValueChange={(value) => {
-          setForm({ ...form, category_id: value });
-        }}
-      >
-        <Picker.Item label="Select Category" value="" />
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Category</Text>
 
-        {categories.map((cat) => (
-          <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
-        ))}
-      </Picker>
+        <View style={styles.pickerWrapper}>
+          <Picker selectedValue={form.category_id} onValueChange={(value) => setForm({ ...form, category_id: value })}>
+            <Picker.Item label="Select Category" value="" />
+            {categories.map((cat) => (
+              <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
+            ))}
+          </Picker>
+        </View>
+      </View>
 
       <Pressable style={styles.button} onPress={submitRequest}>
         <Text style={styles.buttonText}>Submit Registration</Text>
@@ -205,5 +200,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontWeight: "600",
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#fff",
   },
 });
