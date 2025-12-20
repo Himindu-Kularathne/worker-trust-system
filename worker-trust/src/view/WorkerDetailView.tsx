@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -21,10 +21,15 @@ import {
 import { clearSelectedWorker } from "@/src/store/slices/workerSlice";
 import type { RootState, AppDispatch } from "@/src/store";
 import { View } from "@/components/Themed";
+import { ThemeContext } from "@react-navigation/native";
 
 const WorkerDetailView: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
+
+  const theme = useContext(ThemeContext);
+
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const { selectedWorker, selectedWorkerReviews, loading } = useSelector(
     (state: RootState) => state.workers
@@ -44,16 +49,16 @@ const WorkerDetailView: React.FC = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
         <Text style={styles.loadingText}>Loading worker details...</Text>
-      </  SafeAreaView>
+      </SafeAreaView>
     );
   }
 
   if (!selectedWorker) {
     return (
       <SafeAreaView style={styles.center}>
-        <Text>No worker found.</Text>
+        <Text style={styles.errorText}>No worker found.</Text>
       </SafeAreaView>
     );
   }
@@ -73,24 +78,27 @@ const WorkerDetailView: React.FC = () => {
   );
 };
 
+
 export default WorkerDetailView;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F9FAFB",
-  },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loadingText: {
-    marginTop: 8,
-    color: "#6B7280",
-  },
-  errorText: {
-    color: "#DC2626",
-    fontSize: 16,
-  },
-});
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    center: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.colors.background,
+    },
+    loadingText: {
+      marginTop: 8,
+      color: theme.colors.textSecondary,
+    },
+    errorText: {
+      color: theme.colors.error,
+      fontSize: 16,
+    },
+  });

@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 import SettingsCard from "@/src/components/settings/SettingsCard";
 import SettingsValueRow from "@/src/components/settings/SettingsValueRow";
 import SettingsToggleRow from "@/src/components/settings/SettingsToggleRow";
 import { useTheme } from "@/src/hooks/useThemeHook";
+import { SearchFilterContext } from "@/src/context/SearchFilterContext";
 
 const AccountSection: React.FC = () => {
-  const [locationOn, setLocationOn] = useState(true);
   const { theme } = useTheme();
+
+  const searchFilterContext = useContext(SearchFilterContext);
+  if (!searchFilterContext) {
+    throw new Error(
+      "AccountSection must be used within SearchFilterProvider"
+    );
+  }
+
+  const { locationOn, setLocationOn } = searchFilterContext;
 
   return (
     <View style={styles.wrapper}>

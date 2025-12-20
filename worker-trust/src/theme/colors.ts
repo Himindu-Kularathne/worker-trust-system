@@ -23,35 +23,35 @@ export interface AppTheme {
 
 export const DarkAppTheme: AppTheme = {
   mode: "dark",
+  
+  background: "#0F172A",   
+  surface: "#111827", 
+  card: "#1E293B",
 
-  background: "#0B1220",      // deep navy
-  surface: "#111827",         // sheets
-  card: "#1F2937",
+  textPrimary: "#F8FAFC",
+  textSecondary: "#CBD5E1",
 
-  textPrimary: "#F9FAFB",
-  textSecondary: "#9CA3AF",
+  primary: "#60A5FA",
+  primaryText: "#020617",
 
-  primary: "#3B82F6",         // lighter blue for dark bg
-  primaryText: "#FFFFFF",
+  border: "#1E293B",
+  muted: "#94A3B8",
 
-  border: "#374151",
-  muted: "#6B7280",
-
-  success: "#22C55E",
-  error: "#EF4444",
+  success: "#4ADE80",
+  error: "#F87171",
 };
 
 export const LightAppTheme: AppTheme = {
   mode: "light",
 
-  background: "#F3F4F6",      // app background
-  surface: "#FFFFFF",        // sheets / modals
+  background: "#F3F4F6",
+  surface: "#FFFFFF",
   card: "#FFFFFF",
 
-  textPrimary: "#111827",     // main text
-  textSecondary: "#6B7280",   // subtitles
+  textPrimary: "#111827",
+  textSecondary: "#6B7280",
 
-  primary: "#2563EB",         // brand blue
+  primary: "#2563EB", 
   primaryText: "#FFFFFF",
 
   border: "#E5E7EB",

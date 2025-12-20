@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, SafeAreaView} from "react-native";
 
 import WorkersHeaderSection from "@/src/sections/workers/WorkerHeaderSection";
@@ -7,9 +7,15 @@ import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 import { useTheme } from "@/src/hooks/useThemeHook";
 
 const WorkersListView: React.FC = () => {
-  const { state } = useSearchFilters();
+  const { state , useCurrentLocation, locationOn} = useSearchFilters();
   const { category } = state;
   const { theme } = useTheme();
+
+  useEffect(() => {
+  if (locationOn) {
+    useCurrentLocation();
+  }
+}, [locationOn]);
 
   return (
     <SafeAreaView
