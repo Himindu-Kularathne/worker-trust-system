@@ -8,34 +8,50 @@ export default function SetPassword() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data, error }) => {
-      if (error || !data.user) {
-        console.log("SetPassword blocked: no user");
-        router.replace("/login");
-        return;
-      }
+    let mounted = true;
 
-      setReady(true);
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+
+      if (!data.session) {
+        router.replace("/login");
+      } else {
+        setReady(true);
+      }
     });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        router.replace("/login");
+      }
+    });
+
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const onSetPassword = async () => {
-    console.log("Setting password:", password);
     if (password.length < 8) {
       Alert.alert("Password must be at least 8 characters");
       return;
     }
-    console.log("Updating password in Supabase...");
+
     const { error } = await supabase.auth.updateUser({
       password,
       data: { password_set: true },
     });
-    console.log("Password update result:", { error });
+
     if (error) {
       Alert.alert(error.message);
     } else {
-      Alert.alert("Password set successfully 🎉");
-      router.replace("/login");
+      Alert.alert("Password set successfully 🎉", "", [
+        {
+          text: "Continue",
+          onPress: () => router.replace("/"),
+        },
+      ]);
     }
   };
 
