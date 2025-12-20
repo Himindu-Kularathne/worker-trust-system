@@ -6,6 +6,7 @@ import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
 import { loadCategories } from "@/src/lib/categories";
 import * as ImagePicker from "expo-image-picker";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 export const options = {
   title: "Register as Worker",
@@ -18,6 +19,7 @@ interface Category {
 }
 
 export default function Dashboard() {
+  const { theme } = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
   const [image, setImage] = useState<{
     uri: string;
@@ -147,10 +149,12 @@ export default function Dashboard() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Register as a worker</Text>
-      <Text>Want to work with us?Fill the form below.</Text>
-      <Text>You will receive a sms with the sign up link once your request has been approved.</Text>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.textPrimary }]}>Register as a worker</Text>
+      <Text style={{ color: theme.textPrimary }}>Want to work with us?Fill the form below.</Text>
+      <Text style={{ color: theme.textPrimary }}>
+        You will receive a sms with the sign up link once your request has been approved.
+      </Text>
 
       <Input label="Full Name" value={form.full_name} onChangeText={(v) => handleChange("full_name", v)} />
       <Input
@@ -169,7 +173,15 @@ export default function Dashboard() {
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Category</Text>
 
-        <View style={styles.pickerWrapper}>
+        <View
+          style={[
+            styles.pickerWrapper,
+            {
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            },
+          ]}
+        >
           <Picker selectedValue={form.category_id} onValueChange={(value) => setForm({ ...form, category_id: value })}>
             <Picker.Item label="Select Category" value="" />
             {categories.map((cat) => (
@@ -179,14 +191,10 @@ export default function Dashboard() {
         </View>
       </View>
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Work Photo / ID Image</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Work Photo / ID Image</Text>
 
         <Pressable style={styles.imagePicker} onPress={pickImage}>
-          {image ? (
-            <Text style={{ color: "#0A84FF" }}>Change Image</Text>
-          ) : (
-            <Text style={{ color: "#666" }}>Pick an image</Text>
-          )}
+          <Text style={{ color: theme.primary }}>{image ? "Change Image" : "Pick an image"}</Text>
         </Pressable>
 
         {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
@@ -208,10 +216,22 @@ function Input({
   onChangeText: (v: string) => void;
   keyboardType?: any;
 }) {
+  const { theme } = useTheme();
   return (
     <View style={styles.inputGroup}>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} {...props} />
+      <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
+      <TextInput
+        style={[
+          styles.input,
+          {
+            color: theme.textPrimary,
+            backgroundColor: theme.surface,
+            borderColor: theme.border,
+          },
+        ]}
+        placeholderTextColor={theme.muted}
+        {...props}
+      />
     </View>
   );
 }
@@ -219,6 +239,7 @@ function Input({
 const styles = StyleSheet.create({
   container: {
     padding: 24,
+    flexGrow: 1,
   },
   title: {
     fontSize: 22,
