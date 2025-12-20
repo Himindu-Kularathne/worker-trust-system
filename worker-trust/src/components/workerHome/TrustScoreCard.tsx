@@ -8,11 +8,8 @@ export type TrustScoreCardProps = {
   reviews: number;
 };
 
-const TrustScoreCard: React.FC<TrustScoreCardProps> = ({
-  score,
-  total,
-  reviews,
-}) => {
+const TrustScoreCard: React.FC<TrustScoreCardProps> = ({ score, total, reviews }) => {
+  const rating = Math.round((score / total) * 5);
   return (
     <View style={styles.card}>
       <View style={styles.left}>
@@ -27,7 +24,7 @@ const TrustScoreCard: React.FC<TrustScoreCardProps> = ({
           {Array.from({ length: 5 }).map((_, i) => (
             <Ionicons
               key={i}
-              name="star"
+              name={i < rating ? "star" : "star-outline"}
               size={16}
               color="#FFD166"
               style={{ marginRight: 2 }}

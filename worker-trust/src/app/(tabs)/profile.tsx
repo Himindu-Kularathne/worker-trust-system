@@ -6,6 +6,10 @@ import { getWorkerProfile } from "@/src/lib/worker";
 import { Alert, StyleSheet } from "react-native";
 import TrustScoreCard from "@/src/components/workerHome/TrustScoreCard";
 import LogoutButton from "@/src/components/settings/LogoutButton";
+import InfoCard from "@/src/components/workerProfile/InfoCard";
+import WorkPhotosRow from "@/src/components/workerProfile/WorkPhotosRow";
+import AvailabilityToggleRow from "@/src/components/workerProfile/AvailabilityToggleRow";
+import ProfileHeader from "@/src/components/workerProfile/profileHeader";
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
@@ -59,9 +63,25 @@ export default function ProfileScreen() {
   }
   return user ? (
     <View>
-      <Text>Welcome, {user.name}</Text>
-      <TrustScoreCard score={trustScore} total={5} reviews={reviewCount} />
-      <LogoutButton onPress={handleLogout} />
+      <View style={styles.container}>
+        {/* Top content */}
+        <View style={styles.topSection}>
+          <Text style={styles.welcome}>Welcome, {user.full_name}</Text>
+          <ProfileHeader name={user.full_name} role={user.category} statusLabel={""} avatarUrl={""} />
+          <WorkPhotosRow photos={[]} />
+          <TrustScoreCard score={trustScore} total={5} reviews={reviewCount} />
+        </View>
+        <InfoCard title={""} children={undefined} />
+        <AvailabilityToggleRow
+          label={""}
+          value={false}
+          onChange={function (value: boolean): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+        {/* Bottom */}
+        <LogoutButton onPress={handleLogout} />
+      </View>
     </View>
   ) : (
     <LoginView />
@@ -70,8 +90,11 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1, // 👈 take full screen height
     padding: 16,
-    gap: 16,
+  },
+  topSection: {
+    gap: 16, // 👈 spacing between welcome & TrustScoreCard
   },
   welcome: {
     fontSize: 18,
