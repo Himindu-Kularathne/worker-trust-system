@@ -834,7 +834,7 @@ export function workerRequestTemplate(worker: any) {
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
                                                                                         >Address: </span
-                                                                                      >${worker.address}
+                                                                                      >Address
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>

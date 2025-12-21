@@ -25,38 +25,6 @@ Deno.serve(async (req) => {
   if (request.status !== "pending") {
     return new Response("Already processed", { status: 400 });
   }
-
-  // 2. Create Auth user (no password)
-  // const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
-  //   phone: request.phone,
-  //   email: request.email ?? undefined,
-  //   phone_confirm: true,
-  // });
-
-  // console.log("Auth user creation response:", authUser, authError);
-  // if (authError || !authUser.user) {
-  //   console.error(authError);
-  //   return new Response("Auth user creation failed", { status: 500 });
-  // }
-
-  // const userId = authUser.user.id;
-
-  // 3. Insert worker
-  // const { error: workerError } = await supabase.from("workers").insert({
-  //   id: userId,
-  //   full_name: request.full_name,
-  //   phone: request.phone,
-  //   email: request.email,
-  //   address: request.address,
-  //   category: request.category,
-  // });
-
-  // if (workerError) {
-  //   console.error(workerError);
-  //   return new Response("Worker creation failed", { status: 500 });
-  // }
-
-  // 4. Update request
   await supabase
     .from("worker_registration_requests")
     .update({
@@ -65,16 +33,7 @@ Deno.serve(async (req) => {
     })
     .eq("id", requestId);
 
-  // 5. Send password setup link
   await sendApprovalSms(request.phone, request.full_name);
-  // if (request.email) {
-  //   await supabase.auth.admin.inviteUserByEmail(request.email, {
-  //     redirectTo: "workertrust://set-password",
-  //   });
-  // } else {
-  //   // Phone-first user
-  //   await sendApprovalSms(request.phone, request.full_name);
-  // }
 
   return new Response(
     `

@@ -202,7 +202,6 @@ export default function Dashboard() {
           full_name: data.full_name,
           phone: data.phone,
           email: data.email,
-          address: data.address,
           category: data.category,
         }),
       });
