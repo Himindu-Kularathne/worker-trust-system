@@ -3,7 +3,6 @@ export type Worker = {
   full_name: string;
   email?: string;
   phone: string;
-  address: string;
   category: string;
   image_url?: string;
   description: string;

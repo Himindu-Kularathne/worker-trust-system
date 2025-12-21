@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import { mapSriLankaLocation } from "../../utils/mapLocationToSriLanka";
 import { setLoading } from "@/src/store/slices/workerSlice";
 import { useAppDispatch } from "@/src/store/hooks";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 export const options = {
   title: "Register as Worker",
@@ -122,7 +123,6 @@ export default function Dashboard() {
     full_name: "",
     phone: "",
     email: "",
-    address: "",
     // category: "",
     category_id: "",
     // subcategory_id: "",
@@ -131,23 +131,6 @@ export default function Dashboard() {
   const handleChange = (key: string, value: string) => {
     setForm({ ...form, [key]: value });
   };
-
-  const params = useLocalSearchParams();
-
-  useEffect(() => {
-    if (params.lat && params.lng) {
-      (async () => {
-        const address = await extractAddressFromCoords(Number(params.lat), Number(params.lng));
-
-        setLocation({
-          latitude: Number(params.lat),
-          longitude: Number(params.lng),
-          ...address,
-        });
-      })();
-    }
-  }, [params.lat, params.lng]);
-
   const uploadImage = async () => {
     if (!image) return null;
 
@@ -175,10 +158,12 @@ export default function Dashboard() {
   };
 
   const submitRequest = async () => {
-    if (!form.full_name || !form.phone || !form.address || !form.category_id || !location) {
+    if (!form.full_name || !form.phone || !form.category_id || !location) {
       Alert.alert("Missing fields", "Please fill all required fields");
       return;
     }
+
+    dispatch(setLoading(true));
 
     try {
       const imageUrl = await uploadImage();
@@ -189,7 +174,6 @@ export default function Dashboard() {
             full_name: form.full_name,
             phone: form.phone,
             email: form.email || null,
-            address: form.address,
             category: form.category_id,
             image_url: imageUrl || null,
             province: location?.province,
@@ -229,11 +213,12 @@ export default function Dashboard() {
         full_name: "",
         phone: "",
         email: "",
-        address: "",
         category_id: "",
       });
     } catch (err: any) {
       Alert.alert("Error", err.message ?? "Something went wrong");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -258,7 +243,6 @@ export default function Dashboard() {
         keyboardType="email-address"
         onChangeText={(v) => handleChange("email", v)}
       />
-      <Input label="Address" value={form.address} onChangeText={(v) => handleChange("address", v)} />
       <View style={styles.inputGroup}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Category</Text>
 
@@ -286,13 +270,18 @@ export default function Dashboard() {
       <View style={styles.inputGroup}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Work Photo / ID Image</Text>
 
-        <Pressable style={styles.imagePicker} onPress={pickImage}>
-          <Text style={{ color: theme.primary }}>{image ? "Change Image" : "Pick an image"}</Text>
+        <Pressable
+          style={[styles.imagePicker, { flexDirection: "row", alignItems: "center", gap: 8 }]}
+          onPress={pickImage}
+        >
+          <EvilIcons name="image" size={26} color={theme.primary} />
+
+          <Text style={{ color: theme.primary, fontSize: 15 }}>{image ? "Change Image" : "Pick Profile Image"}</Text>
         </Pressable>
 
         {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
       </View>
-      <Pressable style={styles.button} onPress={useCurrentLocation}>
+      <Pressable style={[styles.button, { backgroundColor: "#22C55E" }]} onPress={useCurrentLocation}>
         <Text style={styles.buttonText}>Use Current Location</Text>
       </Pressable>
       {location && (
