@@ -31,8 +31,6 @@ const LoginView: React.FC = () => {
       Alert.alert("Login failed", error);
       return;
     }
-
-    // After successful login
     router.replace("/(tabs)/profile");
   };
 
