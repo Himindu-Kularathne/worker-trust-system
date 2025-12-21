@@ -1,6 +1,7 @@
 export function workerRequestTemplate(worker: any) {
   const approveUrl =
-    `https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker` + `?request_id=${worker.id}`;
+    `https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker` +
+    `?request_id=${worker.id}&token=${Deno.env.get("APPROVE_SECRET")}`;
   return `<!--
 * This email was built using Tabular.
 * For more information, visit https://tabular.email

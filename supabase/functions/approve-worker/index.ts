@@ -1,11 +1,20 @@
 import { createClient } from "@supabase/supabase-js";
 import { sendApprovalSms } from "./sendSms.ts";
 
+export const config = {
+  verify_jwt: false,
+};
+
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
   const requestId = url.searchParams.get("request_id");
+  const token = url.searchParams.get("token");
+
+  if (!token || token !== Deno.env.get("APPROVE_SECRET")) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
   if (!requestId) {
     return new Response("Missing request_id", { status: 400 });
