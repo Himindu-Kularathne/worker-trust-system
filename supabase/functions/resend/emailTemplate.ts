@@ -613,7 +613,36 @@ export function workerRequestTemplate(worker: any) {
                                                                     cellpadding="0"
                                                                     cellspacing="0"
                                                                     style="width: 100% !important"
-                                                                  >
+                                                                  > <tr>
+                                                                      <td align="center">
+                                                                        <table
+                                                                          role="presentation"
+                                                                          cellpadding="0"
+                                                                          cellspacing="0"
+                                                                          style="margin-left:auto; margin-right:auto;"
+                                                                        >
+                                                                          <tr>
+                                                                            <td style="padding-bottom: 16px;">
+                                                                              <img
+                                                                                src="${
+                                                                                  worker.image_url ||
+                                                                                  "https://via.placeholder.com/200?text=No+Image"
+                                                                                }"
+                                                                                alt="Worker Image"
+                                                                                width="180"
+                                                                                style="
+                                                                                  display: block;
+                                                                                  border-radius: 8px;
+                                                                                  border: 1px solid #e5e7eb;
+                                                                                  max-width: 100%;
+                                                                                "
+                                                                              />
+                                                                            </td>
+                                                                          </tr>
+                                                                        </table>
+                                                                      </td>
+                                                                    </tr>
+
                                                                     <tr>
                                                                       <td align="center">
                                                                         <table
@@ -834,7 +863,9 @@ export function workerRequestTemplate(worker: any) {
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
                                                                                         >Location: </span
-                                                                                      >${worker.city}, ${worker.district}, ${worker.province}
+                                                                                      >${worker.city}, ${
+    worker.district
+  }, ${worker.province}
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>
@@ -916,7 +947,7 @@ export function workerRequestTemplate(worker: any) {
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
                                                                                         >Category: </span
-                                                                                      >${worker.categoryTitle}
+                                                                                      >${worker.category_title}
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>
