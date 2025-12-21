@@ -10,6 +10,8 @@ import { useTheme } from "@/src/hooks/useThemeHook";
 import { extractAddressFromCoords } from "../reverseGeoHelper";
 import * as Location from "expo-location";
 import { mapSriLankaLocation } from "../../utils/mapLocationToSriLanka";
+import { setLoading } from "@/src/store/slices/workerSlice";
+import { useAppDispatch } from "@/src/store/hooks";
 
 export const options = {
   title: "Register as Worker",
@@ -23,6 +25,7 @@ interface Category {
 
 export default function Dashboard() {
   const { theme } = useTheme();
+  const dispatch = useAppDispatch();
   const [categories, setCategories] = useState<Category[]>([]);
   const [location, setLocation] = useState<{
     latitude: number;
@@ -37,43 +40,52 @@ export default function Dashboard() {
   } | null>(null);
 
   const useCurrentLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    dispatch(setLoading(true));
 
-    if (status !== "granted") {
-      Alert.alert("Permission denied", "Location permission is required");
-      return;
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        Alert.alert("Permission denied", "Location permission is required");
+        return;
+      }
+
+      const pos = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      const geo = await Location.reverseGeocodeAsync({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+      });
+
+      if (!geo.length) {
+        Alert.alert("Location error", "Unable to detect your location");
+        return;
+      }
+
+      const { region, subregion, city } = geo[0];
+
+      const mapped = mapSriLankaLocation(region ?? undefined, subregion ?? undefined, city ?? undefined);
+
+      if (!mapped.province) {
+        Alert.alert("Location not recognized", "Please move closer to a town or city");
+        return;
+      }
+
+      setLocation({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        province: mapped.province,
+        district: mapped.district ?? "",
+        city: mapped.city ?? "",
+      });
+    } catch (error) {
+      console.error("Location error:", error);
+      Alert.alert("Error", "Failed to get location");
+    } finally {
+      dispatch(setLoading(false));
     }
-
-    const pos = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High,
-    });
-
-    const geo = await Location.reverseGeocodeAsync({
-      latitude: pos.coords.latitude,
-      longitude: pos.coords.longitude,
-    });
-
-    if (!geo.length) {
-      Alert.alert("Location error", "Unable to detect your location");
-      return;
-    }
-
-    const { region, subregion, city } = geo[0];
-
-    const mapped = mapSriLankaLocation(region || undefined, subregion || undefined, city || undefined);
-
-    if (!mapped.province) {
-      Alert.alert("Location not recognized", "Please move closer to a town or city");
-      return;
-    }
-
-    setLocation({
-      latitude: pos.coords.latitude,
-      longitude: pos.coords.longitude,
-      province: mapped.province,
-      district: mapped.district ?? "",
-      city: mapped.city ?? "",
-    });
   };
 
   const pickImage = async () => {

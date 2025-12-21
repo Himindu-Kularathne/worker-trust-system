@@ -67,7 +67,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const restoreSession = async () => {
       setLoading(true);
       const { data } = await supabase.auth.getSession();
-      console.log("Restoring session:", data);
       if (data.session?.user) {
         await loadUser(data.session.user.id);
       }

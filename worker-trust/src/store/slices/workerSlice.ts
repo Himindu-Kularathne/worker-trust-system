@@ -1,10 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  fetchWorkerById,
-  fetchWorkerReviews,
-  fetchWorkers,
-  submitWorkerReviews,
-} from "../thunks/workersThunks";
+import { fetchWorkerById, fetchWorkerReviews, fetchWorkers, submitWorkerReviews } from "../thunks/workersThunks";
 import { Worker, WorkerReview } from "@/src/types/worker";
 
 interface WorkersState {
@@ -35,6 +30,9 @@ const workersSlice = createSlice({
 
     clearReviewSuccess(state) {
       state.showSuccess = false;
+    },
+    setLoading(state, action) {
+      state.loading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -94,9 +92,6 @@ const workersSlice = createSlice({
   },
 });
 
-export const {
-  clearSelectedWorker,
-  clearReviewSuccess,
-} = workersSlice.actions;
+export const { clearSelectedWorker, clearReviewSuccess, setLoading } = workersSlice.actions;
 
 export default workersSlice.reducer;
