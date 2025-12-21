@@ -41,7 +41,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       )
       .eq("id", userId)
       .single();
-    console.log("loadUser result:", { worker, error });
     if (error || !worker) {
       setUser(null);
       return;
@@ -63,7 +62,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       city: worker.city,
     });
   };
-  console.log("AuthProvider render, current user:", user);
   // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
@@ -81,7 +79,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Listen to auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
-        console.log("Auth state changed, loading user:", session.user);
         await loadUser(session.user.id);
       } else {
         setUser(null);

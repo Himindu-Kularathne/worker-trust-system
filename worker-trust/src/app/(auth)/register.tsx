@@ -8,6 +8,8 @@ import { loadCategories } from "@/src/lib/categories";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "@/src/hooks/useThemeHook";
 import { extractAddressFromCoords } from "../reverseGeoHelper";
+import * as Location from "expo-location";
+import { mapSriLankaLocation } from "../../utils/mapLocationToSriLanka";
 
 export const options = {
   title: "Register as Worker",
@@ -33,6 +35,46 @@ export default function Dashboard() {
     uri: string;
     mimeType: string;
   } | null>(null);
+
+  const useCurrentLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== "granted") {
+      Alert.alert("Permission denied", "Location permission is required");
+      return;
+    }
+
+    const pos = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+    });
+
+    const geo = await Location.reverseGeocodeAsync({
+      latitude: pos.coords.latitude,
+      longitude: pos.coords.longitude,
+    });
+
+    if (!geo.length) {
+      Alert.alert("Location error", "Unable to detect your location");
+      return;
+    }
+
+    const { region, subregion, city } = geo[0];
+
+    const mapped = mapSriLankaLocation(region || undefined, subregion || undefined, city || undefined);
+
+    if (!mapped.province) {
+      Alert.alert("Location not recognized", "Please move closer to a town or city");
+      return;
+    }
+
+    setLocation({
+      latitude: pos.coords.latitude,
+      longitude: pos.coords.longitude,
+      province: mapped.province,
+      district: mapped.district ?? "",
+      city: mapped.city ?? "",
+    });
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -121,7 +163,7 @@ export default function Dashboard() {
   };
 
   const submitRequest = async () => {
-    if (!form.full_name || !form.phone || !form.address || !form.category_id) {
+    if (!form.full_name || !form.phone || !form.address || !form.category_id || !location) {
       Alert.alert("Missing fields", "Please fill all required fields");
       return;
     }
@@ -238,10 +280,9 @@ export default function Dashboard() {
 
         {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
       </View>
-      <Pressable style={styles.button} onPress={() => router.push("/locationPicker")}>
-        <Text style={styles.buttonText}>Pick Location from Map</Text>
+      <Pressable style={styles.button} onPress={useCurrentLocation}>
+        <Text style={styles.buttonText}>Use Current Location</Text>
       </Pressable>
-
       {location && (
         <>
           <Input label="Province" value={location.province} editable={false} />
@@ -259,6 +300,7 @@ export default function Dashboard() {
 
 function Input({
   label,
+  editable = true,
   ...props
 }: {
   label: string;
@@ -272,16 +314,19 @@ function Input({
     <View style={styles.inputGroup}>
       <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
       <TextInput
+        {...props}
+        editable={editable}
+        selectTextOnFocus={editable}
         style={[
           styles.input,
           {
             color: theme.textPrimary,
-            backgroundColor: theme.surface,
+            backgroundColor: editable ? theme.surface : theme.surface + "AA",
             borderColor: theme.border,
+            opacity: editable ? 1 : 0.7,
           },
         ]}
         placeholderTextColor={theme.muted}
-        {...props}
       />
     </View>
   );
