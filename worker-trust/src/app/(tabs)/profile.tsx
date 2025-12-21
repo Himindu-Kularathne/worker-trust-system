@@ -71,7 +71,7 @@ export default function ProfileScreen() {
           {/* Top content */}
           <Text style={styles.welcome}>Welcome, {user.full_name}</Text>
 
-          <ProfileHeader name={user.full_name} role={user.category} statusLabel="" avatarUrl="" />
+          <ProfileHeader name={user.full_name} role={user.category} statusLabel="" avatarUrl={user.image_url ?? ""} />
 
           <WorkPhotosRow photos={[]} />
 
