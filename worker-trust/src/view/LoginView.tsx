@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import LottieView from "lottie-react-native";
 
 import { useAuth } from "@/src/hooks/UserContextHook";
@@ -29,7 +29,11 @@ const LoginView: React.FC = () => {
 
     if (error) {
       Alert.alert("Login failed", error);
+      return;
     }
+
+    // ✅ After successful login
+    router.replace("/(tabs)");
   };
 
   const disabled = !phone || !password || loading;
@@ -42,7 +46,7 @@ const LoginView: React.FC = () => {
       ]}
     >
       {/* -------- Decorative Lotties -------- */}
-       <LottieView
+      <LottieView
         source={require("@/assets/animations/topLeft.json")}
         autoPlay
         loop
@@ -70,6 +74,7 @@ const LoginView: React.FC = () => {
         <Text style={[styles.title, { color: theme.textPrimary }]}>
           Welcome Back
         </Text>
+
         <Text
           style={[
             styles.subtitle,
@@ -119,6 +124,7 @@ const LoginView: React.FC = () => {
           onChangeText={setPassword}
         />
 
+        {/* Login button */}
         <TouchableOpacity
           style={[
             styles.loginButton,
@@ -141,7 +147,7 @@ const LoginView: React.FC = () => {
           </Text>
         </TouchableOpacity>
 
-        {/* Register link */}
+        {/* Register navigation */}
         <View style={styles.registerContainer}>
           <Text
             style={[
@@ -152,19 +158,19 @@ const LoginView: React.FC = () => {
             No account?
           </Text>
 
-          <Link href="/(auth)/register" asChild>
-            <TouchableOpacity>
-              <Text
-                style={[
-                  styles.registerLink,
-                  { color: theme.primary },
-                ]}
-              >
-                {" "}
-                Register
-              </Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity
+            onPress={() => router.push("/register")}
+          >
+            <Text
+              style={[
+                styles.registerLink,
+                { color: theme.primary },
+              ]}
+            >
+              {" "}
+              Register
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -193,11 +199,6 @@ const styles = StyleSheet.create({
   topLeft: {
     top: 20,
     left: -20,
-  },
-
-  topRight: {
-    top: -30,
-    right: -30,
   },
 
   bottomRight: {
