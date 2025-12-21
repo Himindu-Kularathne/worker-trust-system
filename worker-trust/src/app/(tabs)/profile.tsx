@@ -2,21 +2,17 @@ import React, { useEffect } from "react";
 import { useAuth } from "@/src/hooks/UserContextHook";
 import LoginView from "@/src/view/LoginView";
 import { View, Text } from "@/components/Themed";
-import { getWorkerProfile } from "@/src/lib/worker";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import TrustScoreCard from "@/src/components/workerHome/TrustScoreCard";
 import LogoutButton from "@/src/components/settings/LogoutButton";
 import InfoCard from "@/src/components/workerProfile/InfoCard";
 import WorkPhotosRow from "@/src/components/workerProfile/WorkPhotosRow";
-import AvailabilityToggleRow from "@/src/components/workerProfile/AvailabilityToggleRow";
 import ProfileHeader from "@/src/components/workerProfile/profileHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
-  const { user, logout } = useAuth();
-  const [trustScore, setTrustScore] = React.useState<number>(0);
-  const [reviewCount, setReviewCount] = React.useState<number>(0);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const { user, logout, loading } = useAuth();
+  console.log("ProfileScreen User:", user);
   const handleLogout = async () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       {
@@ -32,23 +28,24 @@ export default function ProfileScreen() {
     ]);
   };
 
-  useEffect(() => {
-    if (!user) return;
-    const workerId = user.id;
-    async function loadProfile() {
-      // to prevent tsx screams.
-      try {
-        const response = await getWorkerProfile(workerId);
-        setTrustScore(response.trust_score);
-        setReviewCount(response.review_count);
-      } catch (error) {
-        console.error("Error loading worker profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProfile();
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) return;
+  //   const workerId = user.id;
+  //   async function loadProfile() {
+  //     // to prevent tsx screams.
+  //     try {
+  //       const response = await getWorkerProfile(workerId);
+  //       setWorker(response);
+  //       setTrustScore(response.trust_score);
+  //       setReviewCount(response.review_count);
+  //     } catch (error) {
+  //       console.error("Error loading worker profile:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   loadProfile();
+  // }, [user]);
 
   if (!user) {
     return <LoginView />;
@@ -72,17 +69,19 @@ export default function ProfileScreen() {
 
           <WorkPhotosRow photos={[]} />
 
-          <TrustScoreCard score={trustScore} total={5} reviews={reviewCount} />
+          <TrustScoreCard score={user.trust_score} total={5} reviews={user.review_count} />
 
-          <InfoCard title="" children={undefined} />
-
-          <AvailabilityToggleRow label="" value={false} onChange={() => {}} />
-
-          {/* Spacer pushes logout down */}
+          <InfoCard title="Personal Info">
+            <Text>Name: {user.full_name}</Text>
+            <Text>Email: {user.email}</Text>
+            <Text>Phone: {user.phone}</Text>
+            <Text>Category: {user.category}</Text>
+            <Text>Province: {user.province}</Text>
+            <Text>District: {user.district}</Text>
+            <Text>City: {user.city} </Text>
+          </InfoCard>
           <View style={{ height: 40 }} />
         </ScrollView>
-
-        {/* Bottom pinned logout */}
         <LogoutButton onPress={handleLogout} />
       </View>
     </SafeAreaView>

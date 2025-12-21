@@ -51,7 +51,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       phone: worker.phone,
       email: worker.email,
       image_url: worker.image_url,
-      category: worker.worker_categories?.[0]?.title ?? null,
+      category: Array.isArray(worker.worker_categories)
+        ? worker.worker_categories[0]?.title
+        : (worker.worker_categories as any)?.title ?? null,
       description: worker.description,
       trust_score: worker.trust_score,
       review_count: worker.review_count,
@@ -59,7 +61,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       district: worker.district,
       city: worker.city,
     });
+    console.log("AuthProvider User:", worker.worker_categories);
   };
+
   // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {

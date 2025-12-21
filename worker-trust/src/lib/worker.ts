@@ -1,11 +1,7 @@
 import { supabase } from "./supabaseClient";
 
 export async function getWorkerProfile(workerId: string) {
-  const { data, error } = await supabase
-    .from("workers")
-    .select("trust_score, review_count")
-    .eq("id", workerId)
-    .single();
+  const { data, error } = await supabase.from("workers").select("*").eq("id", workerId).single();
 
   if (error) throw error;
   return data;
@@ -50,21 +46,14 @@ export async function getAllWorkersWithFilters(filters: {
 }
 
 export async function getWorkerById(workerId: string) {
-  const { data, error } = await supabase
-    .from("workers")
-    .select("*")
-    .eq("id", workerId)
-    .single();
+  const { data, error } = await supabase.from("workers").select("*").eq("id", workerId).single();
 
   if (error) throw error;
   return data;
 }
 
 export async function getWorkerReviews(workerId: string) {
-  const { data, error } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("worker_id", workerId);
+  const { data, error } = await supabase.from("reviews").select("*").eq("worker_id", workerId);
 
   if (error) throw error;
   return data;
