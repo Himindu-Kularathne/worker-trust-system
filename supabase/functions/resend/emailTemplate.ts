@@ -1,4 +1,6 @@
 export function workerRequestTemplate(worker: any) {
+  const approveUrl =
+    `https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker` + `?request_id=${worker.id}`;
   return `<!--
 * This email was built using Tabular.
 * For more information, visit https://tabular.email
@@ -914,7 +916,7 @@ export function workerRequestTemplate(worker: any) {
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
                                                                                         >Category: </span
-                                                                                      >${worker.category}
+                                                                                      >${worker.categoryTitle}
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>
@@ -1009,20 +1011,20 @@ export function workerRequestTemplate(worker: any) {
                                 </tr>
                                 <tr>
                                   <td align="center" style="padding: 30px">
-                                    <a
-                                      href="https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker?id=${worker.id}"
-                                      style="
-                                        background: #0a84ff;
-                                        color: #ffffff;
-                                        padding: 14px 24px;
-                                        border-radius: 6px;
-                                        font-weight: 600;
-                                        font-family: Poppins, Arial, sans-serif;
-                                        display: inline-block;
-                                      "
-                                    >
-                                      Approve Worker
-                                    </a>
+                                     <a
+                                                  href="${approveUrl}"
+                                                  style="
+                                                    display: inline-block;
+                                                    padding: 12px 20px;
+                                                    background-color: #22c55e;
+                                                    color: white;
+                                                    text-decoration: none;
+                                                    border-radius: 6px;
+                                                    font-weight: bold;
+                                                  "
+                                                >
+                                                  ✅ Approve Worker
+                                                </a>
                                   </td>
                                 </tr>
                                 <tr>

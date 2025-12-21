@@ -23,9 +23,9 @@ export interface AppTheme {
 
 export const DarkAppTheme: AppTheme = {
   mode: "dark",
-  
-  background: "#0F172A",   
-  surface: "#111827", 
+
+  background: "#0F172A",
+  surface: "#111827",
   card: "#1E293B",
 
   textPrimary: "#F8FAFC",
@@ -51,7 +51,7 @@ export const LightAppTheme: AppTheme = {
   textPrimary: "#111827",
   textSecondary: "#6B7280",
 
-  primary: "#2563EB", 
+  primary: "#2563EB",
   primaryText: "#FFFFFF",
 
   border: "#E5E7EB",

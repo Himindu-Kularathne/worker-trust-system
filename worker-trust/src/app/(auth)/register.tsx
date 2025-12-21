@@ -4,7 +4,13 @@ import { Picker } from "@react-native-picker/picker";
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router } from "expo-router";
-import { loadCategories, loadSubcategories } from "@/src/lib/categories";
+import { loadCategories } from "@/src/lib/categories";
+import * as ImagePicker from "expo-image-picker";
+import { useTheme } from "@/src/hooks/useThemeHook";
+
+export const options = {
+  title: "Register as Worker",
+};
 
 interface Category {
   id: string;
@@ -13,9 +19,34 @@ interface Category {
 }
 
 export default function Dashboard() {
+  const { theme } = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Array<{ id: string; name: string }>>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [image, setImage] = useState<{
+    uri: string;
+    mimeType: string;
+  } | null>(null);
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission required", "Please allow gallery access");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      setImage({
+        uri: result.assets[0].uri,
+        mimeType: result.assets[0].mimeType || "image/jpeg",
+      });
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -24,15 +55,6 @@ export default function Dashboard() {
       setCategories(categories);
     })();
   }, []);
-
-  useEffect(() => {
-    if (!selectedCategory) return;
-
-    (async () => {
-      const subs = await loadSubcategories(selectedCategory);
-      setSubcategories(subs);
-    })();
-  }, [selectedCategory]);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -48,6 +70,32 @@ export default function Dashboard() {
     setForm({ ...form, [key]: value });
   };
 
+  const uploadImage = async () => {
+    if (!image) return null;
+
+    const fileExt = image.uri.split(".").pop() ?? "jpg";
+    const fileName = `worker-${Date.now()}.${fileExt}`;
+    const filePath = fileName;
+
+    const formData = new FormData();
+
+    formData.append("file", {
+      uri: image.uri,
+      name: fileName,
+      type: image.mimeType,
+    } as any);
+
+    const { error } = await supabase.storage.from("worker-images").upload(filePath, formData, {
+      contentType: image.mimeType,
+    });
+
+    if (error) throw error;
+
+    const { data } = supabase.storage.from("worker-images").getPublicUrl(filePath);
+
+    return data.publicUrl;
+  };
+
   const submitRequest = async () => {
     if (!form.full_name || !form.phone || !form.address || !form.category_id) {
       Alert.alert("Missing fields", "Please fill all required fields");
@@ -55,6 +103,7 @@ export default function Dashboard() {
     }
 
     try {
+      const imageUrl = await uploadImage();
       const { data, error } = await supabase
         .from("worker_registration_requests")
         .insert([
@@ -64,6 +113,7 @@ export default function Dashboard() {
             email: form.email || null,
             address: form.address,
             category: form.category_id,
+            image_url: imageUrl || null,
           },
         ])
         .select()
@@ -105,14 +155,12 @@ export default function Dashboard() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Pressable onPress={() => router.push("/")}>
-        <Text>Register as Worker</Text>
-      </Pressable>
-
-      <Text style={styles.title}>Register as a worker</Text>
-      <Text>Want to work with us?Fill the form below.</Text>
-      <Text>You will receive a notification once your request has been accepted.</Text>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.textPrimary }]}>Register as a worker</Text>
+      <Text style={{ color: theme.textPrimary }}>Want to work with us?Fill the form below.</Text>
+      <Text style={{ color: theme.textPrimary }}>
+        You will receive a sms with the sign up link once your request has been approved.
+      </Text>
 
       <Input label="Full Name" value={form.full_name} onChangeText={(v) => handleChange("full_name", v)} />
       <Input
@@ -128,23 +176,39 @@ export default function Dashboard() {
         onChangeText={(v) => handleChange("email", v)}
       />
       <Input label="Address" value={form.address} onChangeText={(v) => handleChange("address", v)} />
-      <Input
-        label="Category (e.g. Plumber, Electrician)"
-        value={form.category_id}
-        onChangeText={(v) => handleChange("category", v)}
-      />
-      <Picker
-        selectedValue={form.category_id}
-        onValueChange={(value) => {
-          setForm({ ...form, category_id: value });
-        }}
-      >
-        <Picker.Item label="Select Category" value="" />
+      <View style={styles.inputGroup}>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Category</Text>
 
-        {categories.map((cat) => (
-          <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
-        ))}
-      </Picker>
+        <View
+          style={[
+            styles.pickerWrapper,
+            {
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            },
+          ]}
+        >
+          <Picker
+            style={{ color: theme.textPrimary }}
+            selectedValue={form.category_id}
+            onValueChange={(value) => setForm({ ...form, category_id: value })}
+          >
+            <Picker.Item color={theme.muted} label="Select Category" value="" />
+            {categories.map((cat) => (
+              <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+      <View style={styles.inputGroup}>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Work Photo / ID Image</Text>
+
+        <Pressable style={styles.imagePicker} onPress={pickImage}>
+          <Text style={{ color: theme.primary }}>{image ? "Change Image" : "Pick an image"}</Text>
+        </Pressable>
+
+        {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
+      </View>
 
       <Pressable style={styles.button} onPress={submitRequest}>
         <Text style={styles.buttonText}>Submit Registration</Text>
@@ -162,10 +226,22 @@ function Input({
   onChangeText: (v: string) => void;
   keyboardType?: any;
 }) {
+  const { theme } = useTheme();
   return (
     <View style={styles.inputGroup}>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} {...props} />
+      <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
+      <TextInput
+        style={[
+          styles.input,
+          {
+            color: theme.textPrimary,
+            backgroundColor: theme.surface,
+            borderColor: theme.border,
+          },
+        ]}
+        placeholderTextColor={theme.muted}
+        {...props}
+      />
     </View>
   );
 }
@@ -173,6 +249,7 @@ function Input({
 const styles = StyleSheet.create({
   container: {
     padding: 24,
+    flexGrow: 1,
   },
   title: {
     fontSize: 22,
@@ -205,5 +282,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontWeight: "600",
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+  },
+  imagePicker: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 14,
+    alignItems: "center",
+    backgroundColor: "#fafafa",
+  },
+  imagePreviewText: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#22C55E",
   },
 });

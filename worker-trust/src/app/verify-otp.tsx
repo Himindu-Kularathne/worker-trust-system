@@ -1,7 +1,7 @@
 import { View, TextInput, Button, Alert } from "react-native";
 import { supabase } from "@/src/lib/supabaseClient";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function VerifyOtp() {
   const { phone } = useLocalSearchParams<{ phone: string }>();
@@ -13,33 +13,40 @@ export default function VerifyOtp() {
       Alert.alert("Phone number missing");
       return;
     }
-    console.log("OTP entered:", otp);
+
     const cleanOtp = otp.replace(/\D/g, "");
 
     if (cleanOtp.length !== 6) {
       Alert.alert("Enter the 6-digit OTP");
       return;
     }
-    console.log("Clean OTP:", cleanOtp);
+
     if (!otp || otp.trim().length !== 6) {
-      console.log("OTP verification failed: invalid OTP");
       Alert.alert("Enter the 6-digit OTP");
       return;
     }
 
     setLoading(true);
+
     const { error } = await supabase.auth.verifyOtp({
       phone,
       token: cleanOtp,
       type: "sms",
     });
 
+    setLoading(false);
+
     if (error) {
       console.log("OTP verification error:", error);
       Alert.alert(error.message);
       return;
     }
-    console.log("I AM HERE");
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      Alert.alert("Session not ready. Please try again.");
+      return;
+    }
 
     router.replace("/set-password");
   };
