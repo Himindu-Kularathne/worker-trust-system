@@ -24,12 +24,7 @@ const WorkersListSection: React.FC = () => {
     return (
       <View style={styles.emptyContainer}>
         {!loading && (
-          <Text
-            style={[
-              styles.emptyTitle,
-              { color: theme.textPrimary },
-            ]}
-          >
+          <Text style={[styles.emptyTitle, { color: theme.textPrimary }]}>
             {t("workers.notFound", { defaultValue: "No workers found" })}
           </Text>
         )}

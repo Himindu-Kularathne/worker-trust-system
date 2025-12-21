@@ -19,11 +19,14 @@ const ServiceCategoryTile: React.FC<Props> = ({
   categoryTitle,
 }) => {
   const router = useRouter();
-  const { setCategory, resetLocation } = useSearchFilters();
+  const { setCategory, resetLocation, setCurrentCategoryName } =
+    useSearchFilters();
+
   const { theme } = useTheme();
 
   const handlePress = () => {
     setCategory(categoryTitle);
+    setCurrentCategoryName(title);
     resetLocation();
     router.push("/workers");
   };

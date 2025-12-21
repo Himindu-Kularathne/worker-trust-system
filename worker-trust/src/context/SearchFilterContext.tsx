@@ -70,6 +70,8 @@ function reducer(state: SearchFilters, action: Action): SearchFilters {
 interface ContextValue {
   state: SearchFilters;
   locationOn: boolean;
+  currentCategoryName?: string;
+  setCurrentCategoryName: (name?: string) => void;
   setLocationOn: (value: boolean) => Promise<void>;
   setCategory: (category?: string) => void;
   setProvince: (province?: string) => void;
@@ -90,20 +92,17 @@ const STORAGE_KEYS = {
   LOCATION_ENABLED: "search_location_enabled",
 };
 
-export const SearchFilterProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const SearchFilterProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [locationOn, setLocationOnState] = useState(false);
+  const [currentCategoryName, setCurrentCategoryName] = useState<
+    string | undefined
+  >(undefined);
 
   /* ---------- Restore toggle ---------- */
   useEffect(() => {
     (async () => {
-      const saved = await AsyncStorage.getItem(
-        STORAGE_KEYS.LOCATION_ENABLED
-      );
+      const saved = await AsyncStorage.getItem(STORAGE_KEYS.LOCATION_ENABLED);
       if (saved === "true") {
         setLocationOnState(true);
         await useCurrentLocation();
@@ -114,8 +113,7 @@ export const SearchFilterProvider = ({
   /* ---------- GPS logic ---------- */
 
   const useCurrentLocation = async () => {
-    const { status } =
-      await Location.requestForegroundPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") return;
 
     const pos = await Location.getCurrentPositionAsync({
@@ -143,18 +141,14 @@ export const SearchFilterProvider = ({
     if (mapped.district)
       dispatch({ type: "SET_DISTRICT", payload: mapped.district });
 
-    if (mapped.city)
-      dispatch({ type: "SET_CITY", payload: mapped.city });
+    if (mapped.city) dispatch({ type: "SET_CITY", payload: mapped.city });
   };
 
   /* ---------- Toggle ---------- */
 
   const setLocationOn = async (value: boolean) => {
     setLocationOnState(value);
-    await AsyncStorage.setItem(
-      STORAGE_KEYS.LOCATION_ENABLED,
-      String(value)
-    );
+    await AsyncStorage.setItem(STORAGE_KEYS.LOCATION_ENABLED, String(value));
 
     if (value) {
       await useCurrentLocation();
@@ -168,21 +162,15 @@ export const SearchFilterProvider = ({
       value={{
         state,
         locationOn,
+        currentCategoryName,
+        setCurrentCategoryName,
         setLocationOn,
-
-        setCategory: (payload) =>
-          dispatch({ type: "SET_CATEGORY", payload }),
-        setProvince: (payload) =>
-          dispatch({ type: "SET_PROVINCE", payload }),
-        setDistrict: (payload) =>
-          dispatch({ type: "SET_DISTRICT", payload }),
-        setCity: (payload) =>
-          dispatch({ type: "SET_CITY", payload }),
-        resetLocation: () =>
-          dispatch({ type: "RESET_LOCATION" }),
-        resetAll: () =>
-          dispatch({ type: "RESET_ALL" }),
-
+        setCategory: (payload) => dispatch({ type: "SET_CATEGORY", payload }),
+        setProvince: (payload) => dispatch({ type: "SET_PROVINCE", payload }),
+        setDistrict: (payload) => dispatch({ type: "SET_DISTRICT", payload }),
+        setCity: (payload) => dispatch({ type: "SET_CITY", payload }),
+        resetLocation: () => dispatch({ type: "RESET_LOCATION" }),
+        resetAll: () => dispatch({ type: "RESET_ALL" }),
         useCurrentLocation,
       }}
     >
