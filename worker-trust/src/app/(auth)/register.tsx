@@ -199,10 +199,15 @@ export default function Dashboard() {
           Authorization: `Bearer ${process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
+          id: data.id,
           full_name: data.full_name,
           phone: data.phone,
           email: data.email,
           category: data.category,
+          image_url: data.image_url,
+          province: data.province,
+          district: data.district,
+          city: data.city,
         }),
       });
 

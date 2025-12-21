@@ -833,8 +833,8 @@ export function workerRequestTemplate(worker: any) {
                                                                                           font-weight: bold;
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
-                                                                                        >Address: </span
-                                                                                      >Address
+                                                                                        >Location: </span
+                                                                                      >${worker.city}, ${worker.district}, ${worker.province}
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>
