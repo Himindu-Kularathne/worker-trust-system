@@ -28,21 +28,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     image_url,
     address,
     description,
-    rating,
     trust_score,
     review_count,
     province,
     district,
     city,
     category,
-    categories (
+    worker_categories (
       title
     )
   `
       )
       .eq("id", userId)
       .single();
-
+    console.log("loadUser result:", { worker, error });
     if (error || !worker) {
       setUser(null);
       return;
@@ -55,9 +54,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       email: worker.email,
       image_url: worker.image_url,
       address: worker.address,
-      category: worker.categories?.[0]?.title ?? null,
+      category: worker.worker_categories?.[0]?.title ?? null,
       description: worker.description,
-      rating: worker.rating,
       trust_score: worker.trust_score,
       review_count: worker.review_count,
       province: worker.province,
@@ -65,10 +63,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       city: worker.city,
     });
   };
-
+  console.log("AuthProvider render, current user:", user);
   // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
+      setLoading(true);
       const { data } = await supabase.auth.getSession();
       console.log("Restoring session:", data);
       if (data.session?.user) {
@@ -82,6 +81,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Listen to auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
+        console.log("Auth state changed, loading user:", session.user);
         await loadUser(session.user.id);
       } else {
         setUser(null);
@@ -107,7 +107,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (error || !data.user) {
       return { error: error?.message || "Login failed" };
     }
-    await loadUser(data.user.id);
+    // await loadUser(data.user.id);
     return {};
   };
 

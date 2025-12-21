@@ -17,7 +17,7 @@ export default function ProfileScreen() {
   const [trustScore, setTrustScore] = React.useState<number>(0);
   const [reviewCount, setReviewCount] = React.useState<number>(0);
   const [loading, setLoading] = React.useState<boolean>(true);
-
+  console.log("Rendering ProfileScreen, user:", user);
   const handleLogout = async () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       {

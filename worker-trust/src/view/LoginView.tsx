@@ -6,8 +6,6 @@ import { useAuth } from "@/src/hooks/UserContextHook";
 
 const LoginView: React.FC = () => {
   const { login } = useAuth();
-  const [name, setName] = React.useState("");
-
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,13 +15,10 @@ const LoginView: React.FC = () => {
     setLoading(true);
 
     const { error } = await login(phone, password);
-    console.log("Login result:", { error });
     setLoading(false);
 
     if (error) {
       Alert.alert("Login failed", error);
-    } else {
-      router.replace("/(tabs)");
     }
   };
 

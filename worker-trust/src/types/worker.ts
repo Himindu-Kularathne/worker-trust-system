@@ -7,7 +7,6 @@ export type Worker = {
   category: string;
   image_url?: string;
   description: string;
-  rating: number;
   trust_score: number;
   review_count: number;
   province: string;
