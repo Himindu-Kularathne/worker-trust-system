@@ -12,12 +12,12 @@ import InfoCard from "@/src/components/workerProfile/InfoCard";
 import AvailabilityToggleRow from "@/src/components/workerProfile/AvailabilityToggleRow";
 import ProfileHeader from "@/src/components/workerProfile/profileHeader";
 import InfoRow from "../components/workerProfile/InfoRow";
+import LogoutButton from "../components/settings/LogoutButton";
 
 export default function ProfileView() {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
   const [reviewCount, setReviewCount] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const handleLogout = () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
@@ -32,42 +32,32 @@ export default function ProfileView() {
     ]);
   };
 
-  useEffect(() => {
-    if (!user) return;
+  // useEffect(() => {
+  //   if (!user) return;
 
-    let cancelled = false;
+  //   let cancelled = false;
 
-    async function loadProfile() {
-      try {
-        setLoading(true);
-        const response = await getWorkerProfile(user.id);
-        if (cancelled) return;
-        setReviewCount(response?.review_count ?? 0);
-      } catch (error) {
-        console.error("Error loading worker profile:", error);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
+  //   async function loadProfile() {
+  //     try {
+  //       setLoading(true);
+  //       const response = await getWorkerProfile(user.id);
+  //       if (cancelled) return;
+  //       setReviewCount(response?.review_count ?? 0);
+  //     } catch (error) {
+  //       console.error("Error loading worker profile:", error);
+  //     } finally {
+  //       if (!cancelled) setLoading(false);
+  //     }
+  //   }
 
-    loadProfile();
+  //   loadProfile();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [user?.id]);
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [user?.id]);
 
   if (!user) return null;
-
-  if (loading) {
-    return (
-      <View
-        style={[styles.loadingContainer, { backgroundColor: theme.background }]}
-      >
-        <Text style={{ color: theme.textSecondary }}>Loading profile...</Text>
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: theme.background }]}>
@@ -107,6 +97,8 @@ export default function ProfileView() {
             value={false}
             onChange={() => {}}
           />
+
+          <LogoutButton onPress={handleLogout} />
 
           <View style={{ height: 40 }} />
         </ScrollView>

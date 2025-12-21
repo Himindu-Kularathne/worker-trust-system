@@ -4,6 +4,7 @@ import TrustScoreBadge from "@/src/components/workers/TrustScoreBadge";
 import { Worker } from "@/src/types/worker";
 import ReviewModal from "@/src/components/workers/WorkerReviewModal";
 import { ThemeContext } from "@/src/context/AppThemeContext";
+import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 
 interface Props {
   worker: Worker;
@@ -11,6 +12,7 @@ interface Props {
 
 const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
   const [reviewOpen, setReviewOpen] = useState(false);
+  const { currentCategoryName } = useSearchFilters();
 
   const themeContext = useContext(ThemeContext);
   if (!themeContext) {
@@ -48,13 +50,8 @@ const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
             },
           ]}
         >
-          <Text
-            style={[
-              styles.categoryText,
-              { color: theme.textPrimary },
-            ]}
-          >
-            {worker.category.toUpperCase()}
+          <Text style={[styles.categoryText, { color: theme.textPrimary }]}>
+            {currentCategoryName.toUpperCase()}
           </Text>
         </View>
 
@@ -69,28 +66,15 @@ const WorkerProfileHeaderSection: React.FC<Props> = ({ worker }) => {
           {worker.rating}
         </Text>
 
-        <Text
-          style={[
-            styles.reviewCount,
-            { color: theme.textSecondary },
-          ]}
-        >
+        <Text style={[styles.reviewCount, { color: theme.textSecondary }]}>
           ({worker.review_count} reviews)
         </Text>
 
         <Pressable
-          style={[
-            styles.reviewBtn,
-            { backgroundColor: theme.primary },
-          ]}
+          style={[styles.reviewBtn, { backgroundColor: theme.primary }]}
           onPress={() => setReviewOpen(true)}
         >
-          <Text
-            style={[
-              styles.reviewBtnText,
-              { color: theme.primaryText },
-            ]}
-          >
+          <Text style={[styles.reviewBtnText, { color: theme.primaryText }]}>
             Write review
           </Text>
         </Pressable>

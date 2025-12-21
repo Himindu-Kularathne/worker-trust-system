@@ -4,7 +4,7 @@ import {
   ScrollView,
   Text,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +20,6 @@ import {
 } from "@/src/store/thunks/workersThunks";
 import { clearSelectedWorker } from "@/src/store/slices/workerSlice";
 import type { RootState, AppDispatch } from "@/src/store";
-import { View } from "@/components/Themed";
 import { ThemeContext } from "@react-navigation/native";
 
 const WorkerDetailView: React.FC = () => {
@@ -77,7 +76,6 @@ const WorkerDetailView: React.FC = () => {
     </SafeAreaView>
   );
 };
-
 
 export default WorkerDetailView;
 

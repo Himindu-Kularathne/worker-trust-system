@@ -1,4 +1,10 @@
-import React, { createContext, useState, ReactNode, use, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  use,
+  useEffect,
+} from "react";
 import { supabase } from "../lib/supabaseClient";
 import { Worker } from "../types/worker";
 
@@ -10,9 +16,13 @@ interface AuthContextType {
   loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<Worker | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -61,7 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       district: worker.district,
       city: worker.city,
     });
-    console.log("AuthProvider User:", worker.worker_categories);
+    console.log("AuthProvider User:", user);
   };
 
   // Restore session on mount
@@ -78,13 +88,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     restoreSession();
 
     // Listen to auth changes
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        await loadUser(session.user.id);
-      } else {
-        setUser(null);
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (session?.user) {
+          await loadUser(session.user.id);
+        } else {
+          setUser(null);
+        }
       }
-    });
+    );
 
     return () => {
       listener.subscription.unsubscribe();
@@ -92,7 +104,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   // ✅ REAL LOGIN (Supabase)
-  const login = async (phone: string, password: string): Promise<{ error?: string }> => {
+  const login = async (
+    phone: string,
+    password: string
+  ): Promise<{ error?: string }> => {
     if (!phone.startsWith("+")) {
       return { error: "Phone number must include country code" };
     }
@@ -115,5 +130,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
-  return <AuthContext.Provider value={{ user, login, logout, loading, setUser }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login, logout, loading, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
