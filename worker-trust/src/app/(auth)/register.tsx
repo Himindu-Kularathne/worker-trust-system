@@ -3,10 +3,16 @@ import { View, Text, Pressable, Alert, TextInput, ScrollView, StyleSheet } from 
 import { Picker } from "@react-native-picker/picker";
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { loadCategories } from "@/src/lib/categories";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "@/src/hooks/useThemeHook";
+import { extractAddressFromCoords } from "../reverseGeoHelper";
+import * as Location from "expo-location";
+import { mapSriLankaLocation } from "../../utils/mapLocationToSriLanka";
+import { setLoading } from "@/src/store/slices/workerSlice";
+import { useAppDispatch } from "@/src/store/hooks";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 export const options = {
   title: "Register as Worker",
@@ -20,11 +26,68 @@ interface Category {
 
 export default function Dashboard() {
   const { theme } = useTheme();
+  const dispatch = useAppDispatch();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+    province: string;
+    district: string;
+    city: string;
+  } | null>(null);
   const [image, setImage] = useState<{
     uri: string;
     mimeType: string;
   } | null>(null);
+
+  const useCurrentLocation = async () => {
+    dispatch(setLoading(true));
+
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        Alert.alert("Permission denied", "Location permission is required");
+        return;
+      }
+
+      const pos = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      const geo = await Location.reverseGeocodeAsync({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+      });
+
+      if (!geo.length) {
+        Alert.alert("Location error", "Unable to detect your location");
+        return;
+      }
+
+      const { region, subregion, city } = geo[0];
+
+      const mapped = mapSriLankaLocation(region ?? undefined, subregion ?? undefined, city ?? undefined);
+
+      if (!mapped.province) {
+        Alert.alert("Location not recognized", "Please move closer to a town or city");
+        return;
+      }
+
+      setLocation({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        province: mapped.province,
+        district: mapped.district ?? "",
+        city: mapped.city ?? "",
+      });
+    } catch (error) {
+      console.error("Location error:", error);
+      Alert.alert("Error", "Failed to get location");
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -60,7 +123,6 @@ export default function Dashboard() {
     full_name: "",
     phone: "",
     email: "",
-    address: "",
     // category: "",
     category_id: "",
     // subcategory_id: "",
@@ -69,7 +131,6 @@ export default function Dashboard() {
   const handleChange = (key: string, value: string) => {
     setForm({ ...form, [key]: value });
   };
-
   const uploadImage = async () => {
     if (!image) return null;
 
@@ -97,10 +158,12 @@ export default function Dashboard() {
   };
 
   const submitRequest = async () => {
-    if (!form.full_name || !form.phone || !form.address || !form.category_id) {
+    if (!form.full_name || !form.phone || !form.category_id || !location) {
       Alert.alert("Missing fields", "Please fill all required fields");
       return;
     }
+
+    dispatch(setLoading(true));
 
     try {
       const imageUrl = await uploadImage();
@@ -111,9 +174,13 @@ export default function Dashboard() {
             full_name: form.full_name,
             phone: form.phone,
             email: form.email || null,
-            address: form.address,
             category: form.category_id,
             image_url: imageUrl || null,
+            province: location?.province,
+            district: location?.district,
+            city: location?.city,
+            latitude: location?.latitude,
+            longitude: location?.longitude,
           },
         ])
         .select()
@@ -132,11 +199,15 @@ export default function Dashboard() {
           Authorization: `Bearer ${process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
+          id: data.id,
           full_name: data.full_name,
           phone: data.phone,
           email: data.email,
-          address: data.address,
           category: data.category,
+          image_url: data.image_url,
+          province: data.province,
+          district: data.district,
+          city: data.city,
         }),
       });
 
@@ -146,11 +217,12 @@ export default function Dashboard() {
         full_name: "",
         phone: "",
         email: "",
-        address: "",
         category_id: "",
       });
     } catch (err: any) {
       Alert.alert("Error", err.message ?? "Something went wrong");
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -175,7 +247,6 @@ export default function Dashboard() {
         keyboardType="email-address"
         onChangeText={(v) => handleChange("email", v)}
       />
-      <Input label="Address" value={form.address} onChangeText={(v) => handleChange("address", v)} />
       <View style={styles.inputGroup}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Category</Text>
 
@@ -203,12 +274,27 @@ export default function Dashboard() {
       <View style={styles.inputGroup}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>Work Photo / ID Image</Text>
 
-        <Pressable style={styles.imagePicker} onPress={pickImage}>
-          <Text style={{ color: theme.primary }}>{image ? "Change Image" : "Pick an image"}</Text>
+        <Pressable
+          style={[styles.imagePicker, { flexDirection: "row", alignItems: "center", gap: 8 }]}
+          onPress={pickImage}
+        >
+          <EvilIcons name="image" size={26} color={theme.primary} />
+
+          <Text style={{ color: theme.primary, fontSize: 15 }}>{image ? "Change Image" : "Pick Profile Image"}</Text>
         </Pressable>
 
         {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
       </View>
+      <Pressable style={[styles.button, { backgroundColor: "#22C55E" }]} onPress={useCurrentLocation}>
+        <Text style={styles.buttonText}>Use Current Location</Text>
+      </Pressable>
+      {location && (
+        <>
+          <Input label="Province" value={location.province} editable={false} />
+          <Input label="District" value={location.district} editable={false} />
+          <Input label="City" value={location.city} editable={false} />
+        </>
+      )}
 
       <Pressable style={styles.button} onPress={submitRequest}>
         <Text style={styles.buttonText}>Submit Registration</Text>
@@ -219,28 +305,33 @@ export default function Dashboard() {
 
 function Input({
   label,
+  editable = true,
   ...props
 }: {
   label: string;
   value: string;
-  onChangeText: (v: string) => void;
+  onChangeText?: (v: string) => void;
   keyboardType?: any;
+  editable?: boolean;
 }) {
   const { theme } = useTheme();
   return (
     <View style={styles.inputGroup}>
       <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
       <TextInput
+        {...props}
+        editable={editable}
+        selectTextOnFocus={editable}
         style={[
           styles.input,
           {
             color: theme.textPrimary,
-            backgroundColor: theme.surface,
+            backgroundColor: editable ? theme.surface : theme.surface + "AA",
             borderColor: theme.border,
+            opacity: editable ? 1 : 0.7,
           },
         ]}
         placeholderTextColor={theme.muted}
-        {...props}
       />
     </View>
   );

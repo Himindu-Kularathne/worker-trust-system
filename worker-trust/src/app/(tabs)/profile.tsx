@@ -17,7 +17,6 @@ export default function ProfileScreen() {
   const [trustScore, setTrustScore] = React.useState<number>(0);
   const [reviewCount, setReviewCount] = React.useState<number>(0);
   const [loading, setLoading] = React.useState<boolean>(true);
-
   const handleLogout = async () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       {
@@ -34,8 +33,6 @@ export default function ProfileScreen() {
   };
 
   useEffect(() => {
-    console.log("Loading worker profile...");
-    console.log("Current user:", user);
     if (!user) return;
     const workerId = user.id;
     async function loadProfile() {
@@ -71,7 +68,7 @@ export default function ProfileScreen() {
           {/* Top content */}
           <Text style={styles.welcome}>Welcome, {user.full_name}</Text>
 
-          <ProfileHeader name={user.full_name} role={user.category} statusLabel="" avatarUrl="" />
+          <ProfileHeader name={user.full_name} role={user.category} statusLabel="" avatarUrl={user.image_url ?? ""} />
 
           <WorkPhotosRow photos={[]} />
 

@@ -1,6 +1,7 @@
 export function workerRequestTemplate(worker: any) {
   const approveUrl =
-    `https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker` + `?request_id=${worker.id}`;
+    `https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/approve-worker` +
+    `?request_id=${worker.id}&token=${Deno.env.get("APPROVE_SECRET")}`;
   return `<!--
 * This email was built using Tabular.
 * For more information, visit https://tabular.email
@@ -613,7 +614,36 @@ export function workerRequestTemplate(worker: any) {
                                                                     cellpadding="0"
                                                                     cellspacing="0"
                                                                     style="width: 100% !important"
-                                                                  >
+                                                                  > <tr>
+                                                                      <td align="center">
+                                                                        <table
+                                                                          role="presentation"
+                                                                          cellpadding="0"
+                                                                          cellspacing="0"
+                                                                          style="margin-left:auto; margin-right:auto;"
+                                                                        >
+                                                                          <tr>
+                                                                            <td style="padding-bottom: 16px;">
+                                                                              <img
+                                                                                src="${
+                                                                                  worker.image_url ||
+                                                                                  "https://via.placeholder.com/200?text=No+Image"
+                                                                                }"
+                                                                                alt="Worker Image"
+                                                                                width="180"
+                                                                                style="
+                                                                                  display: block;
+                                                                                  border-radius: 8px;
+                                                                                  border: 1px solid #e5e7eb;
+                                                                                  max-width: 100%;
+                                                                                "
+                                                                              />
+                                                                            </td>
+                                                                          </tr>
+                                                                        </table>
+                                                                      </td>
+                                                                    </tr>
+
                                                                     <tr>
                                                                       <td align="center">
                                                                         <table
@@ -833,8 +863,10 @@ export function workerRequestTemplate(worker: any) {
                                                                                           font-weight: bold;
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
-                                                                                        >Address: </span
-                                                                                      >${worker.address}
+                                                                                        >Location: </span
+                                                                                      >${worker.city}, ${
+    worker.district
+  }, ${worker.province}
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>
@@ -916,7 +948,7 @@ export function workerRequestTemplate(worker: any) {
                                                                                           mso-line-height-rule: exactly;
                                                                                         "
                                                                                         >Category: </span
-                                                                                      >${worker.categoryTitle}
+                                                                                      >${worker.category_title}
                                                                                     </p>
                                                                                   </td>
                                                                                 </tr>
@@ -1010,21 +1042,33 @@ export function workerRequestTemplate(worker: any) {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td align="center" style="padding: 30px">
-                                     <a
-                                                  href="${approveUrl}"
-                                                  style="
-                                                    display: inline-block;
-                                                    padding: 12px 20px;
-                                                    background-color: #22c55e;
-                                                    color: white;
-                                                    text-decoration: none;
-                                                    border-radius: 6px;
-                                                    font-weight: bold;
-                                                  "
-                                                >
-                                                  ✅ Approve Worker
-                                                </a>
+                                  <td align="center" style="padding: 30px;">
+                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                      <tr>
+                                        <td
+                                          bgcolor="#22c55e"
+                                          style="
+                                            border-radius: 6px;
+                                            padding: 14px 26px;
+                                            text-align: center;
+                                          "
+                                        >
+                                          <a
+                                            href="${approveUrl}"
+                                            style="
+                                              font-family: Arial, sans-serif;
+                                              font-size: 16px;
+                                              font-weight: bold;
+                                              color: #ffffff;
+                                              text-decoration: none;
+                                              display: inline-block;
+                                            "
+                                          >
+                                            Approve Worker
+                                          </a>
+                                        </td>
+                                      </tr>
+                                    </table>
                                   </td>
                                 </tr>
                                 <tr>

@@ -25,23 +25,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     full_name,
     phone,
     email,
-    address,
+    image_url,
     description,
-    rating,
     trust_score,
     review_count,
     province,
     district,
     city,
     category,
-    categories (
+    worker_categories (
       title
     )
   `
       )
       .eq("id", userId)
       .single();
-
     if (error || !worker) {
       setUser(null);
       return;
@@ -52,10 +50,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       full_name: worker.full_name,
       phone: worker.phone,
       email: worker.email,
-      address: worker.address,
-      category: worker.categories?.[0]?.title ?? null,
+      image_url: worker.image_url,
+      category: worker.worker_categories?.[0]?.title ?? null,
       description: worker.description,
-      rating: worker.rating,
       trust_score: worker.trust_score,
       review_count: worker.review_count,
       province: worker.province,
@@ -63,12 +60,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       city: worker.city,
     });
   };
-
   // Restore session on mount
   useEffect(() => {
     const restoreSession = async () => {
+      setLoading(true);
       const { data } = await supabase.auth.getSession();
-      console.log("Restoring session:", data);
       if (data.session?.user) {
         await loadUser(data.session.user.id);
       }
@@ -105,7 +101,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (error || !data.user) {
       return { error: error?.message || "Login failed" };
     }
-    await loadUser(data.user.id);
+    // await loadUser(data.user.id);
     return {};
   };
 

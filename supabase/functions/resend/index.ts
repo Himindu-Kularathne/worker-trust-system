@@ -12,7 +12,7 @@ Deno.serve(async (req: Request) => {
   const payload = await req.json();
   console.log("Payload:", payload);
 
-  const worker = payload.record;
+  const worker = payload;
 
   console.log("Worker record:", worker);
 
@@ -20,7 +20,7 @@ Deno.serve(async (req: Request) => {
 
   if (worker.category) {
     const { data: category, error } = await supabase
-      .from("categories")
+      .from("worker_categories")
       .select("title")
       .eq("id", worker.category)
       .single();
