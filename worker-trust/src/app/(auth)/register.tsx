@@ -3,10 +3,11 @@ import { View, Text, Pressable, Alert, TextInput, ScrollView, StyleSheet } from 
 import { Picker } from "@react-native-picker/picker";
 import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { loadCategories } from "@/src/lib/categories";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "@/src/hooks/useThemeHook";
+import { extractAddressFromCoords } from "../reverseGeoHelper";
 
 export const options = {
   title: "Register as Worker",
@@ -21,6 +22,13 @@ interface Category {
 export default function Dashboard() {
   const { theme } = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+    province: string;
+    district: string;
+    city: string;
+  } | null>(null);
   const [image, setImage] = useState<{
     uri: string;
     mimeType: string;
@@ -70,6 +78,22 @@ export default function Dashboard() {
     setForm({ ...form, [key]: value });
   };
 
+  const params = useLocalSearchParams();
+
+  useEffect(() => {
+    if (params.lat && params.lng) {
+      (async () => {
+        const address = await extractAddressFromCoords(Number(params.lat), Number(params.lng));
+
+        setLocation({
+          latitude: Number(params.lat),
+          longitude: Number(params.lng),
+          ...address,
+        });
+      })();
+    }
+  }, [params.lat, params.lng]);
+
   const uploadImage = async () => {
     if (!image) return null;
 
@@ -114,6 +138,11 @@ export default function Dashboard() {
             address: form.address,
             category: form.category_id,
             image_url: imageUrl || null,
+            province: location?.province,
+            district: location?.district,
+            city: location?.city,
+            latitude: location?.latitude,
+            longitude: location?.longitude,
           },
         ])
         .select()
@@ -209,6 +238,17 @@ export default function Dashboard() {
 
         {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
       </View>
+      <Pressable style={styles.button} onPress={() => router.push("/locationPicker")}>
+        <Text style={styles.buttonText}>Pick Location from Map</Text>
+      </Pressable>
+
+      {location && (
+        <>
+          <Input label="Province" value={location.province} editable={false} />
+          <Input label="District" value={location.district} editable={false} />
+          <Input label="City" value={location.city} editable={false} />
+        </>
+      )}
 
       <Pressable style={styles.button} onPress={submitRequest}>
         <Text style={styles.buttonText}>Submit Registration</Text>
@@ -223,8 +263,9 @@ function Input({
 }: {
   label: string;
   value: string;
-  onChangeText: (v: string) => void;
+  onChangeText?: (v: string) => void;
   keyboardType?: any;
+  editable?: boolean;
 }) {
   const { theme } = useTheme();
   return (
