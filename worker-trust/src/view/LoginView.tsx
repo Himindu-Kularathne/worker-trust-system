@@ -33,7 +33,7 @@ const LoginView: React.FC = () => {
     }
 
     // ✅ After successful login
-    router.replace("/(tabs)");
+    router.replace("/(tabs)/profile");
   };
 
   const disabled = !phone || !password || loading;

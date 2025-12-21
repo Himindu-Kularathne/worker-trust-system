@@ -1,12 +1,19 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 export type ProfileHeaderProps = {
   name: string;
   role: string;
   statusLabel: string;
-  avatarUrl: string;
+  avatarUrl?: string;
 };
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -15,27 +22,92 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   statusLabel,
   avatarUrl,
 }) => {
+  const { theme } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.background },
+      ]}
+    >
+      {/* Avatar */}
       <View style={styles.avatarWrapper}>
-        <Image source={{ uri: avatarUrl }} style={styles.avatar} />
-        <TouchableOpacity style={styles.editAvatarButton}>
-          <Ionicons name="create-outline" size={16} color="#111827" />
+        <Image
+          source={
+            avatarUrl
+              ? { uri: avatarUrl }
+              : require("@/assets/images/profile-avatar.avif")
+          }
+          style={[
+            styles.avatar,
+            { borderColor: theme.border },
+          ]}
+        />
+
+        <TouchableOpacity
+          style={[
+            styles.editAvatarButton,
+            {
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            },
+          ]}
+          activeOpacity={0.85}
+        >
+          <Ionicons
+            name="create-outline"
+            size={16}
+            color={theme.textPrimary}
+          />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.name}>{name}</Text>
+      {/* Name */}
+      <Text style={[styles.name, { color: theme.textPrimary }]}>
+        {name}
+      </Text>
 
+      {/* Verified */}
       <View style={styles.verifiedRow}>
-        <Ionicons name="checkmark-circle" size={16} color="#2563EB" />
-        <Text style={styles.verifiedText}> Verified Worker</Text>
+        <Ionicons
+          name="checkmark-circle"
+          size={16}
+          color={theme.primary}
+        />
+        <Text
+          style={[
+            styles.verifiedText,
+            { color: theme.primary },
+          ]}
+        >
+          Verified Worker
+        </Text>
       </View>
 
-      <Text style={styles.role}>{role}</Text>
+      {/* Role */}
+      <Text
+        style={[
+          styles.role,
+          { color: theme.textSecondary },
+        ]}
+      >
+        {role}
+      </Text>
 
-      <View style={styles.statusPill}>
-        <Text style={styles.statusText}>{statusLabel}</Text>
-      </View>
+      {/* Status */}
+      {!!statusLabel && (
+        <View
+          style={[
+            styles.statusPill,
+            { backgroundColor: theme.success },
+          ]}
+        >
+          <Text style={styles.statusText}>
+            {statusLabel}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -45,63 +117,66 @@ export default ProfileHeader;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingVertical: 8,
-    backgroundColor: "#E5F0FF",
+    paddingVertical: 16,
     borderRadius: 24,
-    paddingBottom: 20,
+    marginBottom: 12,
   },
+
   avatarWrapper: {
-    marginTop: 8,
-    marginBottom: 8,
+    marginBottom: 10,
   },
+
   avatar: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+    borderWidth: 2,
   },
+
   editAvatarButton: {
     position: "absolute",
-    bottom: 4,
-    right: 4,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#FFFFFF",
+    bottom: 2,
+    right: 2,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    elevation: 3,
   },
+
   name: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#111827",
+    marginTop: 4,
   },
+
   verifiedRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 4,
+    marginTop: 6,
   },
+
   verifiedText: {
     fontSize: 13,
-    color: "#2563EB",
     fontWeight: "600",
+    marginLeft: 4,
   },
+
   role: {
-    fontSize: 15,
-    color: "#4B5563",
-    marginTop: 2,
+    fontSize: 14,
+    marginTop: 4,
+    fontWeight: "500",
   },
+
   statusPill: {
-    marginTop: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 4,
+    marginTop: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "#22C55E",
   },
+
   statusText: {
     color: "#FFFFFF",
     fontSize: 13,
