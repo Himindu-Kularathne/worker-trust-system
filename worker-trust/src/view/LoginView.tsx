@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, Link } from "expo-router";
 import LottieView from "lottie-react-native";
 
 import { useAuth } from "@/src/hooks/UserContextHook";
@@ -32,7 +32,7 @@ const LoginView: React.FC = () => {
       return;
     }
 
-    // ✅ After successful login
+    // After successful login
     router.replace("/(tabs)/profile");
   };
 
@@ -40,12 +40,9 @@ const LoginView: React.FC = () => {
 
   return (
     <SafeAreaView
-      style={[
-        styles.container,
-        { backgroundColor: theme.background },
-      ]}
+      style={[styles.container, { backgroundColor: theme.background }]}
     >
-      {/* -------- Decorative Lotties -------- */}
+      {/* Decorative Lotties */}
       <LottieView
         source={require("@/assets/animations/topLeft.json")}
         autoPlay
@@ -60,7 +57,7 @@ const LoginView: React.FC = () => {
         style={[styles.lottie, styles.bottomRight]}
       />
 
-      {/* -------- Login Card -------- */}
+      {/* Login Card */}
       <View
         style={[
           styles.card,
@@ -75,12 +72,7 @@ const LoginView: React.FC = () => {
           Welcome Back
         </Text>
 
-        <Text
-          style={[
-            styles.subtitle,
-            { color: theme.textSecondary },
-          ]}
-        >
+        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           Sign in to continue
         </Text>
 
@@ -129,48 +121,31 @@ const LoginView: React.FC = () => {
           style={[
             styles.loginButton,
             {
-              backgroundColor: disabled
-                ? theme.muted
-                : theme.primary,
+              backgroundColor: disabled ? theme.muted : theme.primary,
             },
           ]}
           onPress={handleLogin}
           disabled={disabled}
         >
-          <Text
-            style={[
-              styles.loginButtonText,
-              { color: theme.primaryText },
-            ]}
-          >
+          <Text style={[styles.loginButtonText, { color: theme.primaryText }]}>
             {loading ? "Signing in..." : "Login"}
           </Text>
         </TouchableOpacity>
 
-        {/* Register navigation */}
+        {/* Register */}
         <View style={styles.registerContainer}>
-          <Text
-            style={[
-              styles.registerText,
-              { color: theme.textSecondary },
-            ]}
-          >
+          <Text style={[styles.registerText, { color: theme.textSecondary }]}>
             No account?
           </Text>
 
-          <TouchableOpacity
-            onPress={() => router.push("/register")}
-          >
-            <Text
-              style={[
-                styles.registerLink,
-                { color: theme.primary },
-              ]}
-            >
-              {" "}
-              Register
-            </Text>
-          </TouchableOpacity>
+          <Link href="/(auth)/register" asChild>
+            <TouchableOpacity>
+              <Text style={[styles.registerLink, { color: theme.primary }]}>
+                {" "}
+                Register
+              </Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
     </SafeAreaView>
@@ -188,7 +163,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
 
-  /* Lottie positioning */
   lottie: {
     position: "absolute",
     width: 300,

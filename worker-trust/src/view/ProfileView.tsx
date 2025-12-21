@@ -9,7 +9,6 @@ import { getWorkerProfile } from "@/src/lib/worker";
 
 import TrustScoreCard from "@/src/components/workerHome/TrustScoreCard";
 import InfoCard from "@/src/components/workerProfile/InfoCard";
-import WorkPhotosRow from "@/src/components/workerProfile/WorkPhotosRow";
 import AvailabilityToggleRow from "@/src/components/workerProfile/AvailabilityToggleRow";
 import ProfileHeader from "@/src/components/workerProfile/profileHeader";
 import InfoRow from "../components/workerProfile/InfoRow";
@@ -62,7 +61,9 @@ export default function ProfileView() {
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: theme.background }]}>
+      <View
+        style={[styles.loadingContainer, { backgroundColor: theme.background }]}
+      >
         <Text style={{ color: theme.textSecondary }}>Loading profile...</Text>
       </View>
     );
@@ -86,15 +87,26 @@ export default function ProfileView() {
             avatarUrl={user.image_url ?? ""}
           />
 
-          <TrustScoreCard score={user.trust_score} total={5} reviews={reviewCount} />
+          <TrustScoreCard
+            score={user.trust_score}
+            total={5}
+            reviews={reviewCount}
+          />
 
-          <InfoCard title="Info" >
+          <InfoCard title="Info">
             <InfoRow icon="call-outline" text={user.phone} />
             <InfoRow icon="mail-outline" text={user.email} />
-            <InfoRow icon="location-outline" text={`${user.city}, ${user.district}, ${user.province}`} />
+            <InfoRow
+              icon="location-outline"
+              text={`${user.city}, ${user.district}, ${user.province}`}
+            />
           </InfoCard>
 
-          <AvailabilityToggleRow label="Availability" value={false} onChange={() => {}} />
+          <AvailabilityToggleRow
+            label="Availability"
+            value={false}
+            onChange={() => {}}
+          />
 
           <View style={{ height: 40 }} />
         </ScrollView>
