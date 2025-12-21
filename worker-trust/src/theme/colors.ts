@@ -14,11 +14,16 @@ export interface AppTheme {
   primary: string;
   primaryText: string;
 
+  star: string;
+  switchThumb: string;
+
   /* States */
   border: string;
   muted: string;
   success: string;
   error: string;
+  warning: string;
+  danger: string;
 }
 
 export const DarkAppTheme: AppTheme = {
@@ -34,11 +39,16 @@ export const DarkAppTheme: AppTheme = {
   primary: "#60A5FA",
   primaryText: "#020617",
 
+  star: "#FBBF24",
+
   border: "#1E293B",
   muted: "#94A3B8",
+  switchThumb: "#F9FAFB",
 
   success: "#4ADE80",
   error: "#F87171",
+  warning: "#FBBF24",
+  danger: "#EF4444",
 };
 
 export const LightAppTheme: AppTheme = {
@@ -54,9 +64,14 @@ export const LightAppTheme: AppTheme = {
   primary: "#2563EB",
   primaryText: "#FFFFFF",
 
+  star: "#D97706",
+
   border: "#E5E7EB",
   muted: "#9CA3AF",
+  switchThumb: "#FFFFFF",
 
   success: "#16A34A",
   error: "#DC2626",
+  warning: "#F59E0B",
+  danger: "#EF4444",
 };

@@ -1,17 +1,33 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 export type InfoRowProps = {
   icon: keyof typeof Ionicons.glyphMap;
-  text: string;
+  text?: string;
 };
 
 const InfoRow: React.FC<InfoRowProps> = ({ icon, text }) => {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.row}>
-      <Ionicons name={icon} size={16} color="#6B7280" style={styles.icon} />
-      <Text style={styles.text}>{text}</Text>
+      <Ionicons
+        name={icon}
+        size={16}
+        color={theme.primary}
+        style={styles.icon}
+      />
+      <Text
+        style={[
+          styles.text,
+          { color: theme.textSecondary },
+        ]}
+        numberOfLines={2}
+      >
+        {text}
+      </Text>
     </View>
   );
 };
@@ -22,14 +38,16 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 6,
   },
+
   icon: {
-    marginRight: 8,
+    marginRight: 10,
   },
+
   text: {
-    fontSize: 13,
-    color: "#374151",
+    fontSize: 14,
+    fontWeight: "500",
     flexShrink: 1,
   },
 });

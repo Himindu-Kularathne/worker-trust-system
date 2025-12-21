@@ -14,7 +14,8 @@ interface Props {
 
 const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { state, setProvince, setDistrict, setCity } = useSearchFilters();
+  const { state, setProvince, setDistrict, setCity, currentCategoryName } =
+    useSearchFilters();
   const { theme } = useTheme();
 
   /* ---------------- derive readable location label ---------------- */
@@ -58,7 +59,7 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
         <View style={styles.textBlock}>
           <Text style={[styles.title, { color: theme.textPrimary }]}>
             {category
-              ? t(`categories.${category}.plural`)
+              ? t(`categories.${currentCategoryName}.plural`)
               : t("workers.all")}
           </Text>
 
@@ -73,19 +74,13 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
             styles.locationChip,
             {
               backgroundColor:
-                theme.mode === "dark"
-                  ? theme.surface
-                  : `${theme.primary}15`,
+                theme.mode === "dark" ? theme.surface : `${theme.primary}15`,
             },
           ]}
           onPress={() => setModalVisible(true)}
           activeOpacity={0.8}
         >
-          <Ionicons
-            name="location-outline"
-            size={16}
-            color={theme.primary}
-          />
+          <Ionicons name="location-outline" size={16} color={theme.primary} />
 
           <Text
             style={[styles.locationText, { color: theme.primary }]}
@@ -94,11 +89,7 @@ const WorkersHeaderSection: React.FC<Props> = ({ category }) => {
             {locationLabel}
           </Text>
 
-          <Ionicons
-            name="chevron-down"
-            size={14}
-            color={theme.primary}
-          />
+          <Ionicons name="chevron-down" size={14} color={theme.primary} />
         </TouchableOpacity>
       </View>
 

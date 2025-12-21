@@ -1,69 +1,147 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, router } from "expo-router";
+import { router, Link } from "expo-router";
+import LottieView from "lottie-react-native";
+
 import { useAuth } from "@/src/hooks/UserContextHook";
+import { useTheme } from "@/src/hooks/useThemeHook";
 
 const LoginView: React.FC = () => {
   const { login } = useAuth();
+  const { theme } = useTheme();
+
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    console.log("Login pressed", { phone, password });
     setLoading(true);
-
     const { error } = await login(phone, password);
     setLoading(false);
 
     if (error) {
       Alert.alert("Login failed", error);
+      return;
     }
+    router.replace("/(tabs)/profile");
   };
 
+  const disabled = !phone || !password || loading;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
+      {/* Decorative Lotties */}
+      <LottieView
+        source={require("@/assets/animations/topLeft.json")}
+        autoPlay
+        loop
+        style={[styles.lottie, styles.topLeft]}
+      />
+
+      <LottieView
+        source={require("@/assets/animations/bottomRight.json")}
+        autoPlay
+        loop
+        style={[styles.lottie, styles.bottomRight]}
+      />
+
+      {/* Login Card */}
+      <View
+        style={[
+          styles.card,
+          {
+            backgroundColor: theme.card,
+            borderColor: theme.border,
+            borderWidth: theme.mode === "dark" ? 0 : 1,
+          },
+        ]}
+      >
+        <Text style={[styles.title, { color: theme.textPrimary }]}>
+          Welcome Back
+        </Text>
+
+        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
+          Sign in to continue
+        </Text>
 
         {/* Phone */}
-        <Text style={styles.label}>Phone number</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>
+          Phone number
+        </Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+              color: theme.textPrimary,
+            },
+          ]}
           placeholder="+94746789000"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={theme.muted}
           keyboardType="phone-pad"
           value={phone}
           onChangeText={setPhone}
         />
 
         {/* Password */}
-        <Text style={styles.label}>Password</Text>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>
+          Password
+        </Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+              color: theme.textPrimary,
+            },
+          ]}
           placeholder="Enter your password"
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={theme.muted}
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
 
+        {/* Login button */}
         <TouchableOpacity
-          style={[styles.loginButton, (!phone || !password || loading) && styles.loginButtonDisabled]}
+          style={[
+            styles.loginButton,
+            {
+              backgroundColor: disabled ? theme.muted : theme.primary,
+            },
+          ]}
           onPress={handleLogin}
-          disabled={!phone || !password || loading}
+          disabled={disabled}
         >
-          <Text style={styles.loginButtonText}>{loading ? "Signing in..." : "Login"}</Text>
+          <Text style={[styles.loginButtonText, { color: theme.primaryText }]}>
+            {loading ? "Signing in..." : "Login"}
+          </Text>
         </TouchableOpacity>
 
-        {/* Register link */}
+        {/* Register */}
         <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>No account?</Text>
+          <Text style={[styles.registerText, { color: theme.textSecondary }]}>
+            No account?
+          </Text>
+
           <Link href="/(auth)/register" asChild>
             <TouchableOpacity>
-              <Text style={styles.registerLink}> Register</Text>
+              <Text style={[styles.registerLink, { color: theme.primary }]}>
+                {" "}
+                Register
+              </Text>
             </TouchableOpacity>
           </Link>
         </View>
@@ -74,76 +152,87 @@ const LoginView: React.FC = () => {
 
 export default LoginView;
 
+/* ------------ styles ------------ */
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F3F4F6",
     justifyContent: "center",
     paddingHorizontal: 24,
   },
+
+  lottie: {
+    position: "absolute",
+    width: 300,
+    height: 300,
+    opacity: 0.9,
+  },
+
+  topLeft: {
+    top: 20,
+    left: -20,
+  },
+
+  bottomRight: {
+    bottom: -30,
+    right: -20,
+  },
+
   card: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 6,
+    zIndex: 2,
   },
+
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#111827",
     marginBottom: 4,
   },
+
   subtitle: {
     fontSize: 14,
-    color: "#6B7280",
     marginBottom: 24,
   },
+
   label: {
     fontSize: 14,
-    color: "#374151",
     marginBottom: 6,
   },
+
   input: {
     height: 44,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
     borderRadius: 8,
     paddingHorizontal: 12,
-    backgroundColor: "#F9FAFB",
     marginBottom: 20,
     fontSize: 15,
   },
+
   loginButton: {
-    backgroundColor: "#3B82F6",
     height: 46,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
   },
-  loginButtonDisabled: {
-    backgroundColor: "#93C5FD",
-  },
+
   loginButtonText: {
-    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
   },
+
   registerContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 8,
   },
+
   registerText: {
-    color: "#6B7280",
     fontSize: 14,
   },
+
   registerLink: {
-    color: "#2563EB",
     fontSize: 14,
     fontWeight: "600",
   },

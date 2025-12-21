@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { SRI_LANKA_PROVINCES } from "@/src/constants/sriLankaLocations";
 import { Worker } from "@/src/types/worker";
 import { ThemeContext } from "@/src/context/AppThemeContext";
+import { current } from "@reduxjs/toolkit";
+import { useSearchFilters } from "@/src/hooks/useSearchFilterHook";
 
 interface Props {
   worker: Worker;
@@ -10,6 +12,7 @@ interface Props {
 
 const WorkerInfoSection: React.FC<Props> = ({ worker }) => {
   const themeContext = useContext(ThemeContext);
+  const { currentCategoryName } = useSearchFilters();
 
   if (!themeContext) {
     throw new Error("WorkerInfoSection must be used within AppThemeProvider");
@@ -48,7 +51,7 @@ const WorkerInfoSection: React.FC<Props> = ({ worker }) => {
       />
       <InfoRow
         label="Category"
-        value={worker.category}
+        value={currentCategoryName || "N/A"}
         theme={theme}
       />
     </View>
@@ -69,12 +72,8 @@ const InfoRow = ({
   theme: any;
 }) => (
   <View style={styles.row}>
-    <Text style={[styles.label, { color: theme.textSecondary }]}>
-      {label}
-    </Text>
-    <Text style={[styles.value, { color: theme.textPrimary }]}>
-      {value}
-    </Text>
+    <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
+    <Text style={[styles.value, { color: theme.textPrimary }]}>{value}</Text>
   </View>
 );
 

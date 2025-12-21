@@ -30,7 +30,7 @@ const ServiceCategoriesSection: React.FC = () => {
             key={category.id}
             title={category.title}
             icon={category.icon}
-            categoryTitle={category.title}
+            categoryTitle={category.id}
           />
         ))}
       </View>
