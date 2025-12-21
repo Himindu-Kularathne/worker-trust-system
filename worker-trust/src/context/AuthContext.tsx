@@ -71,7 +71,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       district: worker.district,
       city: worker.city,
     });
-    console.log("AuthProvider User:", user);
   };
 
   // Restore session on mount
