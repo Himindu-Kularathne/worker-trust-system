@@ -18,7 +18,12 @@
     },
     "cleaner": { "singular": "පිරිසිදුකරු", "plural": "පිරිසිදුකරුවන්" },
     "painter": { "singular": "වර්ණකරු", "plural": "වර්ණකරුවන්" },
-    "mechanic": { "singular": "මැකැනික්", "plural": "මැකැනික්ස්" }
+    "mechanic": { "singular": "මැකැනික්", "plural": "මැකැනික්ස්" },
+    "welder": { "singular": "වෙල්ඩර්", "plural": "වෙල්ඩර්ස්" },
+    "child care": {
+      "singular": "දරුවන් සුරකින්නා",
+      "plural": "දරුවන් සුරකින්නන්"
+    }
   },
   "tabs": {
     "home": "මුල් පිටුව",
