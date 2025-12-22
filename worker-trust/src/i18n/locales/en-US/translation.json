@@ -15,7 +15,9 @@
     "electrician": { "singular": "Electrician", "plural": "Electricians" },
     "cleaner": { "singular": "Cleaner", "plural": "Cleaners" },
     "painter": { "singular": "Painter", "plural": "Painters" },
-    "mechanic": { "singular": "Mechanic", "plural": "Mechanics" }
+    "mechanic": { "singular": "Mechanic", "plural": "Mechanics" },
+    "welder": { "singular": "Welder", "plural": "Welders" },
+    "child care": { "singular": "Child Care", "plural": "Child Care Workers" }
   },
   "tabs": {
     "home": "Home",

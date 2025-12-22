@@ -21,7 +21,12 @@
     },
     "cleaner": { "singular": "தூய்மையாளர்", "plural": "தூய்மையாளர்கள்" },
     "painter": { "singular": "வர்ணகர்", "plural": "வர்ணகர்கள்" },
-    "mechanic": { "singular": "மேக்கானிக்", "plural": "மேக்கானிக்கள்" }
+    "mechanic": { "singular": "மேக்கானிக்", "plural": "மேக்கானிக்கள்" },
+    "welder": { "singular": "வெல்டர்", "plural": "வெல்டர்கள்" },
+    "child care": {
+      "singular": "குழந்தை பராமரிப்பாளர்",
+      "plural": "குழந்தை பராமரிப்பாளர்கள்"
+    }
   },
   "tabs": {
     "home": "முகப்பு",
