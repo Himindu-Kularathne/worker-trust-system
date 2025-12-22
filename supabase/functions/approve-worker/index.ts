@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
     })
     .eq("id", requestId);
 
-  // await sendApprovalSms(request.phone, request.full_name);
+  await sendApprovalSms(request.phone, request.full_name);
 
   return new Response(
     `
