@@ -37,7 +37,6 @@ export default function VerifyOtp() {
     setLoading(false);
 
     if (error) {
-      console.log("OTP verification error:", error);
       Alert.alert(error.message);
       return;
     }

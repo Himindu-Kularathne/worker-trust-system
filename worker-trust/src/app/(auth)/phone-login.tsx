@@ -11,7 +11,6 @@ export default function PhoneLogin() {
   const [loading, setLoading] = useState(false);
 
   const sendOtp = async () => {
-    console.log("Sending OTP to phone:", phone);
     if (!phone) {
       Alert.alert("Enter phone number");
       return;
@@ -26,7 +25,6 @@ export default function PhoneLogin() {
     setLoading(false);
 
     if (error) {
-      console.log("sendOtp response error:", error);
       Alert.alert("Failed to send OTP", error.message);
       return;
     }

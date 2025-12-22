@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useReducer,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useReducer, ReactNode, useEffect, useState } from "react";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SearchFilters } from "../types/worker";
@@ -82,9 +76,7 @@ interface ContextValue {
   useCurrentLocation: () => Promise<void>;
 }
 
-export const SearchFilterContext = createContext<ContextValue | undefined>(
-  undefined
-);
+export const SearchFilterContext = createContext<ContextValue | undefined>(undefined);
 
 /* ---------- Provider ---------- */
 
@@ -95,9 +87,7 @@ const STORAGE_KEYS = {
 export const SearchFilterProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [locationOn, setLocationOnState] = useState(false);
-  const [currentCategoryName, setCurrentCategoryName] = useState<
-    string | undefined
-  >(undefined);
+  const [currentCategoryName, setCurrentCategoryName] = useState<string | undefined>(undefined);
 
   /* ---------- Restore toggle ---------- */
   useEffect(() => {
@@ -120,8 +110,6 @@ export const SearchFilterProvider = ({ children }: { children: ReactNode }) => {
       accuracy: Location.Accuracy.High,
     });
 
-    console.log("Current position:", pos);
-
     const geo = await Location.reverseGeocodeAsync({
       latitude: pos.coords.latitude,
       longitude: pos.coords.longitude,
@@ -130,16 +118,12 @@ export const SearchFilterProvider = ({ children }: { children: ReactNode }) => {
     if (!geo.length) return;
 
     const { region, subregion, city } = geo[0];
-    console.log("Geocoded location:", geo[0]);
 
     const mapped = mapSriLankaLocation(region, subregion, city);
-    console.log("Mapped location:", mapped);
 
-    if (mapped.province)
-      dispatch({ type: "SET_PROVINCE", payload: mapped.province });
+    if (mapped.province) dispatch({ type: "SET_PROVINCE", payload: mapped.province });
 
-    if (mapped.district)
-      dispatch({ type: "SET_DISTRICT", payload: mapped.district });
+    if (mapped.district) dispatch({ type: "SET_DISTRICT", payload: mapped.district });
 
     if (mapped.city) dispatch({ type: "SET_CITY", payload: mapped.city });
   };

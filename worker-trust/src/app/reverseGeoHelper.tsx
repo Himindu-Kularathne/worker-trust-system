@@ -16,7 +16,6 @@ export async function extractAddressFromCoords(lat: number, lng: number) {
   }
 
   const components = json.results[0].address_components;
-  console.log("Geocoding components:", components);
   // ✅ GUARD 2: Missing components
   if (!components) {
     return {
