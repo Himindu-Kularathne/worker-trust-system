@@ -39,7 +39,6 @@ export async function getAllWorkersWithFilters(filters: {
   }
 
   const { data, error } = await query;
-  console.log("Filtered Workers Data:", data);
 
   if (error) throw error;
   return data;

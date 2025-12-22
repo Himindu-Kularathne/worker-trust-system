@@ -18,7 +18,6 @@ export default function SignupScreen({ navigation }: any) {
     setLoading(true);
     setErrorMessage("");
 
-    console.log("Signing up with:", email, role);
     const signupFn = role === "worker" ? signUpWorker : signUpCustomer;
     const { data, error } = await signupFn(email, password);
 

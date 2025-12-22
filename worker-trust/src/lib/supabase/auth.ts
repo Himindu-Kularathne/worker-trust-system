@@ -40,7 +40,6 @@ export async function signInWithGoogle() {
     scheme: "workertrust",
     path: "/auth/callback",
   });
-  console.log("Redirect URI:", redirectUri);
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
