@@ -7,8 +7,11 @@ import React, {
 } from "react";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert, Linking } from "react-native";
 import { SearchFilters } from "../types/worker";
 import { mapSriLankaLocation } from "@/src/utils/mapLocationToSriLanka";
+
+/* ---------- Types ---------- */
 
 type Action =
   | { type: "SET_CATEGORY"; payload?: string }
@@ -110,11 +113,31 @@ export const SearchFilterProvider = ({ children }: { children: ReactNode }) => {
     })();
   }, []);
 
-  /* ---------- GPS logic ---------- */
+  /* ---------- GPS logic (FIXED) ---------- */
 
   const useCurrentLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") return;
+    const { status, canAskAgain } =
+      await Location.getForegroundPermissionsAsync();
+
+    if (status !== "granted") {
+      if (canAskAgain) {
+        const req = await Location.requestForegroundPermissionsAsync();
+        if (req.status !== "granted") return;
+      } else {
+        Alert.alert(
+          "Enable Location",
+          "Location access was granted only once. Please allow location while using the app.",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Open Settings",
+              onPress: () => Linking.openSettings(),
+            },
+          ]
+        );
+        return;
+      }
+    }
 
     const pos = await Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High,

@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, Alert, TextInput, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Alert,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  Linking,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { getWorkerProfile } from "@/src/lib/worker";
 import { supabase } from "@/src/lib/supabaseClient";
-import { router, useLocalSearchParams } from "expo-router";
 import { loadCategories } from "@/src/lib/categories";
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "@/src/hooks/useThemeHook";
-import { extractAddressFromCoords } from "../reverseGeoHelper";
 import * as Location from "expo-location";
 import { mapSriLankaLocation } from "../../utils/mapLocationToSriLanka";
 import { setLoading } from "@/src/store/slices/workerSlice";
@@ -35,20 +41,46 @@ export default function Dashboard() {
     district: string;
     city: string;
   } | null>(null);
+
   const [image, setImage] = useState<{
     uri: string;
     mimeType: string;
   } | null>(null);
 
+  /* ---------- LOCATION (FIXED) ---------- */
+
   const useCurrentLocation = async () => {
     dispatch(setLoading(true));
 
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
+      const { status, canAskAgain } =
+        await Location.getForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        Alert.alert("Permission denied", "Location permission is required");
-        return;
+        if (canAskAgain) {
+          const req = await Location.requestForegroundPermissionsAsync();
+
+          if (req.status !== "granted") {
+            Alert.alert(
+              "Permission required",
+              "Location permission is needed to continue"
+            );
+            return;
+          }
+        } else {
+          Alert.alert(
+            "Enable Location",
+            "Location access was granted only once. Please allow location while using the app.",
+            [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Open Settings",
+                onPress: () => Linking.openSettings(),
+              },
+            ]
+          );
+          return;
+        }
       }
 
       const pos = await Location.getCurrentPositionAsync({
@@ -67,10 +99,17 @@ export default function Dashboard() {
 
       const { region, subregion, city } = geo[0];
 
-      const mapped = mapSriLankaLocation(region ?? undefined, subregion ?? undefined, city ?? undefined);
+      const mapped = mapSriLankaLocation(
+        region ?? undefined,
+        subregion ?? undefined,
+        city ?? undefined
+      );
 
       if (!mapped.province) {
-        Alert.alert("Location not recognized", "Please move closer to a town or city");
+        Alert.alert(
+          "Location not recognized",
+          "Please move closer to a town or city"
+        );
         return;
       }
 
@@ -89,8 +128,11 @@ export default function Dashboard() {
     }
   };
 
+  /* ---------- IMAGE ---------- */
+
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
     if (status !== "granted") {
       Alert.alert("Permission required", "Please allow gallery access");
       return;
@@ -113,9 +155,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      const categories = await loadCategories();
-      console.log("Loaded categories:", categories);
-      setCategories(categories);
+      const cats = await loadCategories();
+      setCategories(cats);
     })();
   }, []);
 
@@ -123,39 +164,44 @@ export default function Dashboard() {
     full_name: "",
     phone: "",
     email: "",
-    // category: "",
     category_id: "",
-    // subcategory_id: "",
   });
 
   const handleChange = (key: string, value: string) => {
     setForm({ ...form, [key]: value });
   };
+
+  /* ---------- IMAGE UPLOAD ---------- */
+
   const uploadImage = async () => {
     if (!image) return null;
 
     const fileExt = image.uri.split(".").pop() ?? "jpg";
     const fileName = `worker-${Date.now()}.${fileExt}`;
-    const filePath = fileName;
 
     const formData = new FormData();
-
     formData.append("file", {
       uri: image.uri,
       name: fileName,
       type: image.mimeType,
     } as any);
 
-    const { error } = await supabase.storage.from("worker-images").upload(filePath, formData, {
-      contentType: image.mimeType,
-    });
+    const { error } = await supabase.storage
+      .from("worker-images")
+      .upload(fileName, formData, {
+        contentType: image.mimeType,
+      });
 
     if (error) throw error;
 
-    const { data } = supabase.storage.from("worker-images").getPublicUrl(filePath);
+    const { data } = supabase.storage
+      .from("worker-images")
+      .getPublicUrl(fileName);
 
     return data.publicUrl;
   };
+
+  /* ---------- SUBMIT ---------- */
 
   const submitRequest = async () => {
     if (!form.full_name || !form.phone || !form.category_id || !location) {
@@ -167,6 +213,7 @@ export default function Dashboard() {
 
     try {
       const imageUrl = await uploadImage();
+
       const { data, error } = await supabase
         .from("worker_registration_requests")
         .insert([
@@ -175,43 +222,23 @@ export default function Dashboard() {
             phone: form.phone,
             email: form.email || null,
             category: form.category_id,
-            image_url: imageUrl || null,
-            province: location?.province,
-            district: location?.district,
-            city: location?.city,
-            latitude: location?.latitude,
-            longitude: location?.longitude,
+            image_url: imageUrl,
+            province: location.province,
+            district: location.district,
+            city: location.city,
+            latitude: location.latitude,
+            longitude: location.longitude,
           },
         ])
         .select()
         .single();
 
-      if (error) {
-        console.error(error);
-        Alert.alert("Submission failed", error.message);
-        return;
-      }
+      if (error) throw error;
 
-      await fetch("https://xuqsbheuxtthgyosmxrh.supabase.co/functions/v1/resend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
-          id: data.id,
-          full_name: data.full_name,
-          phone: data.phone,
-          email: data.email,
-          category: data.category,
-          image_url: data.image_url,
-          province: data.province,
-          district: data.district,
-          city: data.city,
-        }),
-      });
-
-      Alert.alert("Request Submitted", "An admin will review your registration shortly.");
+      Alert.alert(
+        "Request Submitted",
+        "An admin will review your registration shortly."
+      );
 
       setForm({
         full_name: "",
@@ -219,6 +246,8 @@ export default function Dashboard() {
         email: "",
         category_id: "",
       });
+      setLocation(null);
+      setImage(null);
     } catch (err: any) {
       Alert.alert("Error", err.message ?? "Something went wrong");
     } finally {
@@ -227,14 +256,21 @@ export default function Dashboard() {
   };
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.title, { color: theme.textPrimary }]}>Register as a worker</Text>
-      <Text style={{ color: theme.textPrimary }}>Want to work with us?Fill the form below.</Text>
-      <Text style={{ color: theme.textPrimary }}>
-        You will receive a sms with the sign up link once your request has been approved.
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: theme.background },
+      ]}
+    >
+      <Text style={[styles.title, { color: theme.textPrimary }]}>
+        Register as a worker
       </Text>
 
-      <Input label="Full Name" value={form.full_name} onChangeText={(v) => handleChange("full_name", v)} />
+      <Input
+        label="Full Name"
+        value={form.full_name}
+        onChangeText={(v) => handleChange("full_name", v)}
+      />
       <Input
         label="Phone Number"
         value={form.phone}
@@ -247,47 +283,37 @@ export default function Dashboard() {
         keyboardType="email-address"
         onChangeText={(v) => handleChange("email", v)}
       />
-      <View style={styles.inputGroup}>
-        <Text style={[styles.label, { color: theme.textSecondary }]}>Category</Text>
 
+      <View style={styles.inputGroup}>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>
+          Category
+        </Text>
         <View
           style={[
             styles.pickerWrapper,
-            {
-              backgroundColor: theme.surface,
-              borderColor: theme.border,
-            },
+            { backgroundColor: theme.surface, borderColor: theme.border },
           ]}
         >
           <Picker
-            style={{ color: theme.textPrimary }}
             selectedValue={form.category_id}
             onValueChange={(value) => setForm({ ...form, category_id: value })}
+            style={{ color: theme.textPrimary }}
           >
-            <Picker.Item color={theme.muted} label="Select Category" value="" />
+            <Picker.Item label="Select Category" value="" />
             {categories.map((cat) => (
               <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
             ))}
           </Picker>
         </View>
       </View>
-      <View style={styles.inputGroup}>
-        <Text style={[styles.label, { color: theme.textSecondary }]}>Work Photo / ID Image</Text>
 
-        <Pressable
-          style={[styles.imagePicker, { flexDirection: "row", alignItems: "center", gap: 8 }]}
-          onPress={pickImage}
-        >
-          <EvilIcons name="image" size={26} color={theme.primary} />
-
-          <Text style={{ color: theme.primary, fontSize: 15 }}>{image ? "Change Image" : "Pick Profile Image"}</Text>
-        </Pressable>
-
-        {image && <Text style={styles.imagePreviewText}>Image selected ✓</Text>}
-      </View>
-      <Pressable style={[styles.button, { backgroundColor: "#22C55E" }]} onPress={useCurrentLocation}>
+      <Pressable
+        style={[styles.button, { backgroundColor: theme.primary }]}
+        onPress={useCurrentLocation}
+      >
         <Text style={styles.buttonText}>Use Current Location</Text>
       </Pressable>
+
       {location && (
         <>
           <Input label="Province" value={location.province} editable={false} />
@@ -296,102 +322,59 @@ export default function Dashboard() {
         </>
       )}
 
-      <Pressable style={styles.button} onPress={submitRequest}>
+      <Pressable
+        style={[styles.button, { backgroundColor: theme.primary }]}
+        onPress={submitRequest}
+      >
         <Text style={styles.buttonText}>Submit Registration</Text>
       </Pressable>
     </ScrollView>
   );
 }
 
-function Input({
-  label,
-  editable = true,
-  ...props
-}: {
-  label: string;
-  value: string;
-  onChangeText?: (v: string) => void;
-  keyboardType?: any;
-  editable?: boolean;
-}) {
+/* ---------- INPUT ---------- */
+
+function Input({ label, editable = true, ...props }: any) {
   const { theme } = useTheme();
   return (
     <View style={styles.inputGroup}>
-      <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text>
+      <Text style={[styles.label, { color: theme.textSecondary }]}>
+        {label}
+      </Text>
       <TextInput
         {...props}
         editable={editable}
-        selectTextOnFocus={editable}
         style={[
           styles.input,
           {
             color: theme.textPrimary,
-            backgroundColor: editable ? theme.surface : theme.surface + "AA",
+            backgroundColor: theme.surface,
             borderColor: theme.border,
-            opacity: editable ? 1 : 0.7,
           },
         ]}
-        placeholderTextColor={theme.muted}
       />
     </View>
   );
 }
 
+/* ---------- STYLES ---------- */
+
 const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 24,
-  },
-  inputGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 13,
-    marginBottom: 6,
-    color: "#333",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 15,
-  },
+  container: { padding: 24, flexGrow: 1 },
+  title: { fontSize: 22, fontWeight: "600", marginBottom: 16 },
+  inputGroup: { marginBottom: 16 },
+  label: { fontSize: 13, marginBottom: 6 },
+  input: { borderWidth: 1, borderRadius: 8, padding: 12 },
   button: {
     backgroundColor: "#0A84FF",
     paddingVertical: 14,
     borderRadius: 8,
     marginTop: 16,
   },
-  buttonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+  buttonText: { color: "#fff", textAlign: "center", fontSize: 16 },
   pickerWrapper: {
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 8,
     overflow: "hidden",
-    backgroundColor: "#fff",
-  },
-  imagePicker: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 14,
-    alignItems: "center",
-    backgroundColor: "#fafafa",
-  },
-  imagePreviewText: {
-    marginTop: 6,
-    fontSize: 12,
-    color: "#22C55E",
   },
 });
